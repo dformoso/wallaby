@@ -1,0 +1,38 @@
+#!/bin/bash
+
+# Requesting sudo access
+[ "$UID" -eq 0 ] || exec sudo bash "$0" "$@"
+
+sudo apt install gnupg2 pass -y -qq
+docker login 
+docker login docker.io
+
+# Build docker containers locally
+sudo docker build --rm -t dformoso/albacore:latest albacore
+sudo docker build --rm -t dformoso/nanopolish:latest nanopolish
+sudo docker build --rm -t dformoso/nanopore-util:latest nanopore-util
+sudo docker build --rm -t dformoso/guppy-gpu:latest guppy-gpu
+sudo docker build --rm -t dformoso/deepbinner:latest deepbinner
+sudo docker build --rm -t dformoso/minimap2:latest minimap2
+sudo docker build --rm -t dformoso/samtools:latest samtools
+sudo docker build --rm -t dformoso/porechop:latest porechop
+sudo docker build --rm -t dformoso/trimmomatic:latest trimmomatic
+sudo docker build --rm -t dformoso/sratoolkit:latest sratoolkit
+sudo docker build --rm -t dformoso/bwa:latest bwa
+sudo docker build --rm -t dformoso/picard-tools:latest picard-tools
+sudo docker build --rm -t dformoso/prinseq:latest prinseq
+
+# Push docker containers to docker hub
+sudo docker push dformoso/albacore:latest
+sudo docker push dformoso/nanopolish:latest
+sudo docker push dformoso/nanopore-util:latest
+sudo docker push dformoso/guppy-gpu:latest
+sudo docker push dformoso/deepbinner:latest
+sudo docker push dformoso/minimap2:latest
+sudo docker push dformoso/samtools:latest
+sudo docker push dformoso/porechop:latest
+sudo docker push dformoso/sratoolkit:latest
+sudo docker push dformoso/trimmomatic:latest
+sudo docker push dformoso/bwa:latest
+sudo docker push dformoso/picard-tools:latest
+sudo docker push dformoso/prinseq:latest
