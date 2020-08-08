@@ -1,5 +1,5 @@
-# Run WDL Nanopore Pipelines Cromwell **[alpha]**
-A set of .wdl pipelines for processing Nanopore fast5 files.
+# Run WDL LGT Pipelines Cromwell **[alpha]**
+A set of .wdl pipelines for processing fastq files.
 
 ## Overview
 This repository is not complete yet. The intention is to have users be able to run both local CPU and or GPU pipelines, as well as running the pipeline in google Cloud Platform.
@@ -16,7 +16,7 @@ This project uses the following tools for its deployment:
 ## Run your first local pipeline
 - Clone this repository to a local directory
 ~~~
-git clone https://github.com/dformoso/nanopore.git
+git clone https://github.com/dformoso/wallaby.git
 ~~~
 
 - Change directory to the scripts and binaries folder, and run the following
@@ -28,9 +28,6 @@ git clone https://github.com/dformoso/nanopore.git
 ~~~
 ./scripts_and_binaries/run_pipeline_small.sh
 ~~~
-
-## References:
-> https://github.com/aryeelab/nanopore_tools
 
 ## About Me
 Twitter:
