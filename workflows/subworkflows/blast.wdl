@@ -40,7 +40,4 @@ workflow main {
     output {
         Array[File] blastns = select_all(blast_file)
     }
-
 }
-
-

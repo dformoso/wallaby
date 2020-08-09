@@ -1,3 +1,7 @@
+#!/bin/bash
+
+# Requesting sudo access
+[ "$UID" -eq 0 ] || exec sudo bash "$0" "$@"
 ###########################################
 ############ FIRST TIME CONFIG ############
 ###########################################
@@ -49,7 +53,7 @@ git remote show origin_remote  # Display info on specific remote
 git status # Inspects the contents of the working directory and staging area
 git add . # Adding everything to the staging area
 git status # Inspects the contents of the working directory and staging area
-git commit -m "changing readme"
+git commit -m "adding mpileup"
 git remote -v # Lists a Git project's remotes
 git fetch origin_remote master # fetch master from the remote origin_remote. The master branch on origin will be fetched and the local copy will be named origin_remote/master
 git merge origin_remote/master # Then merge origin_remote/master into master.
