@@ -1,7 +1,3 @@
-#####################################
-######## GOOD DONOR GOOD REC ########
-######## PIPELINE DEFINITION ########
-#####################################
 version development
 
 import "subworkflows/align.wdl" as align
@@ -9,6 +5,7 @@ import "subworkflows/bucketize.wdl" as bucketize
 import "subworkflows/cross_and_subset.wdl" as cross_and_subset
 import "subworkflows/low_complex_filter.wdl" as low_complex_filter
 import "subworkflows/blast.wdl" as blast
+import "subworkflows/locate.wdl" as locate
 
 workflow good_donor_good_recipient {
 
@@ -69,16 +66,29 @@ workflow good_donor_good_recipient {
             bams = cross_subset.bams
     }
 
-    # Blastn search over all crossings of interest
-    call blast.main as blaster {
+    # Locate sequences in reference genome
+    call locate.main as donor_locator {
         input:
-            fastas = low_complex_filter.fastas,
-            blastdb = blastdb
+            bams = cross_subset.bams,
+            ref_genome = donor_ref_genome
     }
+
+    call locate.main as recipient_locator {
+        input:
+            bams = cross_subset.bams,
+            ref_genome = recipient_ref_genome
+    }
+
+    # Blastn search over all crossings of interest
+    #call blast.main as blaster {
+    #    input:
+    #        fastas = low_complex_filter.fastas,
+    #        blastdb = blastdb
+    #}
 
     output {
         Array[File] fastas = low_complex_filter.fastas
-        Array[File] blastns = blaster.blastns
+        #Array[File] blastns = blaster.blastns
     }
 
 }

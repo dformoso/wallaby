@@ -1,7 +1,3 @@
-##################################
-########      PRINSEQ     ########
-######## TASK DEFINITIONS ########
-##################################
 version development
 
 task matching {

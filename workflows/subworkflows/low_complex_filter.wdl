@@ -1,8 +1,3 @@
-#####################################
-######## REMOVE LOW COMPLEX #########
-######## PIPELINE DEFINITION ########
-#####################################
-
 version development
 
 import "../tasks/samtools.wdl" as samtools

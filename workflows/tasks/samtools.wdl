@@ -1,7 +1,3 @@
-##################################
-########     SAMTOOLS     ########
-######## TASK DEFINITIONS ########
-##################################
 version development
 
 task view {
@@ -141,6 +137,37 @@ task merge {
     }
 }
 
+task mpileup {
+    input {
+        File fasta
+        File bam
+        String out_file
+
+        Int threads = 24
+    }
+
+    command <<<
+        samtools mpileup \
+            ~{"-f " + fasta} \
+            ~{bam} \
+            > ~{out_file}
+    >>>
+
+    output {
+        File out = out_file
+    }
+
+    runtime {
+        continueOnReturnCode: false
+        cpu: "24"
+        memory: "16GB"
+        docker: "dformoso/samtools:latest"
+        disks: "local-disk 100GB HDD"
+        gpuType: "nvidia-tesla-p100"
+        gpuCount: 0
+        zones: "us-central1-c"
+    }
+}
 
 task stats {
     input {
@@ -208,7 +235,6 @@ task flagstats {
     }
 }
 
-# Create files containing a unique, ordered, list of QNAMES (the identifiers for the reads, or Read IDs)
 task extract_qnames {
     input {
         File file
@@ -286,9 +312,6 @@ task count {
     }
 }
 
-# Extract list of reads from BAM file
-# Output paired reads to separate files, 
-# discarding singletons, supplementary and secondary reads
 task bam_to_fastas {
     input {
         File file

@@ -1,7 +1,3 @@
-##################################
-########      PICARD      ########
-######## TASK DEFINITIONS ########
-##################################
 version development
 
 task filter_reads {
@@ -120,7 +116,6 @@ task mark_duplicates {
         zones: "us-central1-c"
     }
 }
-
 
 task insert_size_metrics {
     input {

@@ -1,10 +1,5 @@
-##################################
-########       TOOLS      ########
-######## TASK DEFINITIONS ########
-##################################
 version development
 
-# Create files containing the inner join between two groups of files
 task inner_join {
     
     input {
@@ -36,7 +31,6 @@ task inner_join {
     }
 }
 
-# Extract the SEQ_IDs from the FASTQ file into a .txt file
 task seq_ids_from_fastq {
     
     input {
@@ -67,7 +61,6 @@ task seq_ids_from_fastq {
     }
 }
 
-# Concatenate text files
 task concat_text {
     
     input {

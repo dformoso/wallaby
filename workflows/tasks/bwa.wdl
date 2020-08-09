@@ -1,7 +1,3 @@
-##################################
-########        BWA       ########
-######## TASK DEFINITIONS ########
-##################################
 version development
 
 import "structs/structures.wdl"

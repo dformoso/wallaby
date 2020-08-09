@@ -1,8 +1,3 @@
-#####################################
-########        BLAST       #########
-######## PIPELINE DEFINITION ########
-#####################################
-
 version development
 
 import "../tasks/blast.wdl" as blast

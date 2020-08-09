@@ -1,7 +1,3 @@
-#####################################
-########   CROSS AND SUBSET  ########
-######## PIPELINE DEFINITION ########
-#####################################
 version development
 
 import "../tasks/samtools.wdl" as samtools
