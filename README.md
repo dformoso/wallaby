@@ -1,5 +1,5 @@
-# Run WDL LGT Pipelines Cromwell **[alpha]**
-A set of .wdl pipelines for processing fastq files.
+# Wallaby
+A set of .wdl pipelines for finding Lateral Gene Transfer from a donor organism into a recipient.
 
 ## Overview
 This repository is not complete yet. The intention is to have users be able to run both local CPU and or GPU pipelines, as well as running the pipeline in google Cloud Platform.
@@ -26,7 +26,7 @@ git clone https://github.com/dformoso/wallaby.git
 
 - Your test pipeline locally
 ~~~
-./scripts_and_binaries/run_pipeline_small.sh
+./scripts_and_binaries/run_donor_recipient.sh
 ~~~
 
 ## About Me
@@ -34,7 +34,7 @@ Twitter:
 > https://twitter.com/danielmartinezf
 
 Linkedin:
->https://www.linkedin.com/in/danielmartinezformoso/
+> https://www.linkedin.com/in/danielmartinezformoso/
 
 Email:
 > daniel.martinez.formoso@gmail.com

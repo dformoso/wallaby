@@ -1,7 +1,0 @@
-{
-    "good_donor_good_recipient.blastdb": "../../data/blast/blastdb",
-    "good_donor_good_recipient.donor_ref_genome": "../../data/ref_genomes/pseudomonas_aeruginosa_pao1.fasta",
-    "good_donor_good_recipient.recipient_ref_genome": "../../data/ref_genomes/GRCh38_p13.fasta",
-    "good_donor_good_recipient.fastq_1": "../../data/SRR5377828/SRR5377828_1.fastq",
-    "good_donor_good_recipient.fastq_2": "../../data/SRR5377828/SRR5377828_2.fastq"
-}

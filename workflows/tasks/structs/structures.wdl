@@ -1,6 +1,3 @@
-##################################
-########      STRUCTS     ########
-##################################
 version development
 
 struct BWAIndex {
@@ -10,18 +7,4 @@ struct BWAIndex {
     File bwt
     File pac
     File sa
-}
-
-struct SplitBAMs {
-    File MM
-    File MU
-    File UM
-    File UU
-}
-
-struct SplitQNAMEs {
-    File MM
-    File MU
-    File UM
-    File UU
 }

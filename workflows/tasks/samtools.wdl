@@ -189,7 +189,7 @@ task stats {
     >>>
 
     output {
-        File? stats = out_file
+        File out = out_file
     }
 
     runtime {
@@ -220,7 +220,7 @@ task flagstats {
     >>>
 
     output {
-        File? flagstats = out_file
+        File out = out_file
     }
 
     runtime {
@@ -297,7 +297,7 @@ task count {
     >>>
 
     output {
-        File? bam = out_file
+        File out = out_file
     }
 
     runtime {

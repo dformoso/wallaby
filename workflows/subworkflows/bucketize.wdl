@@ -2,20 +2,17 @@ version development
 
 import "../tasks/bwa.wdl" as bwa
 import "../tasks/samtools.wdl" as samtools
-import "../tasks/structs/structures.wdl"
 
 workflow main {
 
     input {
         BWAIndex index
         File bam
-        File bai
+        String base_filename
     }
 
-    String base_filename = "reads-to-~{basename(index.fasta, ".fasta")}"
-
     # Read 1 is Mapped and Read 2 is Mapped in/to Ref Genome - MM
-    call samtools.view as MM { 
+    call samtools.view as MM_bam { 
         input: 
             file = bam, 
             out_file = "~{base_filename}_MM.bam", 
@@ -37,7 +34,7 @@ workflow main {
             include = "133", exclude = "3962" 
     }
 
-    call samtools.merge as MU { 
+    call samtools.merge as MU_bam { 
         input: 
             files = [MU_R1.out, MU_R2.out], 
             out_file = "~{base_filename}_MU.bam" 
@@ -58,7 +55,7 @@ workflow main {
             include = "137", exclude = "3958" 
     }
 
-    call samtools.merge as UM { 
+    call samtools.merge as UM_bam { 
         input: 
             files = [UM_R1.out, UM_R2.out], 
             out_file = "~{base_filename}_UM.bam" 
@@ -79,76 +76,23 @@ workflow main {
             include = "141" 
     }
 
-    call samtools.merge as UU { 
+    call samtools.merge as UU_bam { 
         input: 
             files = [UU_R1.out, UU_R2.out], 
             out_file = "~{base_filename}_UU.bam" 
     }
 
-    # Create files containing a unique and ordered, 
-    # list of QNAMES (Read IDs)
-    call samtools.extract_qnames as MM_qnames { 
-        input: 
-            file = MM.out, 
-            out_file = "~{base_filename}_MM_qnames.txt" 
-    }
-
-    call samtools.extract_qnames as MU_qnames { 
-        input: 
-            file = MU.out, 
-            out_file = "~{base_filename}_MU_qnames.txt"
-    }
-
-    call samtools.extract_qnames as UM_qnames { 
-        input: 
-            file = UM.out, 
-            out_file = "~{base_filename}_UM_qnames.txt" 
-    }
-
-    call samtools.extract_qnames as UU_qnames { 
-        input: 
-            file = UU.out, 
-            out_file = "~{base_filename}_UU_qnames.txt"
-    }
-    
-    # Create a statistics, flag statistics, and count, 
-    # file for each BAM file    
-    Array[File] bam_files = [MM.out, MU.out, UM.out, UU.out]
-
-    scatter (bam_file in bam_files) {
-        call samtools.stats { 
-            input: 
-                file = bam_file, 
-                out_file = "~{basename(bam_file)}_stats.txt" 
-        }
-
-        call samtools.flagstats { 
-            input: 
-                file = bam_file, 
-                out_file = "~{basename(bam_file)}_flagstats.txt" 
-        }
-
-        call samtools.count as MM_bam_count { 
-            input: 
-                file = bam_file, 
-                out_file = "~{basename(bam_file)}_count.txt" 
-        }
-    }
-
     output {
-        SplitBAMs bams = {
-            "MM" : MM.out,
-            "MU" : MU.out,
-            "UM" : UM.out,
-            "UU" : UU.out
-        }
-
-        SplitQNAMEs qnames = {
-            "MM" : MM_qnames.out,
-            "MU" : MU_qnames.out,
-            "UM" : UM_qnames.out,
-            "UU" : UU_qnames.out
-        }
+        File MM = MM_bam.out
+        File MU = MU_bam.out
+        File UM = UM_bam.out
+        File UU = UU_bam.out
+        Array[File] bams = [
+            MM_bam.out,
+            MU_bam.out,
+            UM_bam.out,
+            UU_bam.out
+        ]
     }
 
 }
