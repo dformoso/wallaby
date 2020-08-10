@@ -6,7 +6,9 @@
 # https://jupyter-docker-stacks.readthedocs.io/en/latest/using/selecting.html#jupyter-datascience-notebook
 
 # Create a docker container running an unauthenticated Jupyter instance.
-# The instance will be able to operate docker containers in the host system if docker installed
+# The instance will be able to operate docker containers 
+# in the host system if docker is installed
+
 docker stop jupyter || true && docker rm jupyter || true
 sudo docker run -itd \
   --name jupyter \
@@ -15,7 +17,7 @@ sudo docker run -itd \
   -e GRANT_SUDO=yes \
   --user root \
   -p 8888:8888 \
-  -v "`dirname \`pwd\``:/home/jovyan/" \
+  -v "`dirname \`pwd\``:/home/jovyan/notebooks" \
   jupyter/datascience-notebook:latest \
   start-notebook.sh --NotebookApp.token=''
 

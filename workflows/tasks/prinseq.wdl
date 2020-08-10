@@ -1,11 +1,14 @@
 version development
 
+import "structs/compute.wdl"
+
 task matching {
     input {
         File file
         String out_file
-        String lc_method = "dust"
-        String lc_threshold = "7"
+        String lc_method
+        String lc_threshold
+        Resources resources
     }
 
     command <<<
@@ -24,13 +27,15 @@ task matching {
 
     runtime {
         continueOnReturnCode: false
-        cpu: "24"
-        memory: "16GB"
+        cpu: resources.cpu
+        memory: resources.memory_gb
         docker: "dformoso/prinseq:latest"
-        disks: "local-disk 100GB HDD"
-        gpuType: "nvidia-tesla-p100"
-        gpuCount: 0
-        zones: "us-central1-c"
+        disks: resources.disks
+        gpuType: resources.gpuType
+        gpuCount: resources.gpuCount
+        zones: resources.zones
+        preemptible: resources.preemptible
+        maxRetries: resources.maxRetries
     }
 }
 

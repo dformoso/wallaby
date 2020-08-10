@@ -7,6 +7,7 @@ import "subworkflows/complex.wdl" as complex
 import "subworkflows/blast.wdl" as blast
 import "subworkflows/locate.wdl" as locate
 import "subworkflows/metrics.wdl" as metrics
+import "tasks/structs/compute.wdl"
 
 workflow donor_recipient {
 
@@ -18,13 +19,17 @@ workflow donor_recipient {
         Directory blastdb
     }
 
+    # Compute resources
+    Compute server = read_json("../sizes.json")
+
     # Donor Reference Genome
-    ## Align 
+    ## Align
     call align.main as align_donor {
         input:
             ref_genome = donor_ref_genome,
             fastq_1 = reads_fastq_1,
             fastq_2 = reads_fastq_2,
+            resources = server.size["local_server"],
             base_filename = "reads-to-donor"
     }
 
@@ -33,6 +38,7 @@ workflow donor_recipient {
         input:
             index = align_donor.index,
             bam = align_donor.bam,
+            resources = server.size["local_server"],
             base_filename = "reads-to-donor"
     }
 
@@ -43,6 +49,7 @@ workflow donor_recipient {
             ref_genome = recipient_ref_genome,
             fastq_1 = reads_fastq_1,
             fastq_2 = reads_fastq_2,
+            resources = server.size["local_server"],
             base_filename = "reads-to-recipient"
     }
 
@@ -51,6 +58,7 @@ workflow donor_recipient {
         input:
             index = align_recipient.index,
             bam = align_recipient.bam,
+            resources = server.size["local_server"],
             base_filename = "reads-to-recipient"
     }
 
@@ -64,54 +72,66 @@ workflow donor_recipient {
             recipient_MM = bucketize_recipient.MM,
             recipient_MU = bucketize_recipient.MU,
             recipient_UM = bucketize_recipient.UM,
-            recipient_UU = bucketize_recipient.UU
+            recipient_UU = bucketize_recipient.UU,
+            resources = server.size["local_server"]
     }
 
     # Filter out low complexity sequences
     call complex.main as complex {
         input:
-            bam_files = cross.bams
+            bam_files = cross.bams,
+            lc_method = "dust",
+            lc_threshold = "7",
+            resources = server.size["local_server"]
     }
 
     # Locate sequences in reference genome
     call locate.main as locate_donor {
         input:
             bams = complex.bams,
-            ref_genome = donor_ref_genome
+            ref_genome = donor_ref_genome,
+            resources = server.size["local_server"]
     }
 
     call locate.main as locate_recipient {
         input:
             bams = complex.bams,
-            ref_genome = recipient_ref_genome
+            ref_genome = recipient_ref_genome,
+            resources = server.size["local_server"]
     }
 
     # Blastn search over all crossings of interest
     call blast.main as blaster {
         input:
             fastas = complex.fastas,
-            blastdb = blastdb
+            blastdb = blastdb,
+            resources = server.size["local_server"],
+            evalue = 1
     }
 
     # Calculate metrics
     call metrics.main as metrics_donor {
         input:
-            bams = bucketize_donor.bams
+            bams = bucketize_donor.bams,
+            resources = server.size["local_server"]
     }
 
     call metrics.main as metrics_recipient {
         input:
-            bams = bucketize_recipient.bams
+            bams = bucketize_recipient.bams,
+            resources = server.size["local_server"]
     }
 
     call metrics.main as metrics_cross {
         input:
-            bams = cross.bams
+            bams = cross.bams,
+            resources = server.size["local_server"]
     }
     
     call metrics.main as metrics_complex {
         input:
-            bams = complex.bams
+            bams = complex.bams,
+            resources = server.size["local_server"]
     }
 
     output {

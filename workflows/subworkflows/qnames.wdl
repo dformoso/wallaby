@@ -1,6 +1,7 @@
 version development
 
 import "../tasks/samtools.wdl" as samtools
+import "../tasks/structs/compute.wdl"
 
 workflow main {
 
@@ -10,30 +11,36 @@ workflow main {
         File UM_bam
         File UU_bam
         String base_filename
+
+        Resources resources
     }
         
     call samtools.extract_qnames as MM_qnames { 
         input: 
             file = MM_bam, 
-            out_file = "~{base_filename}_MM_qnames.txt" 
+            out_file = "~{base_filename}_MM_qnames.txt",
+            resources = resources
     }
 
     call samtools.extract_qnames as MU_qnames { 
         input: 
             file = MU_bam, 
-            out_file = "~{base_filename}_MU_qnames.txt"
+            out_file = "~{base_filename}_MU_qnames.txt",
+            resources = resources
     }
 
     call samtools.extract_qnames as UM_qnames { 
         input: 
             file = UM_bam, 
-            out_file = "~{base_filename}_UM_qnames.txt" 
+            out_file = "~{base_filename}_UM_qnames.txt",
+            resources = resources
     }
 
     call samtools.extract_qnames as UU_qnames { 
         input: 
             file = UU_bam, 
-            out_file = "~{base_filename}_UU_qnames.txt"
+            out_file = "~{base_filename}_UU_qnames.txt",
+            resources = resources
     }
 
     output {

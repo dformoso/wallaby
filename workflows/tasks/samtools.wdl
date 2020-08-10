@@ -1,16 +1,17 @@
 version development
 
+import "structs/compute.wdl"
+
 task view {
     input {
         File file
         String out_file
-        
         Boolean include_header = false
         Boolean output_count = false
         Boolean output_file = true
         String include = ""
         String exclude = ""
-        Int threads = 24
+        Resources resources
     }
 
     command <<<
@@ -20,7 +21,7 @@ task view {
             ~{true="-h" false="" include_header} \
             ~{true="-b" false="" output_file} \
             ~{true="-c" false="" output_count} \
-            ~{"-@ " + threads} \
+            ~{"-@ " + resources.cpu} \
             ~{file} \
             > ~{out_file}
     >>>
@@ -31,13 +32,15 @@ task view {
 
     runtime {
         continueOnReturnCode: false
-        cpu: "24"
-        memory: "16GB"
+        cpu: resources.cpu
+        memory: resources.memory_gb
         docker: "dformoso/samtools:latest"
-        disks: "local-disk 100GB HDD"
-        gpuType: "nvidia-tesla-p100"
-        gpuCount: 0
-        zones: "us-central1-c"
+        disks: resources.disks
+        gpuType: resources.gpuType
+        gpuCount: resources.gpuCount
+        zones: resources.zones
+        preemptible: resources.preemptible
+        maxRetries: resources.maxRetries
     }
 }
 
@@ -46,13 +49,12 @@ task sort {
     input {
         File file
         String out_file
-        
-        Int threads = 24
+        Resources resources
     }
 
     command <<<
         samtools sort \
-            ~{"-@ " + threads} \
+            ~{"-@ " + resources.cpu} \
             ~{file} \
             > ~{out_file}
     >>>
@@ -63,13 +65,15 @@ task sort {
 
     runtime {
         continueOnReturnCode: false
-        cpu: "24"
-        memory: "16GB"
+        cpu: resources.cpu
+        memory: resources.memory_gb
         docker: "dformoso/samtools:latest"
-        disks: "local-disk 100GB HDD"
-        gpuType: "nvidia-tesla-p100"
-        gpuCount: 0
-        zones: "us-central1-c"
+        disks: resources.disks
+        gpuType: resources.gpuType
+        gpuCount: resources.gpuCount
+        zones: resources.zones
+        preemptible: resources.preemptible
+        maxRetries: resources.maxRetries
     }
 }
 
@@ -78,13 +82,12 @@ task index {
     input {
         File file
         String out_file
-        
-        Int threads = 24
+        Resources resources
     }
 
     command <<<
         samtools index \
-            ~{"-@ " + threads} \
+            ~{"-@ " + resources.cpu} \
             ~{file} \
             ~{out_file}
     >>>
@@ -95,13 +98,15 @@ task index {
 
     runtime {
         continueOnReturnCode: false
-        cpu: "24"
-        memory: "16GB"
+        cpu: resources.cpu
+        memory: resources.memory_gb
         docker: "dformoso/samtools:latest"
-        disks: "local-disk 100GB HDD"
-        gpuType: "nvidia-tesla-p100"
-        gpuCount: 0
-        zones: "us-central1-c"
+        disks: resources.disks
+        gpuType: resources.gpuType
+        gpuCount: resources.gpuCount
+        zones: resources.zones
+        preemptible: resources.preemptible
+        maxRetries: resources.maxRetries
     }
 }
 
@@ -110,13 +115,12 @@ task merge {
     input {
         Array[File] files
         String out_file
-
-        Int threads = 24
+        Resources resources
     }
 
     command <<<
         samtools merge \
-            ~{"-@ " + threads} \
+            ~{"-@ " + resources.cpu} \
             ~{out_file} \
             ~{sep=" " files}
     >>>
@@ -127,13 +131,15 @@ task merge {
 
     runtime {
         continueOnReturnCode: false
-        cpu: "24"
-        memory: "16GB"
+        cpu: resources.cpu
+        memory: resources.memory_gb
         docker: "dformoso/samtools:latest"
-        disks: "local-disk 100GB HDD"
-        gpuType: "nvidia-tesla-p100"
-        gpuCount: 0
-        zones: "us-central1-c"
+        disks: resources.disks
+        gpuType: resources.gpuType
+        gpuCount: resources.gpuCount
+        zones: resources.zones
+        preemptible: resources.preemptible
+        maxRetries: resources.maxRetries
     }
 }
 
@@ -142,8 +148,7 @@ task mpileup {
         File fasta
         File bam
         String out_file
-
-        Int threads = 24
+        Resources resources
     }
 
     command <<<
@@ -159,13 +164,15 @@ task mpileup {
 
     runtime {
         continueOnReturnCode: false
-        cpu: "24"
-        memory: "16GB"
+        cpu: resources.cpu
+        memory: resources.memory_gb
         docker: "dformoso/samtools:latest"
-        disks: "local-disk 100GB HDD"
-        gpuType: "nvidia-tesla-p100"
-        gpuCount: 0
-        zones: "us-central1-c"
+        disks: resources.disks
+        gpuType: resources.gpuType
+        gpuCount: resources.gpuCount
+        zones: resources.zones
+        preemptible: resources.preemptible
+        maxRetries: resources.maxRetries
     }
 }
 
@@ -173,8 +180,7 @@ task stats {
     input {
         File file
         String out_file
-
-        Int threads = 24
+        Resources resources
     }
 
     command <<<
@@ -182,7 +188,7 @@ task stats {
         if [ -s "~{file}" ]
         then
         samtools stats \
-            ~{"-@ " + threads} \
+            ~{"-@ " + resources.cpu} \
             ~{file} \
             > ~{out_file}
         fi
@@ -194,13 +200,15 @@ task stats {
 
     runtime {
         continueOnReturnCode: false
-        cpu: "24"
-        memory: "16GB"
+        cpu: resources.cpu
+        memory: resources.memory_gb
         docker: "dformoso/samtools:latest"
-        disks: "local-disk 100GB HDD"
-        gpuType: "nvidia-tesla-p100"
-        gpuCount: 0
-        zones: "us-central1-c"
+        disks: resources.disks
+        gpuType: resources.gpuType
+        gpuCount: resources.gpuCount
+        zones: resources.zones
+        preemptible: resources.preemptible
+        maxRetries: resources.maxRetries
     }
 }
 
@@ -208,13 +216,12 @@ task flagstats {
     input {
         File file
         String out_file
-
-        Int threads = 24
+        Resources resources
     }
 
     command <<<
         samtools flagstat \
-            ~{"-@ " + threads} \
+            ~{"-@ " + resources.cpu} \
             ~{file} \
             > ~{out_file}
     >>>
@@ -225,13 +232,15 @@ task flagstats {
 
     runtime {
         continueOnReturnCode: false
-        cpu: "24"
-        memory: "16GB"
+        cpu: resources.cpu
+        memory: resources.memory_gb
         docker: "dformoso/samtools:latest"
-        disks: "local-disk 100GB HDD"
-        gpuType: "nvidia-tesla-p100"
-        gpuCount: 0
-        zones: "us-central1-c"
+        disks: resources.disks
+        gpuType: resources.gpuType
+        gpuCount: resources.gpuCount
+        zones: resources.zones
+        preemptible: resources.preemptible
+        maxRetries: resources.maxRetries
     }
 }
 
@@ -239,13 +248,12 @@ task extract_qnames {
     input {
         File file
         String out_file
-
-        Int threads = 24
+        Resources resources
     }
 
     command <<<
         samtools view \
-            ~{"-@ " + threads} \
+            ~{"-@ " + resources.cpu} \
             ~{file} \
             | cut -f1 | sort | uniq \
             > ~{out_file}
@@ -257,13 +265,15 @@ task extract_qnames {
 
     runtime {
         continueOnReturnCode: false
-        cpu: "24"
-        memory: "16GB"
+        cpu: resources.cpu
+        memory: resources.memory_gb
         docker: "dformoso/samtools:latest"
-        disks: "local-disk 100GB HDD"
-        gpuType: "nvidia-tesla-p100"
-        gpuCount: 0
-        zones: "us-central1-c"
+        disks: resources.disks
+        gpuType: resources.gpuType
+        gpuCount: resources.gpuCount
+        zones: resources.zones
+        preemptible: resources.preemptible
+        maxRetries: resources.maxRetries
     }
 }
 
@@ -271,13 +281,12 @@ task count {
     input {
         File file
         String out_file
-        
         Boolean include_header = false
         Boolean output_count = true
         Boolean output_file = false
         String include = ""
         String exclude = ""
-        Int threads = 24
+        Resources resources
     }
 
     command <<<
@@ -290,7 +299,7 @@ task count {
             ~{true="-h" false="" include_header} \
             ~{true="-b" false="" output_file} \
             ~{true="-c" false="" output_count} \
-            ~{"-@ " + threads} \
+            ~{"-@ " + resources.cpu} \
             ~{file} \
             > ~{out_file}
         fi
@@ -302,13 +311,15 @@ task count {
 
     runtime {
         continueOnReturnCode: false
-        cpu: "24"
-        memory: "16GB"
+        cpu: resources.cpu
+        memory: resources.memory_gb
         docker: "dformoso/samtools:latest"
-        disks: "local-disk 100GB HDD"
-        gpuType: "nvidia-tesla-p100"
-        gpuCount: 0
-        zones: "us-central1-c"
+        disks: resources.disks
+        gpuType: resources.gpuType
+        gpuCount: resources.gpuCount
+        zones: resources.zones
+        preemptible: resources.preemptible
+        maxRetries: resources.maxRetries
     }
 }
 
@@ -317,7 +328,7 @@ task bam_to_fastas {
         File file
         String out_file_1
         String out_file_2
-
+        Resources resources
     }
 
     command <<<
@@ -336,12 +347,14 @@ task bam_to_fastas {
 
     runtime {
         continueOnReturnCode: false
-        cpu: "24"
-        memory: "16GB"
+        cpu: resources.cpu
+        memory: resources.memory_gb
         docker: "dformoso/samtools:latest"
-        disks: "local-disk 100GB HDD"
-        gpuType: "nvidia-tesla-p100"
-        gpuCount: 0
-        zones: "us-central1-c"
+        disks: resources.disks
+        gpuType: resources.gpuType
+        gpuCount: resources.gpuCount
+        zones: resources.zones
+        preemptible: resources.preemptible
+        maxRetries: resources.maxRetries
     }
 }

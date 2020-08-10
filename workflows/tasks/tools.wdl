@@ -1,11 +1,14 @@
 version development
 
+import "structs/compute.wdl"
+
 task inner_join {
     
     input {
         File file_1
         File file_2
         String out_file
+        Resources resources
     }
 
     command <<<
@@ -21,13 +24,15 @@ task inner_join {
 
     runtime {
         continueOnReturnCode: false
-        cpu: "24"
-        memory: "16GB"
+        cpu: resources.cpu
+        memory: resources.memory_gb
         docker: "dformoso/samtools:latest"
-        disks: "local-disk 100GB HDD"
-        gpuType: "nvidia-tesla-p100"
-        gpuCount: 0
-        zones: "us-central1-c"
+        disks: resources.disks
+        gpuType: resources.gpuType
+        gpuCount: resources.gpuCount
+        zones: resources.zones
+        preemptible: resources.preemptible
+        maxRetries: resources.maxRetries
     }
 }
 
@@ -36,6 +41,7 @@ task seq_ids_from_fastq {
     input {
         File file
         String out_file
+        Resources resources
     }
 
     command <<<
@@ -51,13 +57,15 @@ task seq_ids_from_fastq {
 
     runtime {
         continueOnReturnCode: false
-        cpu: "24"
-        memory: "16GB"
+        cpu: resources.cpu
+        memory: resources.memory_gb
         docker: "dformoso/samtools:latest"
-        disks: "local-disk 100GB HDD"
-        gpuType: "nvidia-tesla-p100"
-        gpuCount: 0
-        zones: "us-central1-c"
+        disks: resources.disks
+        gpuType: resources.gpuType
+        gpuCount: resources.gpuCount
+        zones: resources.zones
+        preemptible: resources.preemptible
+        maxRetries: resources.maxRetries
     }
 }
 
@@ -67,15 +75,14 @@ task concat_text {
         File file_1
         File file_2
         String out_file
-
-        Int threads = 24
+        Resources resources
     }
 
     command <<<
         cat \
             ~{file_1} \
             ~{file_2} \
-            | sort ~{"--parallel=" + threads} \
+            | sort ~{"--parallel=" + resources.cpu} \
             > ~{out_file}
     >>>
 
@@ -85,12 +92,14 @@ task concat_text {
 
     runtime {
         continueOnReturnCode: false
-        cpu: "24"
-        memory: "16GB"
+        cpu: resources.cpu
+        memory: resources.memory_gb
         docker: "dformoso/samtools:latest"
-        disks: "local-disk 100GB HDD"
-        gpuType: "nvidia-tesla-p100"
-        gpuCount: 0
-        zones: "us-central1-c"
+        disks: resources.disks
+        gpuType: resources.gpuType
+        gpuCount: resources.gpuCount
+        zones: resources.zones
+        preemptible: resources.preemptible
+        maxRetries: resources.maxRetries
     }
 }

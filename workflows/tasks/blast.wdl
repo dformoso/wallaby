@@ -1,10 +1,14 @@
 version development
 
+import "structs/compute.wdl"
+
 task n {
     
     input {
         Array[File] fastas
         Directory blastdb
+        Resources resources
+        String evalue
     }
 
     command <<<
@@ -28,8 +32,8 @@ task n {
                     blastn \
                         -query $fasta \
                         -db nt \
-                        -num_threads 24 \
-                        -evalue 1 \
+                        -num_threads ~{resources.cpu} \
+                        -evalue ~{evalue} \
                         -outfmt '6 seqid qgi qacc qaccver qlen sseqid sallseqid sgi sallgi sacc saccver sallacc slen qstart qend sstart send qseq sseq evalue bitscore score length pident nident mismatch positive gapopen gaps ppos frames qframe sframe btop staxid ssciname scomname sblastname sskingdom staxids sscinames scomnames sblastnames sskingdoms stitle salltitles sstrand qcovs qcovhsp qcovus' \
                         -out "`basename ${fasta}`.blastn"
                 fi
@@ -42,12 +46,14 @@ task n {
 
     runtime {
         continueOnReturnCode: false
-        cpu: "24"
-        memory: "128GB"
+        cpu: resources.cpu
+        memory: resources.memory_gb
         docker: "ncbi/blast:2.10.1"
-        disks: "local-disk 1000GB HDD"
-        gpuType: "nvidia-tesla-p100"
-        gpuCount: 0
-        zones: "us-central1-c"
+        disks: resources.disks
+        gpuType: resources.gpuType
+        gpuCount: resources.gpuCount
+        zones: resources.zones
+        preemptible: resources.preemptible
+        maxRetries: resources.maxRetries
     }
 }

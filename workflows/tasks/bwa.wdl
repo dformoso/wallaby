@@ -1,12 +1,14 @@
 version development
 
-import "structs/structures.wdl"
+import "structs/bwa.wdl"
+import "structs/compute.wdl"
 
 task index {
     
     input {
         File fasta 
         String basename_fasta = basename(fasta) 
+        Resources resources
     }
 
     command <<<
@@ -27,13 +29,15 @@ task index {
 
     runtime {
         continueOnReturnCode: false
-        cpu: "4"
-        memory: "24GB"
+        cpu: resources.cpu
+        memory: resources.memory_gb
         docker: "dformoso/bwa:latest"
-        disks: "local-disk 100GB HDD"
-        gpuType: "nvidia-tesla-p100"
-        gpuCount: 0
-        zones: "us-central1-c"
+        disks: resources.disks
+        gpuType: resources.gpuType
+        gpuCount: resources.gpuCount
+        zones: resources.zones
+        preemptible: resources.preemptible
+        maxRetries: resources.maxRetries
     }
 }
 
@@ -44,12 +48,12 @@ task align {
         File fastq_2
         BWAIndex bwa_index
         String out_file = "reads-to-ref-genome.sam"
-        Int bwa_threads = 24
+        Resources resources
     }
 
     command <<<
         bwa mem \
-            ~{"-t " + bwa_threads} \
+            ~{"-t " + resources.cpu} \
             ~{bwa_index.fasta} \
             ~{fastq_1} \
             ~{fastq_2} \
@@ -62,12 +66,14 @@ task align {
 
     runtime {
         continueOnReturnCode: false
-        cpu: bwa_threads
-        memory: "16GB"
+        cpu: resources.cpu
+        memory: resources.memory_gb
         docker: "dformoso/bwa:latest"
-        disks: "local-disk 100GB HDD"
-        gpuType: "nvidia-tesla-p100"
-        gpuCount: 0
-        zones: "us-central1-c"
+        disks: resources.disks
+        gpuType: resources.gpuType
+        gpuCount: resources.gpuCount
+        zones: resources.zones
+        preemptible: resources.preemptible
+        maxRetries: resources.maxRetries
     }
 }

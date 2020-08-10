@@ -1,12 +1,14 @@
 version development
 
+import "structs/compute.wdl"
+
 task filter_reads {
     input {
         File file
         File txt
         String out_file
-
         String filter = "includeReadList"
+        Resources resources
     }
 
     command {
@@ -30,13 +32,15 @@ task filter_reads {
 
     runtime {
         continueOnReturnCode: false
-        cpu: "24"
-        memory: "16GB"
+        cpu: resources.cpu
+        memory: resources.memory_gb
         docker: "dformoso/picard-tools:latest"
-        disks: "local-disk 100GB HDD"
-        gpuType: "nvidia-tesla-p100"
-        gpuCount: 0
-        zones: "us-central1-c"
+        disks: resources.disks
+        gpuType: resources.gpuType
+        gpuCount: resources.gpuCount
+        zones: resources.zones
+        preemptible: resources.preemptible
+        maxRetries: resources.maxRetries
     }
 }
 
@@ -45,7 +49,7 @@ task filter_valid_reads {
         File file
         File txt
         String out_file
-
+        Resources resources
         String filter = "includeReadList"
     }
 
@@ -70,96 +74,25 @@ task filter_valid_reads {
 
     runtime {
         continueOnReturnCode: false
-        cpu: "24"
-        memory: "16GB"
+        cpu: resources.cpu
+        memory: resources.memory_gb
         docker: "dformoso/picard-tools:latest"
-        disks: "local-disk 100GB HDD"
-        gpuType: "nvidia-tesla-p100"
-        gpuCount: 0
-        zones: "us-central1-c"
+        disks: resources.disks
+        gpuType: resources.gpuType
+        gpuCount: resources.gpuCount
+        zones: resources.zones
+        preemptible: resources.preemptible
+        maxRetries: resources.maxRetries
     }
 }
 
-task mark_duplicates {
-    input {
-        File file
-        String out_file
-
-        String validation_stringency = "SILENT"
-        String assume_sorted = "false"
-        String minimum_distance = "-1"
-        String validation_stringency = "SILENT"
-    }
-
-    command {
-        set -e
-        java -jar /usr/picard/picard.jar MarkDuplicates \
-            ~{"INPUT=" + file} \
-            ~{"OUTPUT=" + out_file} \
-            ~{"ASSUME_SORTED=" + assume_sorted} \
-            ~{"MINIMUM_DISTANCE=" + minimum_distance} \
-            ~{"VALIDATION_STRINGENCY=" + validation_stringency}
-    }
-
-    output {
-        File? deduped = out_file
-    }
-
-    runtime {
-        continueOnReturnCode: false
-        cpu: "24"
-        memory: "16GB"
-        docker: "dformoso/picard-tools:latest"
-        disks: "local-disk 100GB HDD"
-        gpuType: "nvidia-tesla-p100"
-        gpuCount: 0
-        zones: "us-central1-c"
-    }
-}
-
-task insert_size_metrics {
-    input {
-        File file
-        String out_file
-        String pdf_filename
-
-        String validation_stringency = "SILENT"
-        String assume_sorted = "false"
-    }
-
-    command {
-        set -e
-        java -jar /usr/picard/picard.jar CollectInsertSizeMetrics \
-            ~{"INPUT=" + file} \
-            ~{"OUTPUT=" + out_file} \
-            ~{"HISTOGRAM_FILE=" + pdf_filename} \
-            ~{"ASSUME_SORTED=" + assume_sorted} \
-            ~{"VALIDATION_STRINGENCY=" + validation_stringency} 
-    }
-
-    output {
-        File? insert_size_metrics = out_file
-        File? pdf = pdf_filename
-    }
-
-    runtime {
-        continueOnReturnCode: false
-        cpu: "24"
-        memory: "16GB"
-        docker: "dformoso/picard-tools:latest"
-        disks: "local-disk 100GB HDD"
-        gpuType: "nvidia-tesla-p100"
-        gpuCount: 0
-        zones: "us-central1-c"
-    }
-}
 
 task sam_to_fastq {
     input {
         File file
         String out_fastq_1
         String out_fastq_2
-
+        Resources resources
         String validation_stringency = "SILENT"
     }
 
@@ -182,12 +115,14 @@ task sam_to_fastq {
 
     runtime {
         continueOnReturnCode: false
-        cpu: "24"
-        memory: "16GB"
+        cpu: resources.cpu
+        memory: resources.memory_gb
         docker: "dformoso/picard-tools:latest"
-        disks: "local-disk 100GB HDD"
-        gpuType: "nvidia-tesla-p100"
-        gpuCount: 0
-        zones: "us-central1-c"
+        disks: resources.disks
+        gpuType: resources.gpuType
+        gpuCount: resources.gpuCount
+        zones: resources.zones
+        preemptible: resources.preemptible
+        maxRetries: resources.maxRetries
     }
 }
