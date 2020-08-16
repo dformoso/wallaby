@@ -7,6 +7,8 @@ import "subworkflows/complex.wdl" as complex
 import "subworkflows/blast.wdl" as blast
 import "subworkflows/locate.wdl" as locate
 import "subworkflows/metrics.wdl" as metrics
+import "tasks/trimmomatic.wdl" as trimmomatic
+import "tasks/fastqc.wdl" as quality
 import "tasks/structs/compute.wdl"
 
 workflow donor_recipient {
@@ -16,20 +18,55 @@ workflow donor_recipient {
         File recipient_ref_genome
         File reads_fastq_1
         File reads_fastq_2
-        Directory blastdb
+
+        File blastdb
     }
 
     # Compute resources
-    Compute server = read_json("../sizes.json")
+    Compute server = read_json("../config/sizes.json")
+
+    # Quality Control metrics
+    call quality.qc as quality {
+        input:
+            fastq_1 = reads_fastq_1,
+            fastq_2 = reads_fastq_2,
+            resources = server.size["local_server"]
+    }
+
+    # Quality trim the reads
+    call trimmomatic.trim as trim {
+        input:
+            fastq_1 = reads_fastq_1,
+            fastq_2 = reads_fastq_2,
+            adapter = "TruSeq3-PE.fa",
+            seed_mismatches = 2,
+            paired_clip_threshold = 30,
+            unpaired_clip_threshold = 10,
+            leading = 3,
+            trailing = 3,
+            sliding_window_quality = 4,
+            sliding_window_length = 15,
+            min_length = 36,
+            is_phred33 = true,
+            resources = server.size["local_server"]
+    }
 
     # Donor Reference Genome
     ## Align
     call align.main as align_donor {
         input:
             ref_genome = donor_ref_genome,
-            fastq_1 = reads_fastq_1,
-            fastq_2 = reads_fastq_2,
+            fastq_1 = trim.fastq_1_paired,
+            fastq_2 = trim.fastq_2_paired,
             resources = server.size["local_server"],
+            ignore_matches_shorted_than = 19,
+            ignore_gaps_longer_than = 100,
+            discard_if_repeated_in_ref_genome_more_than = 10000,
+            matching_score = 1,
+            mismatch_penalty = 4,
+            gap_open_penalty = 6,
+            gap_extension_penalty = 1,
+            output_all_found_alignments = true,
             base_filename = "reads-to-donor"
     }
 
@@ -47,9 +84,17 @@ workflow donor_recipient {
     call align.main as align_recipient {
         input:
             ref_genome = recipient_ref_genome,
-            fastq_1 = reads_fastq_1,
-            fastq_2 = reads_fastq_2,
+            fastq_1 = trim.fastq_1_paired,
+            fastq_2 = trim.fastq_2_paired,
             resources = server.size["local_server"],
+            ignore_matches_shorted_than = 19,
+            ignore_gaps_longer_than = 100,
+            discard_if_repeated_in_ref_genome_more_than = 10000,
+            matching_score = 1,
+            mismatch_penalty = 4,
+            gap_open_penalty = 6,
+            gap_extension_penalty = 1,
+            output_all_found_alignments = true,
             base_filename = "reads-to-recipient"
     }
 
@@ -80,8 +125,13 @@ workflow donor_recipient {
     call complex.main as complex {
         input:
             bam_files = cross.bams,
-            lc_method = "dust",
-            lc_threshold = "7",
+            filter_shorter_than = 5,
+            filter_longer_than = 10000,
+            filter_if_gc_content_lower_than = 10,
+            filter_if_gc_content_higher_than = 90,
+            filter_if_avg_quality_below = 20,
+            low_complexity_method = 'dust',
+            low_complexity_threshold = '7',
             resources = server.size["local_server"]
     }
 
@@ -110,13 +160,13 @@ workflow donor_recipient {
     }
 
     # Calculate metrics
-    call metrics.main as metrics_donor {
+    call metrics.main as metrics_donor_bucketized {
         input:
             bams = bucketize_donor.bams,
             resources = server.size["local_server"]
     }
 
-    call metrics.main as metrics_recipient {
+    call metrics.main as metrics_recipient_bucketized {
         input:
             bams = bucketize_recipient.bams,
             resources = server.size["local_server"]
@@ -135,28 +185,44 @@ workflow donor_recipient {
     }
 
     output {
+        File out_fastq_1_zip = quality.fastq_1_zip
+        File out_fastq_2_zip = quality.fastq_2_zip
+        File out_fastq_1_html = quality.fastq_1_html
+        File out_fastq_2_html = quality.fastq_2_html
+
+        File out_fastq_1_paired = trim.fastq_1_paired
+        File out_fastq_1_unpaired = trim.fastq_1_unpaired
+        File out_fastq_2_paired = trim.fastq_2_paired
+        File out_fastq_2_unpaired = trim.fastq_2_unpaired
+
         Array[File] out_donor_bams = bucketize_donor.bams
         Array[File] out_recipient_bams = bucketize_recipient.bams
         Array[File] out_cross_bams = cross.bams
         Array[File] out_complex_bams = complex.bams
         Array[File] out_fastas = complex.fastas
-        Array[File] out_blastns = blaster.blastns
+        
+        File out_donor_MMd_MUr = blaster.donor_MMd_MUr
+        File out_donor_MUd_UMr = blaster.donor_MUd_UMr
+        File out_donor_UMd_MUr = blaster.donor_UMd_MUr
+        File out_recipient_MMd_MUr = blaster.recipient_MMd_MUr
+        File out_recipient_MUd_UMr = blaster.recipient_MUd_UMr
+        File out_recipient_UMd_MUr = blaster.recipient_UMd_MUr
 
-        Array[File] donor_stats = metrics_donor.stats
-        Array[File] donor_flagstats = metrics_donor.flagstats
-        Array[File] donor_count = metrics_donor.count
+        Array[File] out_donor_stats = metrics_donor_bucketized.stats
+        Array[File] out_donor_flagstats = metrics_donor_bucketized.flagstats
+        Array[File] out_donor_count = metrics_donor_bucketized.count
 
-        Array[File] recipient_stats = metrics_recipient.stats
-        Array[File] recipient_flagstats = metrics_recipient.flagstats
-        Array[File] recipient_count = metrics_recipient.count
+        Array[File] out_recipient_stats = metrics_recipient_bucketized.stats
+        Array[File] out_recipient_flagstats = metrics_recipient_bucketized.flagstats
+        Array[File] out_recipient_count = metrics_recipient_bucketized.count
 
-        Array[File] cross_stats = metrics_cross.stats
-        Array[File] cross_flagstats = metrics_cross.flagstats
-        Array[File] cross_count = metrics_cross.count
+        Array[File] out_cross_stats = metrics_cross.stats
+        Array[File] out_cross_flagstats = metrics_cross.flagstats
+        Array[File] out_cross_count = metrics_cross.count
 
-        Array[File] complex_stats = metrics_complex.stats
-        Array[File] complex_flagstats = metrics_complex.flagstats
-        Array[File] complex_count = metrics_complex.count
+        Array[File] out_complex_stats = metrics_complex.stats
+        Array[File] out_complex_flagstats = metrics_complex.flagstats
+        Array[File] out_complex_count = metrics_complex.count
     }
 
 }

@@ -1,0 +1,7 @@
+{
+    "donor_recipient.blastdb": "../../data/blast/blastdb/blastdb.tar",
+    "donor_recipient.donor_ref_genome": "../../data/ref_genomes/pseudomonas_aeruginosa_pao1.fasta",
+    "donor_recipient.recipient_ref_genome": "../../data/ref_genomes/GRCh38_p13.fasta",
+    "donor_recipient.reads_fastq_1": "../../data/SRR5377828/SRR5377828.1.fastq",
+    "donor_recipient.reads_fastq_2": "../../data/SRR5377828/SRR5377828.2.fastq"
+}

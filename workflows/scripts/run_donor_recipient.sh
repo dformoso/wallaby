@@ -8,9 +8,9 @@
 
 java \
   -DLOG_MODE=pretty \
-  -Dconfig.file=../../config/local_cpu.conf \
+  -Dconfig.file=../../cromwell_config/local_cpu.conf \
   -jar ../../binaries/cromwell-52.jar \
     run ../donor_recipient.wdl \
-    --inputs ../../inputs/donor_recipient.json \
-    --options ../../config/options.json
+    --inputs ../inputs/donor_recipient.json \
+    --options ../../cromwell_config/options.json
     

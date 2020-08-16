@@ -6,8 +6,13 @@ task matching {
     input {
         File file
         String out_file
-        String lc_method
-        String lc_threshold
+        Int filter_shorter_than = 5
+        Int filter_longer_than = 10000
+        Int filter_if_gc_content_lower_than = 10
+        Int filter_if_gc_content_higher_than = 90
+        Int filter_if_avg_quality_below = 20
+        String low_complexity_method = 'dust'
+        String low_complexity_threshold = '7'
         Resources resources
     }
 
@@ -16,8 +21,13 @@ task matching {
             ~{"-fastq=" + file} \
             ~{"-out_good=stdout"} \
             ~{"-out_bad=null"} \
-            ~{"-lc_method=" + lc_method} \
-            ~{"-lc_threshold=" + lc_threshold} \
+            ~{"-min_len="+ filter_shorter_than} \
+            ~{"-max_len="+ filter_longer_than} \
+            ~{"-min_gc="+ filter_if_gc_content_lower_than} \
+            ~{"-max_gc="+ filter_if_gc_content_higher_than} \
+            ~{"-min_qual_mean="+ filter_if_avg_quality_below} \
+            ~{"-lc_method=" + low_complexity_method} \
+            ~{"-lc_threshold=" + low_complexity_threshold} \
             > ~{out_file}
     >>>
 

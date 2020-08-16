@@ -7,7 +7,7 @@ workflow main {
 
     input {
         Array[File] fastas
-        Directory blastdb
+        File blastdb
         String evalue
         Resources resources
     }
@@ -16,11 +16,16 @@ workflow main {
         input: 
             fastas = fastas,
             blastdb = blastdb,
-            resources = resources,
-            evalue = evalue
+            evalue = evalue,
+            resources = resources
     }
     
     output {
-        Array[File] blastns = blaster.out
+        File donor_MMd_MUr = blaster.donor_MMd_MUr
+        File donor_MUd_UMr = blaster.donor_MUd_UMr
+        File donor_UMd_MUr = blaster.donor_UMd_MUr
+        File recipient_MMd_MUr = blaster.recipient_MMd_MUr
+        File recipient_MUd_UMr = blaster.recipient_MUd_UMr
+        File recipient_UMd_MUr = blaster.recipient_UMd_MUr
     }
 }

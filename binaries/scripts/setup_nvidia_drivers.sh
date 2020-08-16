@@ -1,12 +1,11 @@
 # Install CUDA Toolkit 10
-# https://developer.nvidia.com/cuda-zone
-wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/cuda-ubuntu1804.pin
-sudo mv cuda-ubuntu1804.pin /etc/apt/preferences.d/cuda-repository-pin-600
-wget http://developer.download.nvidia.com/compute/cuda/10.2/Prod/local_installers/cuda-repo-ubuntu1804-10-2-local-10.2.89-440.33.01_1.0-1_amd64.deb
-sudo dpkg -i cuda-repo-ubuntu1804-10-2-local-10.2.89-440.33.01_1.0-1_amd64.deb
-sudo apt-key add /var/cuda-repo-10-2-local-10.2.89-440.33.01/7fa2af80.pub
-sudo apt-get update
-sudo apt-get -y install cuda
+wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/cuda-repo-ubuntu1804_10.0.130-1_amd64.deb
+sudo apt-key adv --fetch-keys https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/7fa2af80.pub 
+sudo apt update
+sudo dpkg -i cuda-repo-ubuntu1804_10.0.130-1_amd64.deb
+
+sudo apt update
+sudo apt install -y cuda
 
 # Install CuDNN 7 and NCCL 2
 wget https://developer.download.nvidia.com/compute/machine-learning/repos/ubuntu1804/x86_64/nvidia-machine-learning-repo-ubuntu1804_1.0.0-1_amd64.deb
@@ -28,16 +27,24 @@ sudo add-apt-repository \
 sudo apt-get update
 sudo apt-get install -y docker-ce
 
+# Link libraries to standard locations
+sudo mkdir -p /usr/local/cuda-10.0/nccl/lib
+sudo ln -s /usr/lib/x86_64-linux-gnu/libnccl.so.2 /usr/local/cuda/nccl/lib/
+sudo ln -s /usr/lib/x86_64-linux-gnu/libcudnn.so.7 /usr/local/cuda-10.0/lib64/
+
 # 'If everything worked fine, reboot now.'
 # Reboot NOW
 
 # Install Nvidia Docker
+curl -s -L https://nvidia.github.io/nvidia-docker/gpgkey | \
+  sudo apt-key add -
 distribution=$(. /etc/os-release;echo $ID$VERSION_ID)
-curl -s -L https://nvidia.github.io/nvidia-docker/gpgkey | sudo apt-key add -
-curl -s -L https://nvidia.github.io/nvidia-docker/$distribution/nvidia-docker.list | sudo tee /etc/apt/sources.list.d/nvidia-docker.list
+curl -s -L https://nvidia.github.io/nvidia-docker/$distribution/nvidia-docker.list | \
+  sudo tee /etc/apt/sources.list.d/nvidia-docker.list
+sudo apt-get update
 
-sudo apt-get update && sudo apt-get install -y nvidia-container-toolkit
-sudo systemctl restart docker
+sudo apt-get install nvidia-docker2
+sudo pkill -SIGHUP dockerd
 
 # Test
 sudo docker run --runtime=nvidia --rm nvidia/cuda nvidia-smi

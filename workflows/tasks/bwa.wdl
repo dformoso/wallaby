@@ -48,12 +48,28 @@ task align {
         File fastq_2
         BWAIndex bwa_index
         String out_file = "reads-to-ref-genome.sam"
+        Int ignore_matches_shorted_than = 19
+        Int ignore_gaps_longer_than = 100
+        Int discard_if_repeated_in_ref_genome_more_than = 10000
+        Int matching_score = 1
+        Int mismatch_penalty = 4
+        Int gap_open_penalty = 6
+        Int gap_extension_penalty = 1
+        Boolean output_all_found_alignments = true
         Resources resources
     }
 
     command <<<
         bwa mem \
+            ~{"-k " + ignore_matches_shorted_than} \
+            ~{"-w " + ignore_gaps_longer_than} \
+            ~{"-c " + discard_if_repeated_in_ref_genome_more_than} \
+            ~{"-A " + matching_score} \
+            ~{"-B " + mismatch_penalty} \
+            ~{"-O " + gap_open_penalty} \
+            ~{"-E " + gap_extension_penalty} \
             ~{"-t " + resources.cpu} \
+            ~{true="-a" false="" output_all_found_alignments} \
             ~{bwa_index.fasta} \
             ~{fastq_1} \
             ~{fastq_2} \

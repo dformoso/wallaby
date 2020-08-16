@@ -9,7 +9,7 @@
 # The instance will be able to operate docker containers 
 # in the host system if docker is installed
 
-docker stop jupyter || true && docker rm jupyter || true
+sudo docker stop jupyter || true && docker rm jupyter || true
 sudo docker run -itd \
   --name jupyter \
   --hostname jupyter \

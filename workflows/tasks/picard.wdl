@@ -11,7 +11,7 @@ task filter_reads {
         Resources resources
     }
 
-    command {
+    command <<<
         set -e
         if [ -s "~{txt}" ]
         then
@@ -24,7 +24,7 @@ task filter_reads {
                 ~{"FILTER=" + filter}
             fi
         fi
-    }
+    >>>
 
     output {
         File? out = out_file

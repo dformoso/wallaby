@@ -6,28 +6,23 @@ task n {
     
     input {
         Array[File] fastas
-        Directory blastdb
-        Resources resources
+        File blastdb
         String evalue
+        Resources resources
     }
 
     command <<<
-        export BLASTDB=~{blastdb} 
+        tar xfv ~{blastdb}
+        export BLASTDB=`pwd`
         for fasta in ~{sep="  " fastas}
             do
                 if 
-                    [[ $fasta =~ "donor_MMd_MUr" ]] ||
-                    [[ $fasta =~ "donor_MMd_UMr" ]] ||
-                    [[ $fasta =~ "donor_MUd_MUr" ]] ||
-                    [[ $fasta =~ "donor_MUd_UMr" ]] ||
-                    [[ $fasta =~ "donor_UMd_MUr" ]] ||
-                    [[ $fasta =~ "donor_UMd_UMr" ]] ||
-                    [[ $fasta =~ "recipient_MMd_MUr" ]] ||
-                    [[ $fasta =~ "recipient_MMd_UMr" ]] ||
-                    [[ $fasta =~ "recipient_MUd_MUr" ]] ||
-                    [[ $fasta =~ "recipient_MUd_UMr" ]] ||
-                    [[ $fasta =~ "recipient_UMd_MUr" ]] ||
-                    [[ $fasta =~ "recipient_UMd_UMr" ]]
+                    [[ $fasta =~ "MMd_MUr" ]] ||
+                    [[ $fasta =~ "MMd_UMr" ]] ||
+                    [[ $fasta =~ "MUd_MUr" ]] ||
+                    [[ $fasta =~ "MUd_UMr" ]] ||
+                    [[ $fasta =~ "UMd_MUr" ]] ||
+                    [[ $fasta =~ "UMd_UMr" ]]
                 then
                     blastn \
                         -query $fasta \
@@ -38,10 +33,17 @@ task n {
                         -out "`basename ${fasta}`.blastn"
                 fi
             done 
+        rm nt.*
+        rm taxdb.*
     >>>
 
     output {
-        Array[File] out = glob("*.blastn")
+        File donor_MMd_MUr = "reads-to-donor_MMd_MUr.bam.complex.fasta.blastn"
+        File donor_MUd_UMr = "reads-to-donor_MUd_UMr.bam.complex.fasta.blastn"
+        File donor_UMd_MUr = "reads-to-donor_UMd_MUr.bam.complex.fasta.blastn"
+        File recipient_MMd_MUr = "reads-to-recipient_MMd_MUr.bam.complex.fasta.blastn"
+        File recipient_MUd_UMr = "reads-to-recipient_MUd_UMr.bam.complex.fasta.blastn"
+        File recipient_UMd_MUr = "reads-to-recipient_UMd_MUr.bam.complex.fasta.blastn"
     }
 
     runtime {

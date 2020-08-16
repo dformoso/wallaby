@@ -12,8 +12,13 @@ workflow main {
     input {
         Array[File] bam_files
         Resources resources
-        String lc_method
-        String lc_threshold
+        Int filter_shorter_than
+        Int filter_longer_than
+        Int filter_if_gc_content_lower_than
+        Int filter_if_gc_content_higher_than
+        Int filter_if_avg_quality_below
+        String low_complexity_method
+        String low_complexity_threshold
     }
 
     scatter (bam in bam_files) {
@@ -32,8 +37,13 @@ workflow main {
             input: 
                 file = sam_to_fastq.fastq_1, 
                 out_file = "~{basename(sam_to_fastq.fastq_1)}",
-                lc_method = lc_method,
-                lc_threshold = lc_threshold,
+                filter_shorter_than = filter_shorter_than,
+                filter_longer_than = filter_longer_than,
+                filter_if_gc_content_lower_than = filter_if_gc_content_lower_than,
+                filter_if_gc_content_higher_than = filter_if_gc_content_higher_than,
+                filter_if_avg_quality_below = filter_if_avg_quality_below,
+                low_complexity_method = low_complexity_method,
+                low_complexity_threshold = low_complexity_threshold,
                 resources = resources
         }
         
@@ -41,8 +51,13 @@ workflow main {
             input: 
                 file = sam_to_fastq.fastq_2, 
                 out_file = "~{basename(sam_to_fastq.fastq_2)}",
-                lc_method = lc_method,
-                lc_threshold = lc_threshold,
+                filter_shorter_than = filter_shorter_than,
+                filter_longer_than = filter_longer_than,
+                filter_if_gc_content_lower_than = filter_if_gc_content_lower_than,
+                filter_if_gc_content_higher_than = filter_if_gc_content_higher_than,
+                filter_if_avg_quality_below = filter_if_avg_quality_below,
+                low_complexity_method = low_complexity_method,
+                low_complexity_threshold = low_complexity_threshold,
                 resources = resources
         }
         
@@ -75,18 +90,17 @@ workflow main {
             input: 
                 file = bam, 
                 txt = concat_fastqs.out, 
-                out_file = "~{basename(bam)}_complex.bam",
+                out_file = "~{basename(bam)}.complex.bam",
                 resources = resources
         }
         
         # Extract list of reads from BAM file
         # Output paired reads to separate files, 
         # discarding singletons, supplementary and secondary reads
-        call samtools.bam_to_fastas as bam_to_fastas {
+        call samtools.bam_to_fasta as bam_to_fasta {
             input :
                 file = complex.out,
-                out_file_1 = "~{basename(bam)}.1.fasta",
-                out_file_2 = "~{basename(bam)}.2.fasta",
+                out_file = "~{basename(bam)}.complex.fasta",
                 resources = resources
         }
 
@@ -94,7 +108,7 @@ workflow main {
 
     output {
         Array[File] bams = complex.out
-        Array[File] fastas = flatten([bam_to_fastas.out_1, bam_to_fastas.out_2])
+        Array[File] fastas = bam_to_fasta.fasta
     }
 
 }

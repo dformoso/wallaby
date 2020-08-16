@@ -7,7 +7,7 @@
 
 # Create a docker container running an unauthenticated Jupyter instance.
 # The instance will be able to operate docker containers in the host system if docker installed
-docker stop mysql || true && docker rm mysql || true
+sudo docker stop mysql || true && sudo docker rm mysql || true
 sudo docker run -itd \
     --name mysql \
     --hostname mysql \

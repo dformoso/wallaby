@@ -13,30 +13,30 @@ workflow main {
     scatter (fasta in fastas) {
 
         if (
-            basename(fasta, ".bam.1.fasta")=="donor_MMd_MUr" || 
-            basename(fasta, ".bam.1.fasta")=="donor_MMd_UMr" || 
-            basename(fasta, ".bam.1.fasta")=="donor_MUd_MUr" || 
-            basename(fasta, ".bam.1.fasta")=="donor_MUd_UMr" || 
-            basename(fasta, ".bam.1.fasta")=="donor_UMd_MUr" || 
-            basename(fasta, ".bam.1.fasta")=="donor_UMd_UMr" || 
-            basename(fasta, ".bam.1.fasta")=="recipient_MMd_MUr" || 
-            basename(fasta, ".bam.1.fasta")=="recipient_MMd_UMr" || 
-            basename(fasta, ".bam.1.fasta")=="recipient_MUd_MUr" || 
-            basename(fasta, ".bam.1.fasta")=="recipient_MUd_UMr" || 
-            basename(fasta, ".bam.1.fasta")=="recipient_UMd_MUr" || 
-            basename(fasta, ".bam.1.fasta")=="recipient_UMd_UMr" || 
-            basename(fasta, ".bam.2.fasta")=="donor_MMd_MUr" || 
-            basename(fasta, ".bam.2.fasta")=="donor_MMd_UMr" || 
-            basename(fasta, ".bam.2.fasta")=="donor_MUd_MUr" || 
-            basename(fasta, ".bam.2.fasta")=="donor_MUd_UMr" || 
-            basename(fasta, ".bam.2.fasta")=="donor_UMd_MUr" || 
-            basename(fasta, ".bam.2.fasta")=="donor_UMd_UMr" || 
-            basename(fasta, ".bam.2.fasta")=="recipient_MMd_MUr" || 
-            basename(fasta, ".bam.2.fasta")=="recipient_MMd_UMr" || 
-            basename(fasta, ".bam.2.fasta")=="recipient_MUd_MUr" || 
-            basename(fasta, ".bam.2.fasta")=="recipient_MUd_UMr" || 
-            basename(fasta, ".bam.2.fasta")=="recipient_UMd_MUr" || 
-            basename(fasta, ".bam.2.fasta")=="recipient_UMd_UMr"
+            basename(fasta, ".bam.complex.fasta")=="donor_MMd_MUr" || 
+            basename(fasta, ".bam.complex.fasta")=="donor_MMd_UMr" || 
+            basename(fasta, ".bam.complex.fasta")=="donor_MUd_MUr" || 
+            basename(fasta, ".bam.complex.fasta")=="donor_MUd_UMr" || 
+            basename(fasta, ".bam.complex.fasta")=="donor_UMd_MUr" || 
+            basename(fasta, ".bam.complex.fasta")=="donor_UMd_UMr" || 
+            basename(fasta, ".bam.complex.fasta")=="recipient_MMd_MUr" || 
+            basename(fasta, ".bam.complex.fasta")=="recipient_MMd_UMr" || 
+            basename(fasta, ".bam.complex.fasta")=="recipient_MUd_MUr" || 
+            basename(fasta, ".bam.complex.fasta")=="recipient_MUd_UMr" || 
+            basename(fasta, ".bam.complex.fasta")=="recipient_UMd_MUr" || 
+            basename(fasta, ".bam.complex.fasta")=="recipient_UMd_UMr" || 
+            basename(fasta, ".bam.complex.fasta")=="donor_MMd_MUr" || 
+            basename(fasta, ".bam.complex.fasta")=="donor_MMd_UMr" || 
+            basename(fasta, ".bam.complex.fasta")=="donor_MUd_MUr" || 
+            basename(fasta, ".bam.complex.fasta")=="donor_MUd_UMr" || 
+            basename(fasta, ".bam.complex.fasta")=="donor_UMd_MUr" || 
+            basename(fasta, ".bam.complex.fasta")=="donor_UMd_UMr" || 
+            basename(fasta, ".bam.complex.fasta")=="recipient_MMd_MUr" || 
+            basename(fasta, ".bam.complex.fasta")=="recipient_MMd_UMr" || 
+            basename(fasta, ".bam.complex.fasta")=="recipient_MUd_MUr" || 
+            basename(fasta, ".bam.complex.fasta")=="recipient_MUd_UMr" || 
+            basename(fasta, ".bam.complex.fasta")=="recipient_UMd_MUr" || 
+            basename(fasta, ".bam.complex.fasta")=="recipient_UMd_UMr"
             ) {
 
             call blast.n as blaster {

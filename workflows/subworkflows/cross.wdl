@@ -186,7 +186,7 @@ workflow main {
         input: 
             file = donor_MM, 
             txt = MMd_MMr_txt.out, 
-            out_file = "donor_MMd_MMr.bam",
+            out_file = "reads-to-donor_MMd_MMr.bam",
             resources = resources
         }
 
@@ -194,7 +194,7 @@ workflow main {
         input: 
             file = donor_MM, 
             txt = MMd_MUr_txt.out, 
-            out_file = "donor_MMd_MUr.bam",
+            out_file = "reads-to-donor_MMd_MUr.bam",
             resources = resources
         }
 
@@ -202,7 +202,7 @@ workflow main {
         input: 
             file = donor_MM, 
             txt = MMd_UMr_txt.out, 
-            out_file = "donor_MMd_UMr.bam",
+            out_file = "reads-to-donor_MMd_UMr.bam",
             resources = resources
         }
 
@@ -210,7 +210,7 @@ workflow main {
         input: 
             file = donor_MM, 
             txt = MMd_UUr_txt.out, 
-            out_file = "donor_MMd_UUr.bam",
+            out_file = "reads-to-donor_MMd_UUr.bam",
             resources = resources
         }
 
@@ -218,7 +218,7 @@ workflow main {
         input: 
             file = donor_MU, 
             txt = MUd_MMr_txt.out, 
-            out_file = "donor_MUd_MMr.bam",
+            out_file = "reads-to-donor_MUd_MMr.bam",
             resources = resources
         }
 
@@ -226,7 +226,7 @@ workflow main {
         input: 
             file = donor_MU, 
             txt = MUd_MUr_txt.out, 
-            out_file = "donor_MUd_MUr.bam",
+            out_file = "reads-to-donor_MUd_MUr.bam",
             resources = resources
         }
 
@@ -234,7 +234,7 @@ workflow main {
         input: 
             file = donor_MU, 
             txt = MUd_UMr_txt.out, 
-            out_file = "donor_MUd_UMr.bam",
+            out_file = "reads-to-donor_MUd_UMr.bam",
             resources = resources
         }
 
@@ -242,7 +242,7 @@ workflow main {
         input: 
             file = donor_MU, 
             txt = MUd_UUr_txt.out, 
-            out_file = "donor_MUd_UUr.bam",
+            out_file = "reads-to-donor_MUd_UUr.bam",
             resources = resources
         }
 
@@ -250,7 +250,7 @@ workflow main {
         input: 
             file = donor_UM, 
             txt = UMd_MMr_txt.out, 
-            out_file = "donor_UMd_MMr.bam",
+            out_file = "reads-to-donor_UMd_MMr.bam",
             resources = resources
         }
 
@@ -258,7 +258,7 @@ workflow main {
         input: 
             file = donor_UM, 
             txt = UMd_MUr_txt.out, 
-            out_file = "donor_UMd_MUr.bam",
+            out_file = "reads-to-donor_UMd_MUr.bam",
             resources = resources
         }
 
@@ -266,7 +266,7 @@ workflow main {
         input: 
             file = donor_UM, 
             txt = UMd_UMr_txt.out, 
-            out_file = "donor_UMd_UMr.bam",
+            out_file = "reads-to-donor_UMd_UMr.bam",
             resources = resources
         }
 
@@ -274,7 +274,7 @@ workflow main {
         input: 
             file = donor_UM, 
             txt = UMd_UUr_txt.out, 
-            out_file = "donor_UMd_UUr.bam",
+            out_file = "reads-to-donor_UMd_UUr.bam",
             resources = resources
         }
 
@@ -282,7 +282,7 @@ workflow main {
         input: 
             file = donor_UU, 
             txt = UUd_MMr_txt.out, 
-            out_file = "donor_UUd_MMr.bam",
+            out_file = "reads-to-donor_UUd_MMr.bam",
             resources = resources
         }
 
@@ -290,7 +290,7 @@ workflow main {
         input: 
             file = donor_UU, 
             txt = UUd_MUr_txt.out, 
-            out_file = "donor_UUd_MUr.bam",
+            out_file = "reads-to-donor_UUd_MUr.bam",
             resources = resources
         }
 
@@ -298,7 +298,7 @@ workflow main {
         input: 
             file = donor_UU, 
             txt = UUd_UMr_txt.out, 
-            out_file = "donor_UUd_UMr.bam",
+            out_file = "reads-to-donor_UUd_UMr.bam",
             resources = resources
         }
 
@@ -306,7 +306,7 @@ workflow main {
         input: 
             file = donor_UU, 
             txt = UUd_UUr_txt.out, 
-            out_file = "donor_UUd_UUr.bam",
+            out_file = "reads-to-donor_UUd_UUr.bam",
             resources = resources
         }
 
@@ -316,7 +316,7 @@ workflow main {
         input: 
             file = recipient_MM, 
             txt = MMd_MMr_txt.out, 
-            out_file = "recipient_MMd_MMr.bam",
+            out_file = "reads-to-recipient_MMd_MMr.bam",
             resources = resources
         }
 
@@ -324,7 +324,7 @@ workflow main {
         input: 
             file = recipient_MM, 
             txt = MUd_MMr_txt.out, 
-            out_file = "recipient_MUd_MMr.bam",
+            out_file = "reads-to-recipient_MUd_MMr.bam",
             resources = resources
         }
 
@@ -332,7 +332,7 @@ workflow main {
         input: 
             file = recipient_MM, 
             txt = UMd_MMr_txt.out, 
-            out_file = "recipient_UMd_MMr.bam",
+            out_file = "reads-to-recipient_UMd_MMr.bam",
             resources = resources
         }
 
@@ -340,7 +340,7 @@ workflow main {
         input: 
             file = recipient_MM, 
             txt = UUd_MMr_txt.out, 
-            out_file = "recipient_UUd_MMr.bam",
+            out_file = "reads-to-recipient_UUd_MMr.bam",
             resources = resources
         }
 
@@ -348,7 +348,7 @@ workflow main {
         input: 
             file = recipient_MU, 
             txt = MMd_MUr_txt.out, 
-            out_file = "recipient_MMd_MUr.bam",
+            out_file = "reads-to-recipient_MMd_MUr.bam",
             resources = resources
         }
 
@@ -356,7 +356,7 @@ workflow main {
         input: 
             file = recipient_MU, 
             txt = MUd_MUr_txt.out, 
-            out_file = "recipient_MUd_MUr.bam",
+            out_file = "reads-to-recipient_MUd_MUr.bam",
             resources = resources
         }
 
@@ -364,7 +364,7 @@ workflow main {
         input: 
             file = recipient_MU, 
             txt = UMd_MUr_txt.out, 
-            out_file = "recipient_UMd_MUr.bam",
+            out_file = "reads-to-recipient_UMd_MUr.bam",
             resources = resources
         }
 
@@ -372,7 +372,7 @@ workflow main {
         input: 
             file = recipient_MU, 
             txt = UUd_MUr_txt.out, 
-            out_file = "recipient_UUd_MUr.bam",
+            out_file = "reads-to-recipient_UUd_MUr.bam",
             resources = resources
         }
 
@@ -380,7 +380,7 @@ workflow main {
         input: 
             file = recipient_UM, 
             txt = MMd_UMr_txt.out, 
-            out_file = "recipient_MMd_UMr.bam",
+            out_file = "reads-to-recipient_MMd_UMr.bam",
             resources = resources
         }
 
@@ -388,7 +388,7 @@ workflow main {
         input: 
             file = recipient_UM, 
             txt = MUd_UMr_txt.out, 
-            out_file = "recipient_MUd_UMr.bam",
+            out_file = "reads-to-recipient_MUd_UMr.bam",
             resources = resources
         }
 
@@ -396,7 +396,7 @@ workflow main {
         input: 
             file = recipient_UM, 
             txt = UMd_UMr_txt.out, 
-            out_file = "recipient_UMd_UMr.bam",
+            out_file = "reads-to-recipient_UMd_UMr.bam",
             resources = resources
         }
 
@@ -404,7 +404,7 @@ workflow main {
         input: 
             file = recipient_UM, 
             txt = UUd_UMr_txt.out, 
-            out_file = "recipient_UUd_UMr.bam",
+            out_file = "reads-to-recipient_UUd_UMr.bam",
             resources = resources
         }
 
@@ -412,7 +412,7 @@ workflow main {
         input: 
             file = recipient_UU, 
             txt = MMd_UUr_txt.out, 
-            out_file = "recipient_MMd_UUr.bam",
+            out_file = "reads-to-recipient_MMd_UUr.bam",
             resources = resources
         }
 
@@ -420,7 +420,7 @@ workflow main {
         input: 
             file = recipient_UU, 
             txt = MUd_UUr_txt.out, 
-            out_file = "recipient_MUd_UUr.bam",
+            out_file = "reads-to-recipient_MUd_UUr.bam",
             resources = resources
         }
 
@@ -428,7 +428,7 @@ workflow main {
         input: 
             file = recipient_UU, 
             txt = UMd_UUr_txt.out, 
-            out_file = "recipient_UMd_UUr.bam",
+            out_file = "reads-to-recipient_UMd_UUr.bam",
             resources = resources
         }
 
@@ -436,7 +436,7 @@ workflow main {
         input: 
             file = recipient_UU, 
             txt = UUd_UUr_txt.out, 
-            out_file = "recipient_UUd_UUr.bam",
+            out_file = "reads-to-recipient_UUd_UUr.bam",
             resources = resources
         }
 

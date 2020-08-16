@@ -323,26 +323,22 @@ task count {
     }
 }
 
-task bam_to_fastas {
+task bam_to_fasta {
     input {
         File file
-        String out_file_1
-        String out_file_2
+        String out_file
         Resources resources
     }
 
     command <<<
         samtools fasta \
-            ~{"-1 " + out_file_1} \
-            ~{"-2 " + out_file_2} \
-            ~{"-0 /dev/null"} \
-            ~{"-s /dev/null"} \
-            ~{"-n " + file}
+            ~{"-@ " + resources.cpu} \
+            ~{"-n " + file} \
+            > ~{out_file}
     >>>
 
     output {
-        File out_1 = out_file_1
-        File out_2 = out_file_2
+        File fasta = out_file
     }
 
     runtime {
