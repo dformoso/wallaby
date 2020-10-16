@@ -1,4 +1,4 @@
-version development
+version 1.0
 
 import "../tasks/samtools.wdl" as samtools
 import "../tasks/structs/compute.wdl"

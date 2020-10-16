@@ -8,7 +8,7 @@ sudo apt-get install -y --quiet -qq graphviz
 echo "Please enter a WDL filename in the pipelines folder, without the .wdl extension. Example \"fast5_to_bam\":"
 read filename
 
-java -jar ../../binaries/womtool-49.jar validate ../$filename.wdl
-java -jar ../../binaries/womtool-49.jar graph ../$filename.wdl > ../$filename.dot
+java -jar ../../binaries/womtool-52.jar validate ../$filename.wdl
+java -jar ../../binaries/womtool-52.jar graph ../$filename.wdl > ../$filename.dot
 dot ../$filename.dot -Tpng -o ../$filename.png
 

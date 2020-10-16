@@ -1,4 +1,4 @@
-version development
+version 1.0
 
 struct Resources {
     Int cpu

@@ -1,8 +1,8 @@
-version development
+version 1.0
 
 import "../tasks/bwa.wdl" as bwa
 import "../tasks/samtools.wdl" as samtools
-import "../tasks/structs/bwa.wdl"
+import "../tasks/structs/bwa.wdl" as bwa_struct
 import "../tasks/structs/compute.wdl"
 
 workflow main {
@@ -33,7 +33,7 @@ workflow main {
 
     call bwa.align as bwa_aligner { 
         input: 
-            bwa_index = bwa_indexer.index, 
+            bwa_index = bwa_indexer.index_object, 
             fastq_1 = fastq_1, 
             fastq_2 = fastq_2, 
             out_file = "~{base_filename}.sam",
@@ -71,8 +71,9 @@ workflow main {
     }
 
     output {
-        BWAIndex index = bwa_indexer.index
+        BWAIndex index = bwa_indexer.index_object
         File bam = samtools_sorter.out
+        File bai = samtools_indexer.out
     }
 
 }

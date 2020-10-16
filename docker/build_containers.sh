@@ -21,7 +21,7 @@ sudo docker build --rm -t dformoso/sratoolkit:latest sratoolkit
 sudo docker build --rm -t dformoso/bwa:latest bwa
 sudo docker build --rm -t dformoso/picard-tools:latest picard-tools
 sudo docker build --rm -t dformoso/prinseq:latest prinseq
-sudo docker build --rm -t dformoso/fastqc:latest fastqc
+sudo docker build --rm -t dformoso/quality:latest quality
 
 # Push docker containers to docker hub
 sudo docker push dformoso/albacore:latest
@@ -37,4 +37,4 @@ sudo docker push dformoso/trimmomatic:latest
 sudo docker push dformoso/bwa:latest
 sudo docker push dformoso/picard-tools:latest
 sudo docker push dformoso/prinseq:latest
-sudo docker push dformoso/fastqc:latest
+sudo docker push dformoso/quality:latest

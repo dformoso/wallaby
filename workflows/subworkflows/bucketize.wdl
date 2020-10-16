@@ -1,4 +1,4 @@
-version development
+version 1.0
 
 import "../tasks/bwa.wdl" as bwa
 import "../tasks/samtools.wdl" as samtools
@@ -7,7 +7,6 @@ import "../tasks/structs/compute.wdl"
 workflow main {
 
     input {
-        BWAIndex index
         File bam
         String base_filename
         Resources resources

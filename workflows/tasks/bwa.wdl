@@ -1,6 +1,6 @@
-version development
+version 1.0
 
-import "structs/bwa.wdl"
+import "structs/bwa.wdl" as bwa_structs
 import "structs/compute.wdl"
 
 task index {
@@ -17,7 +17,7 @@ task index {
     >>>
 
     output {
-        BWAIndex index = {
+        BWAIndex index_object = {
             "fasta": "~{basename_fasta}",
             "amb": "~{basename_fasta}.amb",
             "ann": "~{basename_fasta}.ann",

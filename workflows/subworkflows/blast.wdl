@@ -1,4 +1,4 @@
-version development
+version 1.0
 
 import "../tasks/blast.wdl" as blast
 import "../tasks/structs/compute.wdl"
@@ -8,7 +8,7 @@ workflow main {
     input {
         Array[File] fastas
         File blastdb
-        String evalue
+        Int evalue
         Resources resources
     }
 

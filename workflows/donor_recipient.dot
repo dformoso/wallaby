@@ -1,0 +1,39 @@
+digraph donor_recipient {
+  #rankdir=LR;
+  compound=true;
+
+  # Links
+  CALL_align_donor -> CALL_bucketize_donor
+  CALL_bucketize_recipient -> CALL_metrics_recipient_bucketized
+  CALL_complex_only -> CALL_locate_recipient
+  CALL_bucketize_donor -> CALL_crossing
+  CALL_bucketize_recipient -> CALL_crossing
+  CALL_align_recipient -> CALL_bucketize_recipient
+  CALL_trim -> CALL_quality_after_trim
+  CALL_complex_only -> CALL_locate_donor
+  CALL_bucketize_donor -> CALL_metrics_donor_bucketized
+  CALL_complex_only -> CALL_blaster
+  CALL_trim -> CALL_align_donor
+  CALL_crossing -> CALL_metrics_cross
+  CALL_crossing -> CALL_complex_only
+  CALL_complex_only -> CALL_metrics_complex
+  CALL_trim -> CALL_align_recipient
+
+  # Nodes
+  CALL_bucketize_donor [label="call bucketize_donor";shape="oval";peripheries=2]
+  CALL_align_donor [label="call align_donor";shape="oval";peripheries=2]
+  CALL_blaster [label="call blaster";shape="oval";peripheries=2]
+  CALL_metrics_complex [label="call metrics_complex";shape="oval";peripheries=2]
+  CALL_complex_only [label="call complex_only";shape="oval";peripheries=2]
+  CALL_align_recipient [label="call align_recipient";shape="oval";peripheries=2]
+  CALL_metrics_recipient_bucketized [label="call metrics_recipient_bucketized";shape="oval";peripheries=2]
+  CALL_locate_recipient [label="call locate_recipient";shape="oval";peripheries=2]
+  CALL_metrics_donor_bucketized [label="call metrics_donor_bucketized";shape="oval";peripheries=2]
+  CALL_crossing [label="call crossing";shape="oval";peripheries=2]
+  CALL_locate_donor [label="call locate_donor";shape="oval";peripheries=2]
+  CALL_bucketize_recipient [label="call bucketize_recipient";shape="oval";peripheries=2]
+  CALL_trim [label="call trim"]
+  CALL_metrics_cross [label="call metrics_cross";shape="oval";peripheries=2]
+  CALL_quality_before_trim [label="call quality_before_trim"]
+  CALL_quality_after_trim [label="call quality_after_trim"]
+}

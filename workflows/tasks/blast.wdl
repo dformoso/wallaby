@@ -1,4 +1,4 @@
-version development
+version 1.0
 
 import "structs/compute.wdl"
 
@@ -7,7 +7,7 @@ task n {
     input {
         Array[File] fastas
         File blastdb
-        String evalue
+        Int evalue
         Resources resources
     }
 
