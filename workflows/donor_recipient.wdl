@@ -202,18 +202,37 @@ workflow donor_recipient {
             resources = server.size["local_server"]
     }
 
-    # Compare quality control metrics for crossed bams
-    call quality.multi_qc as crossed_multiqc_metrics {
+    # Compare quality control for all donor files
+    call quality.multi_qc as all_donor_metrics {
         input:
             quality_files = flatten(
                 [
-                quality_before_trim.files,
-                quality_after_trim.files
+                complex_only.bams,
+                metrics_complex.stats,
+                metrics_complex.flagstats,
+                locate_donor.mpileups,
                 ]),
-            report_name = "multiqc_before_and_after_trimmomatic_report.html",
+            report_name = "multiqc_all_donor_metrics.html",
+            enable_fullnames = false,
+            include = "*/*donor*_*d*_*r*",
             resources = server.size["local_server"]
     }
 
+    # Compare quality control for all recipient files
+    call quality.multi_qc as all_recipient_metrics {
+        input:
+            quality_files = flatten(
+                [
+                complex_only.bams,
+                metrics_complex.stats,
+                metrics_complex.flagstats,
+                locate_recipient.mpileups
+                ]),
+            report_name = "multiqc_all_recipient_metrics.html",
+            enable_fullnames = false,
+            include = "*/*recipient*_*d*_*r*",
+            resources = server.size["local_server"]
+    }
 
     output {
         File out_pre_fastq_1_zip = quality_before_trim.fastq_1_zip
@@ -251,21 +270,18 @@ workflow donor_recipient {
 
         Array[File] out_donor_stats = metrics_donor_bucketized.stats
         Array[File] out_donor_flagstats = metrics_donor_bucketized.flagstats
-        Array[File] out_donor_count = metrics_donor_bucketized.count
 
         Array[File] out_recipient_stats = metrics_recipient_bucketized.stats
         Array[File] out_recipient_flagstats = metrics_recipient_bucketized.flagstats
-        Array[File] out_recipient_count = metrics_recipient_bucketized.count
 
         Array[File] out_cross_stats = metrics_cross.stats
         Array[File] out_cross_flagstats = metrics_cross.flagstats
-        Array[File] out_cross_count = metrics_cross.count
 
         Array[File] out_complex_stats = metrics_complex.stats
         Array[File] out_complex_flagstats = metrics_complex.flagstats
-        Array[File] out_complex_count = metrics_complex.count
 
-        File out_crossed_multiqc_report = crossed_multiqc_metrics.out
+        File out_multiqc_all_donor_metrics_report = all_donor_metrics.out
+        File out_multiqc_all_recipient_metrics_report = all_recipient_metrics.out
 
     }
 

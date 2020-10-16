@@ -44,6 +44,8 @@ task fast_qc {
 task multi_qc {
     input {
         Array[File] quality_files
+        Boolean enable_fullnames = true
+        String include = "*"
         String report_name = "multiqc_report.html"
         Resources resources
     }
@@ -53,7 +55,10 @@ task multi_qc {
         export LC_ALL=C.UTF-8
         export LANG=C.UTF-8
         for quality_file in ~{sep=' ' quality_files}; do ls ${quality_file} .; done;
-        multiqc -n ~{report_name} --fullnames ../inputs
+        multiqc \
+            -n ~{report_name} \
+            ~{true="--fullnames" false="" enable_fullnames} \
+            ../inputs/~{include}
     >>>
 
     output {
@@ -73,3 +78,15 @@ task multi_qc {
         maxRetries: resources.maxRetries
     }
 }
+
+# rm -rf test*
+# multiqc -n test.html ./*donor*_[!UU]*d*_*r*
+# 
+# rm -rf test*
+# multiqc -n test.html ./*donor*_*d*_*r*
+# 
+# rm -rf test*
+# multiqc -n test.html ./*recipient*_*d*_[!MM]*r*
+# 
+# rm -rf test*
+# multiqc -n test.html ./*recipient*_*d*_*r*

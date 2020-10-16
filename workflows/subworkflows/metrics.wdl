@@ -25,18 +25,10 @@ workflow main {
                 out_file = "~{basename(bam)}_flagstats.txt",
                 resources = resources
         }
-
-        call samtools.count as samtools_count { 
-            input: 
-                file = bam, 
-                out_file = "~{basename(bam)}_count.txt",
-                resources = resources
-        }
     }
 
     output {
         Array[File] stats = samtools_stats.out
         Array[File] flagstats = samtools_flagstats.out
-        Array[File] count = samtools_count.out
     }
 }
