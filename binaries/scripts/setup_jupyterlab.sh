@@ -9,6 +9,8 @@
 # The instance will be able to operate docker containers 
 # in the host system if docker is installed
 
+##### !!!! REPLACE YOUR LOCAL DIRECTORY BELOW !!!! #####
+
 sudo docker stop jupyter || true && docker rm jupyter || true
 sudo docker run -itd \
   --name jupyter \
@@ -17,8 +19,8 @@ sudo docker run -itd \
   -e GRANT_SUDO=yes \
   --user root \
   -p 8888:8888 \
-  -v "`dirname \`pwd\``:/home/jovyan/notebooks" \
-  jupyter/datascience-notebook:latest \
+  -v "/root/research/genomics/projects/wallaby:/home/jovyan/wallaby" \
+  jupyter/r-notebook:latest \
   start-notebook.sh --NotebookApp.token=''
 
 

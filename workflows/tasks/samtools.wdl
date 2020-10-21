@@ -81,7 +81,7 @@ task sort {
 task index {
     input {
         File file
-        String out_file
+        String out_file = "~{basename(file)}.bai"
         Resources resources
     }
 
@@ -339,6 +339,37 @@ task bam_to_fasta {
 
     output {
         File fasta = out_file
+    }
+
+    runtime {
+        continueOnReturnCode: false
+        cpu: resources.cpu
+        memory: resources.memory_gb
+        docker: "dformoso/samtools:latest"
+        disks: resources.disks
+        gpuType: resources.gpuType
+        gpuCount: resources.gpuCount
+        zones: resources.zones
+        preemptible: resources.preemptible
+        maxRetries: resources.maxRetries
+    }
+}
+
+task bam_to_bed {
+    input {
+        File file
+        String out_file = "~{basename(file, ".bam")}.bed"
+        Resources resources
+    }
+
+    command <<<
+        bedtools bamtobed -i \
+            ~{file} \
+            > ~{out_file}
+    >>>
+
+    output {
+        File out = out_file
     }
 
     runtime {

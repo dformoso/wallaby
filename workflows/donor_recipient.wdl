@@ -9,6 +9,7 @@ import "subworkflows/locate.wdl" as locate
 import "subworkflows/metrics.wdl" as metrics
 import "tasks/trimmomatic.wdl" as trimmomatic
 import "tasks/quality.wdl" as quality
+import "tasks/samtools.wdl" as samtools
 import "tasks/structs/compute.wdl"
 
 workflow donor_recipient {
@@ -153,6 +154,24 @@ workflow donor_recipient {
             resources = server.size["local_server"]
     }
 
+    # Create indexes (BAI files) for all BAM files
+    scatter (bam in complex_only.bams) {
+        call samtools.index as indexing_bams {
+            input:
+                file = bam,
+                resources = server.size["local_server"]
+        }
+    }
+
+    # Create BED files for all BAM files
+    scatter (bam in complex_only.bams) {
+        call samtools.bam_to_bed as bedding_bams {
+            input:
+                file = bam,
+                resources = server.size["local_server"]
+        }
+    }
+
     # Locate sequences in reference genome
     call locate.main as locate_donor {
         input:
@@ -258,6 +277,9 @@ workflow donor_recipient {
         Array[File] out_complex_bams = complex_only.bams
         Array[File] out_fastas = complex_only.fastas
         
+        Array[File] bais = indexing_bams.out
+        Array[File] beds = bedding_bams.out
+
         Array[File] out_donor_mpileups = locate_donor.mpileups
         Array[File] out_recipient_mpileups = locate_recipient.mpileups
 

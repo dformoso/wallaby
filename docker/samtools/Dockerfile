@@ -5,7 +5,7 @@ USER root
 WORKDIR /tmp
 
 RUN apt-get update && \
-    apt-get install -y samtools && \
+    apt-get install -y samtools bedtools && \
     apt-get clean
 
 WORKDIR /tmp
