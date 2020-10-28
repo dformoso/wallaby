@@ -90,7 +90,7 @@ workflow main {
             input: 
                 file = bam, 
                 txt = concat_fastqs.out, 
-                out_file = "~{basename(bam)}.complex.bam",
+                out_file = "~{basename(bam, ".bam")}.final.bam",
                 resources = resources
         }
         
@@ -100,7 +100,7 @@ workflow main {
         call samtools.bam_to_fasta as bam_to_fasta {
             input :
                 file = complex.out,
-                out_file = "~{basename(bam)}.complex.fasta",
+                out_file = "~{basename(bam, ".bam")}.final.fasta",
                 resources = resources
         }
 

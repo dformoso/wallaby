@@ -38,12 +38,12 @@ task n {
     >>>
 
     output {
-        File donor_MMd_MUr = "reads-to-donor_MMd_MUr.bam.complex.fasta.blastn"
-        File donor_MUd_UMr = "reads-to-donor_MUd_UMr.bam.complex.fasta.blastn"
-        File donor_UMd_MUr = "reads-to-donor_UMd_MUr.bam.complex.fasta.blastn"
-        File recipient_MMd_MUr = "reads-to-recipient_MMd_MUr.bam.complex.fasta.blastn"
-        File recipient_MUd_UMr = "reads-to-recipient_MUd_UMr.bam.complex.fasta.blastn"
-        File recipient_UMd_MUr = "reads-to-recipient_UMd_MUr.bam.complex.fasta.blastn"
+        File donor_MMd_MUr = "reads-to-donor_MMd_MUr.final.fasta.blastn"
+        File donor_MUd_UMr = "reads-to-donor_MUd_UMr.final.fasta.blastn"
+        File donor_UMd_MUr = "reads-to-donor_UMd_MUr.final.fasta.blastn"
+        File recipient_MMd_MUr = "reads-to-recipient_MMd_MUr.final.fasta.blastn"
+        File recipient_MUd_UMr = "reads-to-recipient_MUd_UMr.final.fasta.blastn"
+        File recipient_UMd_MUr = "reads-to-recipient_UMd_MUr.final.fasta.blastn"
     }
 
     runtime {

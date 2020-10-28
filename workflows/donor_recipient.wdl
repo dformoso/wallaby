@@ -69,6 +69,7 @@ workflow donor_recipient {
                 quality_after_trim.files
                 ]),
             report_name = "multiqc_before_and_after_trimmomatic_report.html",
+            include = "../inputs/*",            
             resources = server.size["local_server"]
     }
 
@@ -154,7 +155,7 @@ workflow donor_recipient {
             resources = server.size["local_server"]
     }
 
-    # Create indexes (BAI files) for all BAM files
+    # Create indexes (BAI files) for all complex_only BAM files
     scatter (bam in complex_only.bams) {
         call samtools.index as indexing_bams {
             input:
@@ -163,7 +164,7 @@ workflow donor_recipient {
         }
     }
 
-    # Create BED files for all BAM files
+    # Create BED files for all complex_only BAM files
     scatter (bam in complex_only.bams) {
         call samtools.bam_to_bed as bedding_bams {
             input:
@@ -228,12 +229,11 @@ workflow donor_recipient {
                 [
                 complex_only.bams,
                 metrics_complex.stats,
-                metrics_complex.flagstats,
-                locate_donor.mpileups,
+                metrics_complex.flagstats
                 ]),
             report_name = "multiqc_all_donor_metrics.html",
             enable_fullnames = false,
-            include = "*/*donor*_*d*_*r*",
+            include = "../inputs/*/*donor*_*d*_*r*",
             resources = server.size["local_server"]
     }
 
@@ -244,12 +244,41 @@ workflow donor_recipient {
                 [
                 complex_only.bams,
                 metrics_complex.stats,
-                metrics_complex.flagstats,
-                locate_recipient.mpileups
+                metrics_complex.flagstats
                 ]),
             report_name = "multiqc_all_recipient_metrics.html",
             enable_fullnames = false,
-            include = "*/*recipient*_*d*_*r*",
+            include = "../inputs/*/*recipient*_*d*_*r*",
+            resources = server.size["local_server"]
+    }
+
+    # Compare quality control for interesting donor files 
+    call quality.multi_qc as interesting_donor_metrics {
+        input:
+            quality_files = flatten(
+                [
+                complex_only.bams,
+                metrics_complex.stats,
+                metrics_complex.flagstats
+                ]),
+            report_name = "multiqc_interesting_donor_metrics.html",
+            enable_fullnames = false,
+            include = "../inputs/*/*donor*MMd*_*Ur*final* ../inputs/*/*donor*UMd*final* ../inputs/*/*donor*MUd*final*",
+            resources = server.size["local_server"]
+    }
+
+    # Compare quality control for interesting recipient files 
+    call quality.multi_qc as interesting_recipient_metrics {
+        input:
+            quality_files = flatten(
+                [
+                complex_only.bams,
+                metrics_complex.stats,
+                metrics_complex.flagstats
+                ]),
+            report_name = "multiqc_interesting_recipient_metrics.html",
+            enable_fullnames = false,
+            include = "../inputs/*/*recipient*MMd*_*Ur*final* ../inputs/*/*recipient*UMd*final* ../inputs/*/*recipient*MUd*final*",
             resources = server.size["local_server"]
     }
 
@@ -304,6 +333,9 @@ workflow donor_recipient {
 
         File out_multiqc_all_donor_metrics_report = all_donor_metrics.out
         File out_multiqc_all_recipient_metrics_report = all_recipient_metrics.out
+
+        File out_multiqc_interesting_donor_metrics_report = interesting_donor_metrics.out
+        File out_multiqc_interesting_recipient_metrics_report = interesting_recipient_metrics.out
 
     }
 

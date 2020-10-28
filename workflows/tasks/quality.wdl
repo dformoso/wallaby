@@ -54,11 +54,17 @@ task multi_qc {
         set -e
         export LC_ALL=C.UTF-8
         export LANG=C.UTF-8
+        cat > multiqc_config.txt <<- "EOF"
+        read_count_multiplier: 1
+        read_count_prefix: 'Number of'
+        read_count_desc: 'Number of'
+        EOF
         for quality_file in ~{sep=' ' quality_files}; do ls ${quality_file} .; done;
         multiqc \
             -n ~{report_name} \
             ~{true="--fullnames" false="" enable_fullnames} \
-            ../inputs/~{include}
+            ~{include} \
+            -c multiqc_config.txt
     >>>
 
     output {
@@ -78,15 +84,3 @@ task multi_qc {
         maxRetries: resources.maxRetries
     }
 }
-
-# rm -rf test*
-# multiqc -n test.html ./*donor*_[!UU]*d*_*r*
-# 
-# rm -rf test*
-# multiqc -n test.html ./*donor*_*d*_*r*
-# 
-# rm -rf test*
-# multiqc -n test.html ./*recipient*_*d*_[!MM]*r*
-# 
-# rm -rf test*
-# multiqc -n test.html ./*recipient*_*d*_*r*
