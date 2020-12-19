@@ -59,14 +59,14 @@ workflow main {
     call samtools.sort as samtools_sorter { 
         input: 
             file = samtools_sam_to_bam.out, 
-            out_file = "~{base_filename}.sorted.bam",
+            out_file = "~{base_filename}.bam",
             resources = resources
     }
 
     call samtools.index as samtools_indexer { 
         input: 
             file = samtools_sorter.out, 
-            out_file = "~{base_filename}.sorted.bam.bai",
+            out_file = "~{base_filename}.bai",
             resources = resources
     }
 

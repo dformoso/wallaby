@@ -21,6 +21,13 @@ workflow main {
             resources = resources
     }
 
+    call samtools.index as MM_bai { 
+    input: 
+        file = MM_bam.out, 
+        out_file = "~{base_filename}_MM.bai", 
+        resources = resources
+    }
+
     # Read 1 is Mapped and Read 2 is Unmapped in/to Ref Genome - MU
     call samtools.view as MU_R1 { 
         input: 
@@ -43,6 +50,13 @@ workflow main {
             files = [MU_R1.out, MU_R2.out], 
             out_file = "~{base_filename}_MU.bam",
             resources = resources
+    }
+
+    call samtools.index as MU_bai { 
+    input: 
+        file = MU_bam.out, 
+        out_file = "~{base_filename}_MU.bai", 
+        resources = resources
     }
 
     # Read 1 is Unmapped and Read 2 is Mapped in/to Ref Genome - UM
@@ -69,6 +83,13 @@ workflow main {
             resources = resources
     }
 
+    call samtools.index as UM_bai { 
+    input: 
+        file = UM_bam.out, 
+        out_file = "~{base_filename}_UM.bai", 
+        resources = resources
+    }
+
     # Read 1 is Unmapped and Read 2 is Unmapped in/to Ref Genome - UU
     call samtools.view as UU_R1 { 
         input: 
@@ -93,6 +114,13 @@ workflow main {
             resources = resources
     }
 
+    call samtools.index as UU_bai { 
+    input: 
+        file = UU_bam.out, 
+        out_file = "~{base_filename}_UU.bai", 
+        resources = resources
+    }
+
     output {
         File MM = MM_bam.out
         File MU = MU_bam.out
@@ -103,6 +131,12 @@ workflow main {
             MU_bam.out,
             UM_bam.out,
             UU_bam.out
+        ]
+        Array[File] bais = [
+            MM_bai.out,
+            MU_bai.out,
+            UM_bai.out,
+            UU_bai.out
         ]
     }
 

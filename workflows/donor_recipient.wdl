@@ -4,13 +4,14 @@ import "subworkflows/align.wdl" as align
 import "subworkflows/bucketize.wdl" as bucketize
 import "subworkflows/cross.wdl" as cross
 import "subworkflows/complex.wdl" as complex
-import "subworkflows/blast.wdl" as blast
+#import "subworkflows/blast.wdl" as blast
 import "subworkflows/locate.wdl" as locate
 import "subworkflows/metrics.wdl" as metrics
 import "tasks/trimmomatic.wdl" as trimmomatic
 import "tasks/quality.wdl" as quality
 import "tasks/samtools.wdl" as samtools
 import "tasks/structs/compute.wdl"
+#import "tasks/download.wdl" as download
 
 workflow donor_recipient {
 
@@ -20,8 +21,10 @@ workflow donor_recipient {
         File reads_fastq_1
         File reads_fastq_2
 
-        File blastdb
+#        File blastdb
     }
+
+    #Array[String] srrs = read_lines(srrs)
 
     # Compute resources
     Compute server = read_json("../config/sizes.json")
@@ -189,13 +192,13 @@ workflow donor_recipient {
     }
 
     # Blastn search over all crossings of interest (see tasks/blast.wdl)
-    call blast.main as blaster {
-        input:
-            fastas = complex_only.fastas,
-            blastdb = blastdb,
-            resources = server.size["local_server"],
-            evalue = 1
-    }
+#    call blast.main as blaster {
+#        input:
+#            fastas = complex_only.fastas,
+#            blastdb = blastdb,
+#            resources = server.size["local_server"],
+#            evalue = 1
+#    }
 
     # Calculate metrics
     call metrics.main as metrics_donor_bucketized {
@@ -207,12 +210,6 @@ workflow donor_recipient {
     call metrics.main as metrics_recipient_bucketized {
         input:
             bams = bucketize_recipient.bams,
-            resources = server.size["local_server"]
-    }
-
-    call metrics.main as metrics_cross {
-        input:
-            bams = crossing.bams,
             resources = server.size["local_server"]
     }
     
@@ -252,36 +249,6 @@ workflow donor_recipient {
             resources = server.size["local_server"]
     }
 
-    # Compare quality control for interesting donor files 
-    call quality.multi_qc as interesting_donor_metrics {
-        input:
-            quality_files = flatten(
-                [
-                complex_only.bams,
-                metrics_complex.stats,
-                metrics_complex.flagstats
-                ]),
-            report_name = "multiqc_interesting_donor_metrics.html",
-            enable_fullnames = false,
-            include = "../inputs/*/*donor*MMd*_*Ur*final* ../inputs/*/*donor*UMd*final* ../inputs/*/*donor*MUd*final*",
-            resources = server.size["local_server"]
-    }
-
-    # Compare quality control for interesting recipient files 
-    call quality.multi_qc as interesting_recipient_metrics {
-        input:
-            quality_files = flatten(
-                [
-                complex_only.bams,
-                metrics_complex.stats,
-                metrics_complex.flagstats
-                ]),
-            report_name = "multiqc_interesting_recipient_metrics.html",
-            enable_fullnames = false,
-            include = "../inputs/*/*recipient*MMd*_*Ur*final* ../inputs/*/*recipient*UMd*final* ../inputs/*/*recipient*MUd*final*",
-            resources = server.size["local_server"]
-    }
-
     output {
         File out_pre_fastq_1_zip = quality_before_trim.fastq_1_zip
         File out_pre_fastq_2_zip = quality_before_trim.fastq_2_zip
@@ -300,24 +267,30 @@ workflow donor_recipient {
 
         File out_multiqc_before_and_after_trim_report = trimmomatic_metrics.out
 
-        Array[File] out_donor_bams = bucketize_donor.bams
-        Array[File] out_recipient_bams = bucketize_recipient.bams
-        Array[File] out_cross_bams = crossing.bams
+        File out_donor_bam = align_donor.bam
+        File out_donor_bai = align_donor.bai
+        File out_recipient_bam = align_recipient.bam
+        File out_recipient_bai = align_recipient.bai
+
+        Array[File] out_bucket_donor_bams = bucketize_donor.bams
+        Array[File] out_bucket_donor_bais = bucketize_donor.bais
+        Array[File] out_bucket_recipient_bams = bucketize_recipient.bams
+        Array[File] out_bucket_recipient_bais = bucketize_recipient.bais
+
         Array[File] out_complex_bams = complex_only.bams
-        Array[File] out_fastas = complex_only.fastas
-        
-        Array[File] bais = indexing_bams.out
-        Array[File] beds = bedding_bams.out
+        Array[File] out_complex_fastas = complex_only.fastas
+        Array[File] out_complex_bais = indexing_bams.out
+        Array[File] out_complex_beds = bedding_bams.out
 
         Array[File] out_donor_mpileups = locate_donor.mpileups
         Array[File] out_recipient_mpileups = locate_recipient.mpileups
 
-        File out_donor_MMd_MUr = blaster.donor_MMd_MUr
-        File out_donor_MUd_UMr = blaster.donor_MUd_UMr
-        File out_donor_UMd_MUr = blaster.donor_UMd_MUr
-        File out_recipient_MMd_MUr = blaster.recipient_MMd_MUr
-        File out_recipient_MUd_UMr = blaster.recipient_MUd_UMr
-        File out_recipient_UMd_MUr = blaster.recipient_UMd_MUr
+#        File out_donor_MMd_MUr = blaster.donor_MMd_MUr
+#        File out_donor_MUd_UMr = blaster.donor_MUd_UMr
+#        File out_donor_UMd_MUr = blaster.donor_UMd_MUr
+#        File out_recipient_MMd_MUr = blaster.recipient_MMd_MUr
+#        File out_recipient_MUd_UMr = blaster.recipient_MUd_UMr
+#        File out_recipient_UMd_MUr = blaster.recipient_UMd_MUr
 
         Array[File] out_donor_stats = metrics_donor_bucketized.stats
         Array[File] out_donor_flagstats = metrics_donor_bucketized.flagstats
@@ -325,17 +298,11 @@ workflow donor_recipient {
         Array[File] out_recipient_stats = metrics_recipient_bucketized.stats
         Array[File] out_recipient_flagstats = metrics_recipient_bucketized.flagstats
 
-        Array[File] out_cross_stats = metrics_cross.stats
-        Array[File] out_cross_flagstats = metrics_cross.flagstats
-
         Array[File] out_complex_stats = metrics_complex.stats
         Array[File] out_complex_flagstats = metrics_complex.flagstats
 
         File out_multiqc_all_donor_metrics_report = all_donor_metrics.out
         File out_multiqc_all_recipient_metrics_report = all_recipient_metrics.out
-
-        File out_multiqc_interesting_donor_metrics_report = interesting_donor_metrics.out
-        File out_multiqc_interesting_recipient_metrics_report = interesting_recipient_metrics.out
 
     }
 

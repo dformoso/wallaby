@@ -100,7 +100,7 @@ task sam_to_fastq {
         set -e
         if [ -s "~{file}" ] 
         then 
-        java -jar /usr/picard/picard.jar SamToFastq \
+        java -Xmx40G -jar /usr/picard/picard.jar SamToFastq \
             ~{"INPUT=" + file} \
             ~{"FASTQ=" + out_fastq_1} \
             ~{"SECOND_END_FASTQ=" + out_fastq_2} \

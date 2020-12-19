@@ -10,8 +10,18 @@
             "gpuType": "nvidia-tesla-p100",
             "gpuCount": 0
         },
-        "4cpu_16mem_100disk": {
+        "1cpu_16mem_100disk": {
             "cpu": 1,
+            "memory_gb": 16,
+            "disks": "local-disk 100 SSD",
+            "zones": "us-central1-c",
+            "preemptible": 3,
+            "maxRetries": 1,
+            "gpuType": "nvidia-tesla-p100",
+            "gpuCount": 0
+        },
+        "4cpu_16mem_100disk": {
+            "cpu": 4,
             "memory_gb": 16,
             "disks": "local-disk 100 SSD",
             "zones": "us-central1-c",
