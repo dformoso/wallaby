@@ -1,44 +1,60 @@
 {
     "size": {
-        "local_server": {
+        "local_instance": {
             "cpu": 24,
-            "memory_gb": 32,
+            "memory_gb": "50G",
             "disks": "local-disk 100 SSD",
-            "zones": "us-central1-c",
+            "zones": "australia-southeast1-b",
             "preemptible": 3,
-            "maxRetries": 1,
-            "gpuType": "nvidia-tesla-p100",
-            "gpuCount": 0
+            "maxRetries": 3
         },
-        "1cpu_16mem_100disk": {
-            "cpu": 1,
-            "memory_gb": 16,
-            "disks": "local-disk 100 SSD",
-            "zones": "us-central1-c",
+        "2cpu_8mem_100disk": {
+            "cpu": 2,
+            "memory_gb": "8G",
+            "disks": "local-disk 100 HDD",
+            "zones": "australia-southeast1-b",
             "preemptible": 3,
-            "maxRetries": 1,
-            "gpuType": "nvidia-tesla-p100",
-            "gpuCount": 0
+            "maxRetries": 3
         },
-        "4cpu_16mem_100disk": {
+        "4cpu_32mem_100disk": {
             "cpu": 4,
-            "memory_gb": 16,
-            "disks": "local-disk 100 SSD",
-            "zones": "us-central1-c",
+            "memory_gb": "32G",
+            "disks": "local-disk 100 HDD",
+            "zones": "australia-southeast1-b",
             "preemptible": 3,
-            "maxRetries": 1,
-            "gpuType": "nvidia-tesla-p100",
-            "gpuCount": 0
+            "maxRetries": 3
         },
-        "96cpu_128mem_500disk": {
-            "cpu": 96,
-            "memory_gb": 128,
-            "disks": "local-disk 100 SSD",
-            "zones": "us-central1-c",
+        "8cpu_32mem_100disk": {
+            "cpu": 8,
+            "memory_gb": "32G",
+            "disks": "local-disk 100 HDD",
+            "zones": "australia-southeast1-b",
             "preemptible": 3,
-            "maxRetries": 1,
-            "gpuType": "nvidia-tesla-p100",
-            "gpuCount": 0
+            "maxRetries": 3
+        },
+        "8cpu_32mem_512disk": {
+            "cpu": 8,
+            "memory_gb": "32G",
+            "disks": "local-disk 512 HDD",
+            "zones": "australia-southeast1-b",
+            "preemptible": 3,
+            "maxRetries": 3
+        },
+        "32cpu_64mem_512disk": {
+            "cpu": 32,
+            "memory_gb": "64G",
+            "disks": "local-disk 512 HDD",
+            "zones": "australia-southeast1-b",
+            "preemptible": 3,
+            "maxRetries": 3
+        },
+        "96cpu_128mem_300disk": {
+            "cpu": 96,
+            "memory_gb": "128G",
+            "disks": "local-disk 300 HDD",
+            "zones": "australia-southeast1-b",
+            "preemptible": 3,
+            "maxRetries": 3
         }
     }
 }

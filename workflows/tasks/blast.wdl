@@ -38,12 +38,12 @@ task n {
     >>>
 
     output {
-        File donor_MMd_MUr = "reads-to-donor_MMd_MUr.final.fasta.blastn"
-        File donor_MUd_UMr = "reads-to-donor_MUd_UMr.final.fasta.blastn"
-        File donor_UMd_MUr = "reads-to-donor_UMd_MUr.final.fasta.blastn"
-        File recipient_MMd_MUr = "reads-to-recipient_MMd_MUr.final.fasta.blastn"
-        File recipient_MUd_UMr = "reads-to-recipient_MUd_UMr.final.fasta.blastn"
-        File recipient_UMd_MUr = "reads-to-recipient_UMd_MUr.final.fasta.blastn"
+        File donor_MMd_MUr = "reads-to-donor_MMd_MUr.fasta.blastn"
+        File donor_MUd_UMr = "reads-to-donor_MUd_UMr.fasta.blastn"
+        File donor_UMd_MUr = "reads-to-donor_UMd_MUr.fasta.blastn"
+        File recipient_MMd_MUr = "reads-to-recipient_MMd_MUr.fasta.blastn"
+        File recipient_MUd_UMr = "reads-to-recipient_MUd_UMr.fasta.blastn"
+        File recipient_UMd_MUr = "reads-to-recipient_UMd_MUr.fasta.blastn"
     }
 
     runtime {
@@ -52,8 +52,6 @@ task n {
         memory: resources.memory_gb
         docker: "ncbi/blast:2.10.1"
         disks: resources.disks
-        gpuType: resources.gpuType
-        gpuCount: resources.gpuCount
         zones: resources.zones
         preemptible: resources.preemptible
         maxRetries: resources.maxRetries

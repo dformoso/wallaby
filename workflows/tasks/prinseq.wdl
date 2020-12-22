@@ -41,8 +41,6 @@ task matching {
         memory: resources.memory_gb
         docker: "dformoso/prinseq:latest"
         disks: resources.disks
-        gpuType: resources.gpuType
-        gpuCount: resources.gpuCount
         zones: resources.zones
         preemptible: resources.preemptible
         maxRetries: resources.maxRetries

@@ -2,16 +2,14 @@ version 1.0
 
 import "structs/compute.wdl"
 
-task download_srr {
+task srr {
     input {
         String srr
         Resources resources
     }
 
     command <<<
-        fasterq-dump --split-files \
-            ~{"--threads " + resources.cpu} \
-            ~{srr}
+        fasterq-dump --split-files --threads 8  ~{srr}
     >>>
 
     output {
@@ -25,8 +23,6 @@ task download_srr {
         memory: resources.memory_gb
         docker: "dformoso/sratoolkit:latest"
         disks: resources.disks
-        gpuType: resources.gpuType
-        gpuCount: resources.gpuCount
         zones: resources.zones
         preemptible: resources.preemptible
         maxRetries: resources.maxRetries

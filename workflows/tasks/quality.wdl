@@ -33,8 +33,6 @@ task fast_qc {
         memory: resources.memory_gb
         docker: "dformoso/quality:latest"
         disks: resources.disks
-        gpuType: resources.gpuType
-        gpuCount: resources.gpuCount
         zones: resources.zones
         preemptible: resources.preemptible
         maxRetries: resources.maxRetries
@@ -77,8 +75,6 @@ task multi_qc {
         memory: resources.memory_gb
         docker: "dformoso/quality:latest"
         disks: resources.disks
-        gpuType: resources.gpuType
-        gpuCount: resources.gpuCount
         zones: resources.zones
         preemptible: resources.preemptible
         maxRetries: resources.maxRetries

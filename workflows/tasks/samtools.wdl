@@ -36,8 +36,6 @@ task view {
         memory: resources.memory_gb
         docker: "dformoso/samtools:latest"
         disks: resources.disks
-        gpuType: resources.gpuType
-        gpuCount: resources.gpuCount
         zones: resources.zones
         preemptible: resources.preemptible
         maxRetries: resources.maxRetries
@@ -69,8 +67,6 @@ task sort {
         memory: resources.memory_gb
         docker: "dformoso/samtools:latest"
         disks: resources.disks
-        gpuType: resources.gpuType
-        gpuCount: resources.gpuCount
         zones: resources.zones
         preemptible: resources.preemptible
         maxRetries: resources.maxRetries
@@ -102,8 +98,6 @@ task index {
         memory: resources.memory_gb
         docker: "dformoso/samtools:latest"
         disks: resources.disks
-        gpuType: resources.gpuType
-        gpuCount: resources.gpuCount
         zones: resources.zones
         preemptible: resources.preemptible
         maxRetries: resources.maxRetries
@@ -135,8 +129,6 @@ task merge {
         memory: resources.memory_gb
         docker: "dformoso/samtools:latest"
         disks: resources.disks
-        gpuType: resources.gpuType
-        gpuCount: resources.gpuCount
         zones: resources.zones
         preemptible: resources.preemptible
         maxRetries: resources.maxRetries
@@ -168,8 +160,6 @@ task mpileup {
         memory: resources.memory_gb
         docker: "dformoso/samtools:latest"
         disks: resources.disks
-        gpuType: resources.gpuType
-        gpuCount: resources.gpuCount
         zones: resources.zones
         preemptible: resources.preemptible
         maxRetries: resources.maxRetries
@@ -204,8 +194,6 @@ task stats {
         memory: resources.memory_gb
         docker: "dformoso/samtools:latest"
         disks: resources.disks
-        gpuType: resources.gpuType
-        gpuCount: resources.gpuCount
         zones: resources.zones
         preemptible: resources.preemptible
         maxRetries: resources.maxRetries
@@ -236,8 +224,6 @@ task flagstats {
         memory: resources.memory_gb
         docker: "dformoso/samtools:latest"
         disks: resources.disks
-        gpuType: resources.gpuType
-        gpuCount: resources.gpuCount
         zones: resources.zones
         preemptible: resources.preemptible
         maxRetries: resources.maxRetries
@@ -269,8 +255,6 @@ task extract_qnames {
         memory: resources.memory_gb
         docker: "dformoso/samtools:latest"
         disks: resources.disks
-        gpuType: resources.gpuType
-        gpuCount: resources.gpuCount
         zones: resources.zones
         preemptible: resources.preemptible
         maxRetries: resources.maxRetries
@@ -315,8 +299,6 @@ task count {
         memory: resources.memory_gb
         docker: "dformoso/samtools:latest"
         disks: resources.disks
-        gpuType: resources.gpuType
-        gpuCount: resources.gpuCount
         zones: resources.zones
         preemptible: resources.preemptible
         maxRetries: resources.maxRetries
@@ -347,8 +329,6 @@ task bam_to_fasta {
         memory: resources.memory_gb
         docker: "dformoso/samtools:latest"
         disks: resources.disks
-        gpuType: resources.gpuType
-        gpuCount: resources.gpuCount
         zones: resources.zones
         preemptible: resources.preemptible
         maxRetries: resources.maxRetries
@@ -378,8 +358,6 @@ task bam_to_bed {
         memory: resources.memory_gb
         docker: "dformoso/samtools:latest"
         disks: resources.disks
-        gpuType: resources.gpuType
-        gpuCount: resources.gpuCount
         zones: resources.zones
         preemptible: resources.preemptible
         maxRetries: resources.maxRetries

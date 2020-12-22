@@ -10,7 +10,7 @@ java \
   -DLOG_MODE=pretty \
   -Dconfig.file=../../cromwell_config/local_cpu.conf \
   -jar ../../binaries/cromwell-52.jar \
-    run ../donor_recipient.wdl \
-    --inputs ../inputs/donor_recipient.json \
+    run ../multi_donor_recipient.wdl \
+    --inputs ../inputs/multi_donor_recipient.json \
     --options ../../cromwell_config/options_local.json
     

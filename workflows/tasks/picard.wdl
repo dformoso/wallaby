@@ -36,8 +36,6 @@ task filter_reads {
         memory: resources.memory_gb
         docker: "dformoso/picard-tools:latest"
         disks: resources.disks
-        gpuType: resources.gpuType
-        gpuCount: resources.gpuCount
         zones: resources.zones
         preemptible: resources.preemptible
         maxRetries: resources.maxRetries
@@ -78,8 +76,6 @@ task filter_valid_reads {
         memory: resources.memory_gb
         docker: "dformoso/picard-tools:latest"
         disks: resources.disks
-        gpuType: resources.gpuType
-        gpuCount: resources.gpuCount
         zones: resources.zones
         preemptible: resources.preemptible
         maxRetries: resources.maxRetries
@@ -119,8 +115,6 @@ task sam_to_fastq {
         memory: resources.memory_gb
         docker: "dformoso/picard-tools:latest"
         disks: resources.disks
-        gpuType: resources.gpuType
-        gpuCount: resources.gpuCount
         zones: resources.zones
         preemptible: resources.preemptible
         maxRetries: resources.maxRetries

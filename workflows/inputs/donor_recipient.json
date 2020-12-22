@@ -1,7 +1,10 @@
 {
-    "donor_recipient.blastdb": "../../data/blast/blastdb/blastdb.tar",
-    "donor_recipient.donor_ref_genome": "../../data/ref_genomes/hpv/HPV16.fasta",
-    "donor_recipient.recipient_ref_genome": "../../data/ref_genomes/human/USCS.hg38.fasta",
-    "donor_recipient.reads_fastq_1": "../../data/SRR5090597/SRR5090597_1.fastq",
-    "donor_recipient.reads_fastq_2": "../../data/SRR5090597/SRR5090597_2.fastq"
+    "main.donor_name": "HPV16",
+    "main.donor_ref_genome": "../../data/ref_genomes/hpv/HPV16.fasta",
+    "main.recipient_name": "USCShg38",
+    "main.recipient_ref_genome": "../../data/ref_genomes/human/USCS.hg38.fasta",
+    "main.srr_name": "SRR5090597",
+    "main.srr_fastq_1": "../../data/SRR5090597/SRR5090597_1.fastq",
+    "main.srr_fastq_2": "../../data/SRR5090597/SRR5090597_2.fastq",
+    "main.blastdb": "../../data/blast/blastdb/blastdb.tar"
 }

@@ -97,18 +97,18 @@ workflow main {
         # Extract list of reads from BAM file
         # Output paired reads to separate files, 
         # discarding singletons, supplementary and secondary reads
-        call samtools.bam_to_fasta as bam_to_fasta {
-            input :
-                file = complex.out,
-                out_file = "~{basename(bam, ".bam")}.fasta",
-                resources = resources
-        }
+#        call samtools.bam_to_fasta as bam_to_fasta {
+#            input :
+#                file = complex.out,
+#                out_file = "~{basename(bam, ".bam")}.fasta",
+#                resources = resources
+#        }
 
     }
 
     output {
         Array[File] bams = complex.out
-        Array[File] fastas = bam_to_fasta.fasta
+#        Array[File] fastas = bam_to_fasta.fasta
     }
 
 }

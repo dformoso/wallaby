@@ -28,8 +28,6 @@ task inner_join {
         memory: resources.memory_gb
         docker: "dformoso/samtools:latest"
         disks: resources.disks
-        gpuType: resources.gpuType
-        gpuCount: resources.gpuCount
         zones: resources.zones
         preemptible: resources.preemptible
         maxRetries: resources.maxRetries
@@ -61,8 +59,6 @@ task seq_ids_from_fastq {
         memory: resources.memory_gb
         docker: "dformoso/samtools:latest"
         disks: resources.disks
-        gpuType: resources.gpuType
-        gpuCount: resources.gpuCount
         zones: resources.zones
         preemptible: resources.preemptible
         maxRetries: resources.maxRetries
@@ -96,8 +92,6 @@ task concat_text {
         memory: resources.memory_gb
         docker: "dformoso/samtools:latest"
         disks: resources.disks
-        gpuType: resources.gpuType
-        gpuCount: resources.gpuCount
         zones: resources.zones
         preemptible: resources.preemptible
         maxRetries: resources.maxRetries
