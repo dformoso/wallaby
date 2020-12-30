@@ -24,7 +24,7 @@ workflow multi_donor_recipient {
         call download.srr as downloaded_srr {
             input:
                 srr = srr_name,
-                resources = server.size["2cpu_8mem_100disk"]
+                resources = server.size["local_instance"]
         }
 
         call donor_recipient.main as single_donor_recipient {

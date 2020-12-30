@@ -67,7 +67,7 @@ task filter_valid_reads {
     }
 
     output {
-        File out = out_file
+        File? out = out_file
     }
 
     runtime {

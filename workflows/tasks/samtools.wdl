@@ -320,7 +320,7 @@ task bam_to_fasta {
     >>>
 
     output {
-        File fasta = out_file
+        File? fasta = out_file
     }
 
     runtime {
@@ -338,7 +338,7 @@ task bam_to_fasta {
 task bam_to_bed {
     input {
         File file
-        String out_file = "~{basename(file, ".bam")}.bed"
+        String out_file = "~{basename(file, ".bam")}"
         Resources resources
     }
 

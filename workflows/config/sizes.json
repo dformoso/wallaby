@@ -8,26 +8,34 @@
             "preemptible": 3,
             "maxRetries": 3
         },
-        "2cpu_8mem_100disk": {
+        "2cpu_8mem_128disk": {
             "cpu": 2,
             "memory_gb": "8G",
-            "disks": "local-disk 100 HDD",
+            "disks": "local-disk 128 HDD",
             "zones": "australia-southeast1-b",
             "preemptible": 3,
             "maxRetries": 3
         },
-        "4cpu_32mem_100disk": {
+        "4cpu_32mem_128disk": {
             "cpu": 4,
             "memory_gb": "32G",
-            "disks": "local-disk 100 HDD",
+            "disks": "local-disk 128 HDD",
             "zones": "australia-southeast1-b",
             "preemptible": 3,
             "maxRetries": 3
         },
-        "8cpu_32mem_100disk": {
+        "8cpu_8mem_512disk": {
+            "cpu": 8,
+            "memory_gb": "8G",
+            "disks": "local-disk 512 HDD",
+            "zones": "australia-southeast1-b",
+            "preemptible": 3,
+            "maxRetries": 3
+        },
+        "8cpu_32mem_128disk": {
             "cpu": 8,
             "memory_gb": "32G",
-            "disks": "local-disk 100 HDD",
+            "disks": "local-disk 128 HDD",
             "zones": "australia-southeast1-b",
             "preemptible": 3,
             "maxRetries": 3
@@ -48,10 +56,10 @@
             "preemptible": 3,
             "maxRetries": 3
         },
-        "96cpu_128mem_300disk": {
+        "96cpu_128mem_512disk": {
             "cpu": 96,
             "memory_gb": "128G",
-            "disks": "local-disk 300 HDD",
+            "disks": "local-disk 512 HDD",
             "zones": "australia-southeast1-b",
             "preemptible": 3,
             "maxRetries": 3

@@ -106,9 +106,12 @@ workflow main {
 
     }
 
+    Array[File?] all_bams = complex.out
+#    Array[File?] all_fasta = bam_to_fasta.out
+
     output {
-        Array[File] bams = complex.out
-#        Array[File] fastas = bam_to_fasta.fasta
+        Array[File] bams = select_all(all_bams)
+#        Array[File] fastas = select_all(all_fasta)
     }
 
 }

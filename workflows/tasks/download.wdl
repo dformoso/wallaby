@@ -9,7 +9,9 @@ task srr {
     }
 
     command <<<
-        fasterq-dump --split-files --threads 8  ~{srr}
+        prefetch ~{srr}
+        fasterq-dump -c 4000MB -b 4000MB -m 4000MB --split-files --threads 8  ~{srr}
+        rm -rf ~{srr}/
     >>>
 
     output {

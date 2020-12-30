@@ -17,11 +17,16 @@ sudo docker run -itd \
   --hostname jupyter \
   --restart always \
   -e GRANT_SUDO=yes \
+  -e CHOWN_HOME=yes \
   --user root \
   -p 8888:8888 \
   -v "/root/research/genomics/projects/wallaby:/home/jovyan/wallaby" \
-  jupyter/r-notebook:latest \
-  start-notebook.sh --NotebookApp.token=''
+  dformoso/jupyterlab:latest \
+  start-notebook.sh --NotebookApp.token='' 
+
+
+jupyter/r-notebook
+dformoso/jupyterlab
 
 
 # Access Jupyter

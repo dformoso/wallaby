@@ -33,7 +33,7 @@ workflow main {
         input:
             fastq_1 = srr_fastq_1,
             fastq_2 = srr_fastq_2,
-            resources = server.size["2cpu_8mem_100disk"]
+            resources = server.size["local_instance"]
     }
 
     # Quality trim the reads
@@ -51,7 +51,7 @@ workflow main {
             sliding_window_length = 4,
             min_length = 50,
             is_phred33 = true,
-            resources = server.size["8cpu_32mem_512disk"]
+            resources = server.size["local_instance"]
     }
 
     # Quality control metrics after trimmomatic
@@ -59,7 +59,7 @@ workflow main {
         input:
             fastq_1 = srr_trim_adapters.fastq_1_paired,
             fastq_2 = srr_trim_adapters.fastq_2_paired,
-            resources = server.size["2cpu_8mem_100disk"]
+            resources = server.size["local_instance"]
     }
 
     # Compare quality control metrics before and after trimmomatic
@@ -72,7 +72,7 @@ workflow main {
                 ]),
             report_name = "${srr_name}_multiqc_trim_report.html",
             include = "../inputs/*",            
-            resources = server.size["8cpu_32mem_512disk"]
+            resources = server.size["local_instance"]
     }
 
     # Donor Reference Genome
@@ -91,7 +91,7 @@ workflow main {
             gap_extension_penalty = 1,
             output_all_found_alignments = true,
             base_filename = "${srr_name}-to-${donor_name}",
-            resources = server.size["32cpu_64mem_512disk"]
+            resources = server.size["local_instance"]
     }
 
     ## Bucketize
@@ -99,7 +99,7 @@ workflow main {
         input:
             bam = donor_align.bam,
             base_filename = "${srr_name}-to-${donor_name}",
-            resources = server.size["32cpu_64mem_512disk"]
+            resources = server.size["local_instance"]
     }
 
     # Recipient Reference Genome
@@ -118,7 +118,7 @@ workflow main {
             gap_extension_penalty = 1,
             output_all_found_alignments = true,
             base_filename = "${srr_name}-to-${recipient_name}",
-            resources = server.size["32cpu_64mem_512disk"]
+            resources = server.size["local_instance"]
     }
 
     ## Bucketize
@@ -126,7 +126,7 @@ workflow main {
         input:
             bam = recipient_align.bam,
             base_filename = "${srr_name}-to-${recipient_name}",
-            resources = server.size["32cpu_64mem_512disk"]
+            resources = server.size["local_instance"]
     }
 
     # Cross BAM files buckets
@@ -143,7 +143,7 @@ workflow main {
             donor_name = "${donor_name}",
             recipient_name = "${recipient_name}",
             srr_name = "${srr_name}",
-            resources = server.size["32cpu_64mem_512disk"]
+            resources = server.size["local_instance"]
     }
 
     # Filter out low complexity sequences
@@ -157,7 +157,7 @@ workflow main {
             filter_if_avg_quality_below = 20,
             low_complexity_method = 'dust',
             low_complexity_threshold = '7',
-            resources = server.size["8cpu_32mem_512disk"]
+            resources = server.size["local_instance"]
     }
 
     # Create indexes (BAI files) for all crossed_filtered BAM files
@@ -165,7 +165,7 @@ workflow main {
         call samtools.index as indexing_bams {
             input:
                 file = bam,
-                resources = server.size["4cpu_32mem_100disk"]
+                resources = server.size["local_instance"]
         }
     }
 
@@ -174,7 +174,7 @@ workflow main {
         call samtools.bam_to_bed as bams_to_beds {
             input:
                 file = bam,
-                resources = server.size["4cpu_32mem_100disk"]
+                resources = server.size["local_instance"]
         }
     }
 
@@ -183,14 +183,14 @@ workflow main {
 #        input:
 #            bams = crossed_filtered.bams,
 #            ref_genome = donor_ref_genome,
-#            resources = server.size["4cpu_32mem_100disk"]
+#            resources = server.size["local_instance"]
 #    }
 #
 #    call locate.main as recipient_locate {
 #        input:
 #            bams = crossed_filtered.bams,
 #            ref_genome = recipient_ref_genome,
-#            resources = server.size["4cpu_32mem_100disk"]
+#            resources = server.size["local_instance"]
 #    }
 
     # Blastn search over all crossings of interest (see tasks/blast.wdl)
@@ -198,7 +198,7 @@ workflow main {
 #        input:
 #            fastas = crossed_filtered.fastas,
 #            blastdb = blastdb,
-#            resources = server.size["32cpu_64mem_200disk"],
+#            resources = server.size["local_instance"],
 #            evalue = 1
 #    }
 
@@ -206,19 +206,19 @@ workflow main {
     call metrics.main as donor_bucketized_metrics {
         input:
             bams = donor_bucketize.bams,
-            resources = server.size["4cpu_32mem_100disk"]
+            resources = server.size["local_instance"]
     }
 
     call metrics.main as recipient_bucketized_metrics {
         input:
             bams = recipient_bucketize.bams,
-            resources = server.size["4cpu_32mem_100disk"]
+            resources = server.size["local_instance"]
     }
     
     call metrics.main as crossed_filtered_metrics {
         input:
             bams = crossed_filtered.bams,
-            resources = server.size["4cpu_32mem_100disk"]
+            resources = server.size["local_instance"]
     }
 
     # Compare quality control for all donor files
@@ -233,7 +233,7 @@ workflow main {
             report_name = "${srr_name}-to-${donor_name}_multiqc_metrics.html",
             enable_fullnames = false,
             include = "../inputs/*/*${donor_name}*",
-            resources = server.size["4cpu_32mem_100disk"]
+            resources = server.size["local_instance"]
     }
 
     # Compare quality control for all recipient files
@@ -248,7 +248,7 @@ workflow main {
             report_name = "${srr_name}-to-${recipient_name}_multiqc_metrics.html",
             enable_fullnames = false,
             include = "../inputs/*/*${recipient_name}*",
-            resources = server.size["4cpu_32mem_100disk"]
+            resources = server.size["local_instance"]
     }
 
     output {

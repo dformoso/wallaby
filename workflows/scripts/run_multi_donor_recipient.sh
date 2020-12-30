@@ -11,6 +11,6 @@ java \
   -Dconfig.file=../../cromwell_config/local_cpu.conf \
   -jar ../../binaries/cromwell-52.jar \
     run ../multi_donor_recipient.wdl \
-    --inputs ../inputs/multi_donor_recipient.json \
+    --inputs ../inputs/multi_donor_recipient_sars-cov-2.json \
     --options ../../cromwell_config/options_local.json
     

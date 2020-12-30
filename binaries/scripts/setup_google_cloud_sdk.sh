@@ -20,4 +20,4 @@ curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key --keyr
 sudo apt-get update -y && sudo apt-get install google-cloud-sdk -y
 
 # Run gcloud init to get started:
-# gcloud init
+gcloud init

@@ -28,7 +28,6 @@ workflow main {
         input: 
             fasta = ref_genome,
             resources = resources
-
     }
 
     call bwa.align as bwa_aligner { 
