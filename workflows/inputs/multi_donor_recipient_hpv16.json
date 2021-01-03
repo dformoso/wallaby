@@ -4,5 +4,5 @@
     "multi_donor_recipient.recipient_name": "USCShg38",
     "multi_donor_recipient.recipient_ref_genome": "../../data/ref_genomes/human/USCS.hg38.fasta",
     "multi_donor_recipient.srr_list": "../../data/SRR_list.txt",
-    "multi_donor_recipient.blastdb": "../../data/blast/blastdb/blastdb.tar"
+    "multi_donor_recipient.aligner_type": "star"
 }

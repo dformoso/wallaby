@@ -5,6 +5,5 @@
     "main.recipient_ref_genome": "../../data/ref_genomes/human/USCS.hg38.fasta",
     "main.srr_name": "SRR5090597",
     "main.srr_fastq_1": "../../data/SRR5090597/SRR5090597_1.fastq",
-    "main.srr_fastq_2": "../../data/SRR5090597/SRR5090597_2.fastq",
-    "main.blastdb": "../../data/blast/blastdb/blastdb.tar"
+    "main.srr_fastq_2": "../../data/SRR5090597/SRR5090597_2.fastq"
 }

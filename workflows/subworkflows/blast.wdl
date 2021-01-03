@@ -21,11 +21,6 @@ workflow main {
     }
     
     output {
-        File donor_MMd_MUr = blaster.donor_MMd_MUr
-        File donor_MUd_UMr = blaster.donor_MUd_UMr
-        File donor_UMd_MUr = blaster.donor_UMd_MUr
-        File recipient_MMd_MUr = blaster.recipient_MMd_MUr
-        File recipient_MUd_UMr = blaster.recipient_MUd_UMr
-        File recipient_UMd_MUr = blaster.recipient_UMd_MUr
+        Array[File] blasted = blaster.blasted
     }
 }

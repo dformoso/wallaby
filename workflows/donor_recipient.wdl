@@ -3,11 +3,7 @@ version 1.0
 import "subworkflows/align.wdl" as align
 import "subworkflows/bucketize.wdl" as bucketize
 import "subworkflows/cross.wdl" as cross
-import "subworkflows/complex.wdl" as complex
-#import "subworkflows/blast.wdl" as blast
-#import "subworkflows/locate.wdl" as locate
 import "subworkflows/metrics.wdl" as metrics
-import "tasks/trimmomatic.wdl" as trimmomatic
 import "tasks/quality.wdl" as quality
 import "tasks/samtools.wdl" as samtools
 import "tasks/structs/compute.wdl"
@@ -16,80 +12,30 @@ workflow main {
 
     input {
         String donor_name
-        File donor_ref_genome
+        Array[File] donor_index
+
         String recipient_name
-        File recipient_ref_genome
+        Array[File] recipient_index
+
         String srr_name
-        File srr_fastq_1
-        File srr_fastq_2
-        File blastdb
+        File fastq_1
+        File fastq_2
+
+        String aligner_type
     }
 
     # Compute resources
     Compute server = read_json("../config/sizes.json")
 
-    # Quality Control metrics
-    call quality.fast_qc as srr_fastqc_before_trim {
-        input:
-            fastq_1 = srr_fastq_1,
-            fastq_2 = srr_fastq_2,
-            resources = server.size["local_instance"]
-    }
-
-    # Quality trim the reads
-    call trimmomatic.trim as srr_trim_adapters {
-        input:
-            fastq_1 = srr_fastq_1,
-            fastq_2 = srr_fastq_2,
-            adapter = "all_adapters.fa",
-            seed_mismatches = 2,
-            paired_clip_threshold = 30,
-            unpaired_clip_threshold = 10,
-            leading = 3,
-            trailing = 3,
-            sliding_window_quality = 20,
-            sliding_window_length = 4,
-            min_length = 50,
-            is_phred33 = true,
-            resources = server.size["local_instance"]
-    }
-
-    # Quality control metrics after trimmomatic
-    call quality.fast_qc as srr_fastqc_after_trim {
-        input:
-            fastq_1 = srr_trim_adapters.fastq_1_paired,
-            fastq_2 = srr_trim_adapters.fastq_2_paired,
-            resources = server.size["local_instance"]
-    }
-
-    # Compare quality control metrics before and after trimmomatic
-    call quality.multi_qc as srr_multiqc_after_trim {
-        input:
-            quality_files = flatten(
-                [
-                srr_fastqc_before_trim.files,
-                srr_fastqc_after_trim.files
-                ]),
-            report_name = "${srr_name}_multiqc_trim_report.html",
-            include = "../inputs/*",            
-            resources = server.size["local_instance"]
-    }
-
     # Donor Reference Genome
+    
     ## Align
     call align.main as donor_align {
         input:
-            ref_genome = donor_ref_genome,
-            fastq_1 = srr_trim_adapters.fastq_1_paired,
-            fastq_2 = srr_trim_adapters.fastq_2_paired,
-            ignore_matches_shorted_than = 19,
-            ignore_gaps_longer_than = 100,
-            discard_if_repeated_in_ref_genome_more_than = 10000,
-            matching_score = 1,
-            mismatch_penalty = 4,
-            gap_open_penalty = 6,
-            gap_extension_penalty = 1,
-            output_all_found_alignments = true,
+            aligner_type = aligner_type,
+            index_object = donor_index,
+            fastq_1 = fastq_1,
+            fastq_2 = fastq_2,
             base_filename = "${srr_name}-to-${donor_name}",
             resources = server.size["local_instance"]
     }
@@ -103,20 +49,14 @@ workflow main {
     }
 
     # Recipient Reference Genome
+
     ## Align 
     call align.main as recipient_align {
         input:
-            ref_genome = recipient_ref_genome,
-            fastq_1 = srr_trim_adapters.fastq_1_paired,
-            fastq_2 = srr_trim_adapters.fastq_2_paired,
-            ignore_matches_shorted_than = 19,
-            ignore_gaps_longer_than = 100,
-            discard_if_repeated_in_ref_genome_more_than = 10000,
-            matching_score = 1,
-            mismatch_penalty = 4,
-            gap_open_penalty = 6,
-            gap_extension_penalty = 1,
-            output_all_found_alignments = true,
+            aligner_type = aligner_type,
+            index_object = recipient_index,
+            fastq_1 = fastq_1,
+            fastq_2 = fastq_2,
             base_filename = "${srr_name}-to-${recipient_name}",
             resources = server.size["local_instance"]
     }
@@ -146,22 +86,8 @@ workflow main {
             resources = server.size["local_instance"]
     }
 
-    # Filter out low complexity sequences
-    call complex.main as crossed_filtered {
-        input:
-            bam_files = crossing.bams,
-            filter_shorter_than = 5,
-            filter_longer_than = 10000,
-            filter_if_gc_content_lower_than = 10,
-            filter_if_gc_content_higher_than = 90,
-            filter_if_avg_quality_below = 20,
-            low_complexity_method = 'dust',
-            low_complexity_threshold = '7',
-            resources = server.size["local_instance"]
-    }
-
     # Create indexes (BAI files) for all crossed_filtered BAM files
-    scatter (bam in crossed_filtered.bams) {
+    scatter (bam in crossing.bams) {
         call samtools.index as indexing_bams {
             input:
                 file = bam,
@@ -170,37 +96,13 @@ workflow main {
     }
 
     # Create BED files for all crossed_filtered BAM files
-    scatter (bam in crossed_filtered.bams) {
+    scatter (bam in crossing.bams) {
         call samtools.bam_to_bed as bams_to_beds {
             input:
                 file = bam,
                 resources = server.size["local_instance"]
         }
     }
-
-    # Locate sequences in reference genome
-#    call locate.main as donor_locate {
-#        input:
-#            bams = crossed_filtered.bams,
-#            ref_genome = donor_ref_genome,
-#            resources = server.size["local_instance"]
-#    }
-#
-#    call locate.main as recipient_locate {
-#        input:
-#            bams = crossed_filtered.bams,
-#            ref_genome = recipient_ref_genome,
-#            resources = server.size["local_instance"]
-#    }
-
-    # Blastn search over all crossings of interest (see tasks/blast.wdl)
-#    call blast.main as blaster {
-#        input:
-#            fastas = crossed_filtered.fastas,
-#            blastdb = blastdb,
-#            resources = server.size["local_instance"],
-#            evalue = 1
-#    }
 
     # Calculate metrics
     call metrics.main as donor_bucketized_metrics {
@@ -215,20 +117,20 @@ workflow main {
             resources = server.size["local_instance"]
     }
     
-    call metrics.main as crossed_filtered_metrics {
+    call metrics.main as crossing_metrics {
         input:
-            bams = crossed_filtered.bams,
+            bams = crossing.bams,
             resources = server.size["local_instance"]
     }
 
     # Compare quality control for all donor files
-    call quality.multi_qc as donor_crossed_filtered_multiqc {
+    call quality.multi_qc as donor_crossing_multiqc {
         input:
             quality_files = flatten(
                 [
-                crossed_filtered.bams,
-                crossed_filtered_metrics.stats,
-                crossed_filtered_metrics.flagstats
+                crossing.bams,
+                crossing_metrics.stats,
+                crossing_metrics.flagstats
                 ]),
             report_name = "${srr_name}-to-${donor_name}_multiqc_metrics.html",
             enable_fullnames = false,
@@ -237,13 +139,13 @@ workflow main {
     }
 
     # Compare quality control for all recipient files
-    call quality.multi_qc as recipient_crossed_filtered_multiqc {
+    call quality.multi_qc as recipient_crossing_multiqc {
         input:
             quality_files = flatten(
                 [
-                crossed_filtered.bams,
-                crossed_filtered_metrics.stats,
-                crossed_filtered_metrics.flagstats
+                crossing.bams,
+                crossing_metrics.stats,
+                crossing_metrics.flagstats
                 ]),
             report_name = "${srr_name}-to-${recipient_name}_multiqc_metrics.html",
             enable_fullnames = false,
@@ -252,47 +154,14 @@ workflow main {
     }
 
     output {
-        File out_pre_fastq_1_zip = srr_fastqc_before_trim.fastq_1_zip
-        File out_pre_fastq_2_zip = srr_fastqc_before_trim.fastq_2_zip
-        File out_pre_fastq_1_html = srr_fastqc_before_trim.fastq_1_html
-        File out_pre_fastq_2_html = srr_fastqc_before_trim.fastq_2_html
-
-        File out_post_fastq_1_zip = srr_fastqc_after_trim.fastq_1_zip
-        File out_post_fastq_2_zip = srr_fastqc_after_trim.fastq_2_zip
-        File out_post_fastq_1_html = srr_fastqc_after_trim.fastq_1_html
-        File out_post_fastq_2_html = srr_fastqc_after_trim.fastq_2_html
-
-        File out_fastq_1_paired = srr_trim_adapters.fastq_1_paired
-        File out_fastq_1_unpaired = srr_trim_adapters.fastq_1_unpaired
-        File out_fastq_2_paired = srr_trim_adapters.fastq_2_paired
-        File out_fastq_2_unpaired = srr_trim_adapters.fastq_2_unpaired
-
-        File out_multiqc_before_and_after_trim_report = srr_multiqc_after_trim.out
-
-        File out_donor_bam = donor_align.bam
-        File out_donor_bai = donor_align.bai
-        File out_recipient_bam = recipient_align.bam
-        File out_recipient_bai = recipient_align.bai
-
         Array[File] out_bucket_donor_bams = donor_bucketize.bams
         Array[File] out_bucket_donor_bais = donor_bucketize.bais
         Array[File] out_bucket_recipient_bams = recipient_bucketize.bams
         Array[File] out_bucket_recipient_bais = recipient_bucketize.bais
 
-        Array[File] out_crossed_filtered_bams = crossed_filtered.bams
-#        Array[File] out_crossed_filtered_fastas = crossed_filtered.fastas
-        Array[File] out_crossed_filtered_bais = indexing_bams.out
-        Array[File] out_crossed_filtered_beds = bams_to_beds.out
-
-#        Array[File] out_donor_mpileups = donor_locate.mpileups
-#        Array[File] out_recipient_mpileups = recipient_locate.mpileups
-
-#        File out_donor_MMd_MUr = blaster.donor_MMd_MUr
-#        File out_donor_MUd_UMr = blaster.donor_MUd_UMr
-#        File out_donor_UMd_MUr = blaster.donor_UMd_MUr
-#        File out_recipient_MMd_MUr = blaster.recipient_MMd_MUr
-#        File out_recipient_MUd_UMr = blaster.recipient_MUd_UMr
-#        File out_recipient_UMd_MUr = blaster.recipient_UMd_MUr
+        Array[File] out_crossing_bams = crossing.bams
+        Array[File] out_crossing_bais = indexing_bams.out
+        Array[File] out_crossing_beds = bams_to_beds.out
 
         Array[File] out_donor_stats = donor_bucketized_metrics.stats
         Array[File] out_donor_flagstats = donor_bucketized_metrics.flagstats
@@ -300,12 +169,11 @@ workflow main {
         Array[File] out_recipient_stats = recipient_bucketized_metrics.stats
         Array[File] out_recipient_flagstats = recipient_bucketized_metrics.flagstats
 
-        Array[File] out_crossed_filtered_stats = crossed_filtered_metrics.stats
-        Array[File] out_crossed_filtered_flagstats = crossed_filtered_metrics.flagstats
+        Array[File] out_crossing_stats = crossing_metrics.stats
+        Array[File] out_crossing_flagstats = crossing_metrics.flagstats
 
-        File out_multiqc_donor_crossed_filtered_multiqc_report = donor_crossed_filtered_multiqc.out
-        File out_multiqc_recipient_crossed_filtered_multiqc_report = recipient_crossed_filtered_multiqc.out
-
+        File out_multiqc_donor_crossing_multiqc_report = donor_crossing_multiqc.out
+        File out_multiqc_recipient_crossing_multiqc_report = recipient_crossing_multiqc.out
     }
 }
 

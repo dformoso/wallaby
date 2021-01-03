@@ -17,12 +17,8 @@ task n {
         for fasta in ~{sep="  " fastas}
             do
                 if 
-                    [[ $fasta =~ "MMd_MUr" ]] ||
-                    [[ $fasta =~ "MMd_UMr" ]] ||
-                    [[ $fasta =~ "MUd_MUr" ]] ||
                     [[ $fasta =~ "MUd_UMr" ]] ||
-                    [[ $fasta =~ "UMd_MUr" ]] ||
-                    [[ $fasta =~ "UMd_UMr" ]]
+                    [[ $fasta =~ "UMd_MUr" ]]
                 then
                     blastn \
                         -query $fasta \
@@ -38,12 +34,7 @@ task n {
     >>>
 
     output {
-        File donor_MMd_MUr = "reads-to-donor_MMd_MUr.fasta.blastn"
-        File donor_MUd_UMr = "reads-to-donor_MUd_UMr.fasta.blastn"
-        File donor_UMd_MUr = "reads-to-donor_UMd_MUr.fasta.blastn"
-        File recipient_MMd_MUr = "reads-to-recipient_MMd_MUr.fasta.blastn"
-        File recipient_MUd_UMr = "reads-to-recipient_MUd_UMr.fasta.blastn"
-        File recipient_UMd_MUr = "reads-to-recipient_UMd_MUr.fasta.blastn"
+        Array[File] blasted = glob("*.fasta.blastn")
     }
 
     runtime {

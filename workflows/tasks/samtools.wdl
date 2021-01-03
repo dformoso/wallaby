@@ -307,20 +307,22 @@ task count {
 
 task bam_to_fasta {
     input {
-        File file
+        File? file
         String out_file
         Resources resources
     }
 
     command <<<
-        samtools fasta \
+        if test -f ${file}; then
+            samtools fasta \
             ~{"-@ " + resources.cpu} \
             ~{"-n " + file} \
             > ~{out_file}
+        fi
     >>>
 
     output {
-        File? fasta = out_file
+        File? out = out_file
     }
 
     runtime {
@@ -338,7 +340,7 @@ task bam_to_fasta {
 task bam_to_bed {
     input {
         File file
-        String out_file = "~{basename(file, ".bam")}"
+        String out_file = "~{basename(file, ".bam")}.bed"
         Resources resources
     }
 

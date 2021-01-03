@@ -31,7 +31,8 @@ pacman::p_load(dplyr,
                data.table)
 
 # List of Bioconductor packages to either Load, or Install and Load
-pacman::p_load(GenomicAlignments, 
+pacman::p_load(GenomicFeatures,
+               GenomicAlignments, 
                Rsubread, 
                Rsamtools,
                bamsignals, 

@@ -407,6 +407,7 @@ task trim {
             ~{out_fastq_1_unpaired} \
             ~{out_fastq_2_paired} \
             ~{out_fastq_2_unpaired} \
+            TOPHRED33 \
             ILLUMINACLIP:~{adapter}:~{seed_mismatches}:~{paired_clip_threshold}:~{unpaired_clip_threshold} \
             ~{"LEADING:" + leading} \
             ~{"TRAILING:" + trailing} \

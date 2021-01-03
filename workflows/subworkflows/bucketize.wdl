@@ -1,6 +1,5 @@
 version 1.0
 
-import "../tasks/bwa.wdl" as bwa
 import "../tasks/samtools.wdl" as samtools
 import "../tasks/structs/compute.wdl"
 

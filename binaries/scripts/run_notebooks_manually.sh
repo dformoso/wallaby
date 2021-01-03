@@ -63,13 +63,11 @@ do
     tertiary-donor-to-recipient.ipynb ${SRR_NAME}-donor-to-recipient.ipynb \
     -p srr_name ${SRR_NAME} \
     -p donor_name "sars-cov-2" \
-    -p recipient_name "USCShg38/" \
+    -p recipient_name "USCShg38" \
     -p inputs_folder "GSE153684/" \
     -p donor_ref_genome "../../wallaby/data/ref_genomes/sars-cov-2/wuhan-hu-1.fasta" \
     -p recipient_ref_genome "../../wallaby/data/ref_genomes/human/USCS.hg38.fasta" \
     && jupyter nbconvert --execute --to html --output-dir GSE153684_summary ${SRR_NAME}-donor-to-recipient.ipynb \
     --TemplateExporter.exclude_input=True --no-prompt --no-input
 done
-
-
 
