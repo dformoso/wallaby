@@ -1,0 +1,8 @@
+womtool-*.jar
+cromwell-*.jar
+data/blast/
+data/ref_genomes/
+data/SRR*
+notebooks/notebook_test_data/*
+.git/*
+workflows/cromwell-*
