@@ -19,8 +19,8 @@ workflow main {
     call align.align as aligner { 
         input: 
             index_object = index_object, 
-            fastq_1 = fastq_1, 
-            fastq_2 = fastq_2, 
+            fastq_1 = fastq_1,
+            fastq_2 = fastq_2,
             aligner_type = aligner_type,
             out_file = "~{base_filename}.sam",
             resources = resources

@@ -1,6 +1,6 @@
 version 1.0
 
-import "donor_recipient.wdl"
+import "paired_donor_recipient.wdl"
 import "tasks/align.wdl" as align
 import "tasks/download.wdl" as download
 import "tasks/trimmomatic.wdl" as trimmomatic
@@ -95,7 +95,7 @@ workflow multi_donor_recipient {
         }
 
         # Launch Donor to Recipient main workflow 
-        call donor_recipient.main as single_donor_recipient {
+        call paired_donor_recipient.main as donor_recipient {
             input:
                 donor_name = donor_name,
                 donor_index = donor_index.index_object,
@@ -108,7 +108,7 @@ workflow multi_donor_recipient {
         }
     }
 
-    output {
+    output {        
         Array[File] out_pre_fastq_1_zip = srr_fastqc_before_trim.fastq_1_zip
         Array[File] out_pre_fastq_2_zip = srr_fastqc_before_trim.fastq_2_zip
         Array[File] out_pre_fastq_1_html = srr_fastqc_before_trim.fastq_1_html
@@ -119,23 +119,18 @@ workflow multi_donor_recipient {
         Array[File] out_post_fastq_1_html = srr_fastqc_after_trim.fastq_1_html
         Array[File] out_post_fastq_2_html = srr_fastqc_after_trim.fastq_2_html
 
-        Array[File] out_fastq_1_paired = srr_trim_adapters.fastq_1_paired
-        Array[File] out_fastq_1_unpaired = srr_trim_adapters.fastq_1_unpaired
-        Array[File] out_fastq_2_paired = srr_trim_adapters.fastq_2_paired
-        Array[File] out_fastq_2_unpaired = srr_trim_adapters.fastq_2_unpaired
+        Array[Array[File]] out_bucket_donor_bams = donor_recipient.out_bucket_donor_bams
+        Array[Array[File]] out_bucket_donor_bais = donor_recipient.out_bucket_donor_bais
+        Array[Array[File]] out_bucket_recipient_bams = donor_recipient.out_bucket_recipient_bams
+        Array[Array[File]] out_bucket_recipient_bais = donor_recipient.out_bucket_recipient_bais
 
-        Array[Array[File]] out_bucket_donor_bams = single_donor_recipient.out_bucket_donor_bams
-        Array[Array[File]] out_bucket_donor_bais = single_donor_recipient.out_bucket_donor_bais
-        Array[Array[File]] out_bucket_recipient_bams = single_donor_recipient.out_bucket_recipient_bams
-        Array[Array[File]] out_bucket_recipient_bais = single_donor_recipient.out_bucket_recipient_bais
-
-        Array[Array[File]] out_crossing_bams = single_donor_recipient.out_crossing_bams
-        Array[Array[File]] out_crossing_bais = single_donor_recipient.out_crossing_bais
-        Array[Array[File]] out_crossing_beds = single_donor_recipient.out_crossing_beds
+        Array[Array[File]] out_crossing_bams = donor_recipient.out_crossing_bams
+        Array[Array[File]] out_crossing_bais = donor_recipient.out_crossing_bais
+        Array[Array[File]] out_crossing_beds = donor_recipient.out_crossing_beds
 
         Array[File] out_multiqc_before_and_after_trim_report = srr_multiqc_after_trim.out
-        Array[File] out_multiqc_all_donor_metrics_reports = single_donor_recipient.out_multiqc_donor_crossing_multiqc_report
-        Array[File] out_multiqc_all_recipient_metrics_reports = single_donor_recipient.out_multiqc_recipient_crossing_multiqc_report
+        Array[File] out_multiqc_all_donor_metrics_reports = donor_recipient.out_multiqc_donor_crossing_multiqc_report
+        Array[File] out_multiqc_all_recipient_metrics_reports = donor_recipient.out_multiqc_recipient_crossing_multiqc_report
     }
 
 }

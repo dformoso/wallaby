@@ -6,3 +6,4 @@ data/SRR*
 notebooks/notebook_test_data/*
 .git/*
 workflows/cromwell-*
+workflows/datasets/*

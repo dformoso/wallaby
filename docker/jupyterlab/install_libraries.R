@@ -2,8 +2,14 @@
 options(Ncpus = parallel::detectCores())
 Sys.setenv(OMP_NUM_THREADS=toString(parallel::detectCores()))
 Sys.setenv(OMP_THREAD_LIMIT=toString(parallel::detectCores()))
-Sys.setenv("OMP_NUM_THREADS"=parallel::detectCores())
-Sys.setenv("OMP_THREAD_LIMIT"=parallel::detectCores())
+Sys.setenv(OMP_NUM_THREADS=parallel::detectCores())
+Sys.setenv(OMP_THREAD_LIMIT=parallel::detectCores())
+
+# Installing tricky packages manually
+download.file("https://bioconductor.org/packages/3.12/data/annotation/src/contrib/BSgenome.Hsapiens.UCSC.hg38_1.4.3.tar.gz", 
+               destfile = "BSgenome.Hsapiens.UCSC.hg38_1.4.3.tar.gz", 
+               method="curl")
+install.packages("BSgenome.Hsapiens.UCSC.hg38_1.4.3.tar.gz", repos = NULL, type = "source")
 
 # Installing Pacman as a Package Manager if not installed, then load
 # Packages to install - Installing only Pacman as a Package Manager
@@ -28,7 +34,10 @@ pacman::p_load(dplyr,
                DT, 
                ggrepel, 
                tidyr,, 
-               data.table)
+               data.table,
+               kableExtra,
+               knitr,
+               IRdisplay)
 
 # List of Bioconductor packages to either Load, or Install and Load
 pacman::p_load(GenomicFeatures,
@@ -37,8 +46,7 @@ pacman::p_load(GenomicFeatures,
                Rsamtools,
                bamsignals, 
                rtracklayer,
-               GenomicRanges, 
-               BSgenome.Hsapiens.UCSC.hg38,
+               GenomicRanges,
                TxDb.Hsapiens.UCSC.hg38.knownGene, 
                regioneR,
                karyoploteR, 
