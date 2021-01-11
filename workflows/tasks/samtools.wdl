@@ -77,7 +77,7 @@ task sort {
 task index {
     input {
         File file
-        String out_file = "~{basename(file, ".bam")}.bai"
+        String out_file = "~{basename(file)}.bai"
         Resources resources
     }
 
