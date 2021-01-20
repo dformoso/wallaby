@@ -128,9 +128,9 @@ workflow multi_donor_recipient {
         Array[Array[File]] out_crossing_bais = donor_recipient.out_crossing_bais
         Array[Array[File]] out_crossing_beds = donor_recipient.out_crossing_beds
 
-        Array[File] out_multiqc_before_and_after_trim_report = srr_multiqc_after_trim.out
-        Array[File] out_multiqc_all_donor_metrics_reports = donor_recipient.out_multiqc_donor_crossing_multiqc_report
-        Array[File] out_multiqc_all_recipient_metrics_reports = donor_recipient.out_multiqc_recipient_crossing_multiqc_report
+        Array[File?] out_multiqc_before_and_after_trim_report = select_all(srr_multiqc_after_trim.out)
+        Array[File?] out_multiqc_all_donor_metrics_reports = select_all(donor_recipient.out_multiqc_donor_crossing_multiqc_report)
+        Array[File?] out_multiqc_all_recipient_metrics_reports = select_all(donor_recipient.out_multiqc_recipient_crossing_multiqc_report)
     }
 
 }

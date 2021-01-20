@@ -172,8 +172,8 @@ workflow main {
         Array[File] out_crossing_stats = crossing_metrics.stats
         Array[File] out_crossing_flagstats = crossing_metrics.flagstats
 
-        File out_multiqc_donor_crossing_multiqc_report = donor_crossing_multiqc.out
-        File out_multiqc_recipient_crossing_multiqc_report = recipient_crossing_multiqc.out
+        File? out_multiqc_donor_crossing_multiqc_report = donor_crossing_multiqc.out
+        File? out_multiqc_recipient_crossing_multiqc_report = recipient_crossing_multiqc.out
     }
 }
 

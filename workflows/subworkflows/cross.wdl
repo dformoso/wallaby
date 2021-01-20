@@ -50,13 +50,13 @@ workflow main {
     # UM_MM, UM_MU, UM_UM, UM_UU, 
     # UU_MM, UU_MU, UU_UM, UU_UU
 
-   call tools.inner_join as MMd_MMr_txt { 
-       input: 
-           file_1 = donor_qnames.MM, 
-           file_2 = recipient_qnames.MM, 
-           out_file = "MMd_MMr.txt",
-           resources = resources
-       }
+#  call tools.inner_join as MMd_MMr_txt { 
+#      input: 
+#          file_1 = donor_qnames.MM, 
+#          file_2 = recipient_qnames.MM, 
+#          out_file = "MMd_MMr.txt",
+#          resources = resources
+#      }
 
     call tools.inner_join as MMd_MUr_txt { 
         input: 
@@ -74,13 +74,13 @@ workflow main {
             resources = resources
         }
 
-    call tools.inner_join as MMd_UUr_txt { 
-        input: 
-            file_1 = donor_qnames.MM, 
-            file_2 = recipient_qnames.UU, 
-            out_file = "MMd_UUr.txt",
-            resources = resources
-        }
+#   call tools.inner_join as MMd_UUr_txt { 
+#       input: 
+#           file_1 = donor_qnames.MM, 
+#           file_2 = recipient_qnames.UU, 
+#           out_file = "MMd_UUr.txt",
+#           resources = resources
+#       }
 
     call tools.inner_join as MUd_MMr_txt { 
         input: 
@@ -90,13 +90,13 @@ workflow main {
             resources = resources
         }
 
-    call tools.inner_join as MUd_MUr_txt { 
-        input: 
-            file_1 = donor_qnames.MU, 
-            file_2 = recipient_qnames.MU, 
-            out_file = "MUd_MUr.txt",
-            resources = resources
-        }
+#   call tools.inner_join as MUd_MUr_txt { 
+#       input: 
+#           file_1 = donor_qnames.MU, 
+#           file_2 = recipient_qnames.MU, 
+#           out_file = "MUd_MUr.txt",
+#           resources = resources
+#       }
 
     call tools.inner_join as MUd_UMr_txt { 
         input: 
@@ -106,13 +106,13 @@ workflow main {
             resources = resources
         }
 
-    call tools.inner_join as MUd_UUr_txt { 
-        input: 
-            file_1 = donor_qnames.MU, 
-            file_2 = recipient_qnames.UU, 
-            out_file = "MUd_UUr.txt",
-            resources = resources
-        }
+#   call tools.inner_join as MUd_UUr_txt { 
+#       input: 
+#           file_1 = donor_qnames.MU, 
+#           file_2 = recipient_qnames.UU, 
+#           out_file = "MUd_UUr.txt",
+#           resources = resources
+#       }
 
     call tools.inner_join as UMd_MMr_txt { 
         input: 
@@ -130,21 +130,21 @@ workflow main {
             resources = resources
         }
 
-    call tools.inner_join as UMd_UMr_txt { 
-        input: 
-            file_1 = donor_qnames.UM, 
-            file_2 = recipient_qnames.UM, 
-            out_file = "UMd_UMr.txt",
-            resources = resources
-        }
+#   call tools.inner_join as UMd_UMr_txt { 
+#       input: 
+#           file_1 = donor_qnames.UM, 
+#           file_2 = recipient_qnames.UM, 
+#           out_file = "UMd_UMr.txt",
+#           resources = resources
+#       }
 
-    call tools.inner_join as UMd_UUr_txt { 
-        input: 
-            file_1 = donor_qnames.UM, 
-            file_2 = recipient_qnames.UU, 
-            out_file = "UMd_UUr.txt",
-            resources = resources
-        }
+#   call tools.inner_join as UMd_UUr_txt { 
+#       input: 
+#           file_1 = donor_qnames.UM, 
+#           file_2 = recipient_qnames.UU, 
+#           out_file = "UMd_UUr.txt",
+#           resources = resources
+#       }
 
 #    call tools.inner_join as UUd_MMr_txt { 
 #        input: 
@@ -154,29 +154,29 @@ workflow main {
 #            resources = resources
 #        }
 
-    call tools.inner_join as UUd_MUr_txt { 
-        input: 
-            file_1 = donor_qnames.UU, 
-            file_2 = recipient_qnames.MU, 
-            out_file = "UUd_MUr.txt",
-            resources = resources
-        }
-
-    call tools.inner_join as UUd_UMr_txt { 
-        input: 
-            file_1 = donor_qnames.UU, 
-            file_2 = recipient_qnames.UM, 
-            out_file = "UUd_UMr.txt",
-            resources = resources
-        }
-
-    call tools.inner_join as UUd_UUr_txt { 
-        input: 
-            file_1 = donor_qnames.UU, 
-            file_2 = recipient_qnames.UU, 
-            out_file = "UUd_UUr.txt",
-            resources = resources
-        }
+#   call tools.inner_join as UUd_MUr_txt { 
+#       input: 
+#           file_1 = donor_qnames.UU, 
+#           file_2 = recipient_qnames.MU, 
+#           out_file = "UUd_MUr.txt",
+#           resources = resources
+#       }
+#
+#   call tools.inner_join as UUd_UMr_txt { 
+#       input: 
+#           file_1 = donor_qnames.UU, 
+#           file_2 = recipient_qnames.UM, 
+#           out_file = "UUd_UMr.txt",
+#           resources = resources
+#       }
+#
+#   call tools.inner_join as UUd_UUr_txt { 
+#       input: 
+#           file_1 = donor_qnames.UU, 
+#           file_2 = recipient_qnames.UU, 
+#           out_file = "UUd_UUr.txt",
+#           resources = resources
+#       }
 
 
     # Subset BAM files on the inner joins 
@@ -184,13 +184,13 @@ workflow main {
     # for donor/recipient BAM files
     
     ## Donor
-    call picard.filter_reads as donor_MMd_MMr { 
-        input: 
-            file = donor_MM, 
-            txt = MMd_MMr_txt.out, 
-            out_file = "~{srr_name}-to-~{donor_name}_MMd_MMr.bam",
-            resources = resources
-        }
+#   call picard.filter_reads as donor_MMd_MMr { 
+#       input: 
+#           file = donor_MM, 
+#           txt = MMd_MMr_txt.out, 
+#           out_file = "~{srr_name}-to-~{donor_name}_MMd_MMr.bam",
+#           resources = resources
+#       }
 
     call picard.filter_reads as donor_MMd_MUr { 
         input: 
@@ -208,13 +208,13 @@ workflow main {
             resources = resources
         }
 
-    call picard.filter_reads as donor_MMd_UUr { 
-        input: 
-            file = donor_MM, 
-            txt = MMd_UUr_txt.out, 
-            out_file = "~{srr_name}-to-~{donor_name}_MMd_UUr.bam",
-            resources = resources
-        }
+#   call picard.filter_reads as donor_MMd_UUr { 
+#       input: 
+#           file = donor_MM, 
+#           txt = MMd_UUr_txt.out, 
+#           out_file = "~{srr_name}-to-~{donor_name}_MMd_UUr.bam",
+#           resources = resources
+#       }
 
     call picard.filter_reads as donor_MUd_MMr { 
         input: 
@@ -224,13 +224,13 @@ workflow main {
             resources = resources
         }
 
-    call picard.filter_reads as donor_MUd_MUr { 
-        input: 
-            file = donor_MU, 
-            txt = MUd_MUr_txt.out, 
-            out_file = "~{srr_name}-to-~{donor_name}_MUd_MUr.bam",
-            resources = resources
-        }
+#   call picard.filter_reads as donor_MUd_MUr { 
+#       input: 
+#           file = donor_MU, 
+#           txt = MUd_MUr_txt.out, 
+#           out_file = "~{srr_name}-to-~{donor_name}_MUd_MUr.bam",
+#           resources = resources
+#       }
 
     call picard.filter_reads as donor_MUd_UMr { 
         input: 
@@ -240,13 +240,13 @@ workflow main {
             resources = resources
         }
 
-    call picard.filter_reads as donor_MUd_UUr { 
-        input: 
-            file = donor_MU, 
-            txt = MUd_UUr_txt.out, 
-            out_file = "~{srr_name}-to-~{donor_name}_MUd_UUr.bam",
-            resources = resources
-        }
+#   call picard.filter_reads as donor_MUd_UUr { 
+#       input: 
+#           file = donor_MU, 
+#           txt = MUd_UUr_txt.out, 
+#           out_file = "~{srr_name}-to-~{donor_name}_MUd_UUr.bam",
+#           resources = resources
+#       }
 
     call picard.filter_reads as donor_UMd_MMr { 
         input: 
@@ -264,21 +264,21 @@ workflow main {
             resources = resources
         }
 
-    call picard.filter_reads as donor_UMd_UMr { 
-        input: 
-            file = donor_UM, 
-            txt = UMd_UMr_txt.out, 
-            out_file = "~{srr_name}-to-~{donor_name}_UMd_UMr.bam",
-            resources = resources
-        }
-
-    call picard.filter_reads as donor_UMd_UUr { 
-        input: 
-            file = donor_UM, 
-            txt = UMd_UUr_txt.out, 
-            out_file = "~{srr_name}-to-~{donor_name}_UMd_UUr.bam",
-            resources = resources
-        }
+#    call picard.filter_reads as donor_UMd_UMr { 
+#        input: 
+#            file = donor_UM, 
+#            txt = UMd_UMr_txt.out, 
+#            out_file = "~{srr_name}-to-~{donor_name}_UMd_UMr.bam",
+#            resources = resources
+#        }
+#
+#    call picard.filter_reads as donor_UMd_UUr { 
+#        input: 
+#            file = donor_UM, 
+#            txt = UMd_UUr_txt.out, 
+#            out_file = "~{srr_name}-to-~{donor_name}_UMd_UUr.bam",
+#            resources = resources
+#        }
 
 #    call picard.filter_reads as donor_UUd_MMr { 
 #        input: 
@@ -288,39 +288,39 @@ workflow main {
 #            resources = resources
 #        }
 
-    call picard.filter_reads as donor_UUd_MUr { 
-        input: 
-            file = donor_UU, 
-            txt = UUd_MUr_txt.out, 
-            out_file = "~{srr_name}-to-~{donor_name}_UUd_MUr.bam",
-            resources = resources
-        }
-
-    call picard.filter_reads as donor_UUd_UMr { 
-        input: 
-            file = donor_UU, 
-            txt = UUd_UMr_txt.out, 
-            out_file = "~{srr_name}-to-~{donor_name}_UUd_UMr.bam",
-            resources = resources
-        }
-
-    call picard.filter_reads as donor_UUd_UUr { 
-        input: 
-            file = donor_UU, 
-            txt = UUd_UUr_txt.out, 
-            out_file = "~{srr_name}-to-~{donor_name}_UUd_UUr.bam",
-            resources = resources
-        }
+#   call picard.filter_reads as donor_UUd_MUr { 
+#       input: 
+#           file = donor_UU, 
+#           txt = UUd_MUr_txt.out, 
+#           out_file = "~{srr_name}-to-~{donor_name}_UUd_MUr.bam",
+#           resources = resources
+#       }
+#
+#   call picard.filter_reads as donor_UUd_UMr { 
+#       input: 
+#           file = donor_UU, 
+#           txt = UUd_UMr_txt.out, 
+#           out_file = "~{srr_name}-to-~{donor_name}_UUd_UMr.bam",
+#           resources = resources
+#       }
+#
+#   call picard.filter_reads as donor_UUd_UUr { 
+#       input: 
+#           file = donor_UU, 
+#           txt = UUd_UUr_txt.out, 
+#           out_file = "~{srr_name}-to-~{donor_name}_UUd_UUr.bam",
+#           resources = resources
+#       }
 
 
     ## Recipient
-    call picard.filter_reads as recipient_MMd_MMr { 
-        input: 
-            file = recipient_MM, 
-            txt = MMd_MMr_txt.out, 
-            out_file = "~{srr_name}-to-~{recipient_name}_MMd_MMr.bam",
-            resources = resources
-        }
+#    call picard.filter_reads as recipient_MMd_MMr { 
+#        input: 
+#            file = recipient_MM, 
+#            txt = MMd_MMr_txt.out, 
+#            out_file = "~{srr_name}-to-~{recipient_name}_MMd_MMr.bam",
+#            resources = resources
+#        }
 
     call picard.filter_reads as recipient_MUd_MMr { 
         input: 
@@ -354,13 +354,13 @@ workflow main {
             resources = resources
         }
 
-    call picard.filter_reads as recipient_MUd_MUr { 
-        input: 
-            file = recipient_MU, 
-            txt = MUd_MUr_txt.out, 
-            out_file = "~{srr_name}-to-~{recipient_name}_MUd_MUr.bam",
-            resources = resources
-        }
+#    call picard.filter_reads as recipient_MUd_MUr { 
+#        input: 
+#            file = recipient_MU, 
+#            txt = MUd_MUr_txt.out, 
+#            out_file = "~{srr_name}-to-~{recipient_name}_MUd_MUr.bam",
+#            resources = resources
+#        }
 
     call picard.filter_reads as recipient_UMd_MUr { 
         input: 
@@ -370,13 +370,13 @@ workflow main {
             resources = resources
         }
 
-    call picard.filter_reads as recipient_UUd_MUr { 
-        input: 
-            file = recipient_MU, 
-            txt = UUd_MUr_txt.out, 
-            out_file = "~{srr_name}-to-~{recipient_name}_UUd_MUr.bam",
-            resources = resources
-        }
+#    call picard.filter_reads as recipient_UUd_MUr { 
+#        input: 
+#            file = recipient_MU, 
+#            txt = UUd_MUr_txt.out, 
+#            out_file = "~{srr_name}-to-~{recipient_name}_UUd_MUr.bam",
+#            resources = resources
+#        }
 
     call picard.filter_reads as recipient_MMd_UMr { 
         input: 
@@ -394,87 +394,87 @@ workflow main {
             resources = resources
         }
 
-    call picard.filter_reads as recipient_UMd_UMr { 
-        input: 
-            file = recipient_UM, 
-            txt = UMd_UMr_txt.out, 
-            out_file = "~{srr_name}-to-~{recipient_name}_UMd_UMr.bam",
-            resources = resources
-        }
-
-    call picard.filter_reads as recipient_UUd_UMr { 
-        input: 
-            file = recipient_UM, 
-            txt = UUd_UMr_txt.out, 
-            out_file = "~{srr_name}-to-~{recipient_name}_UUd_UMr.bam",
-            resources = resources
-        }
-
-    call picard.filter_reads as recipient_MMd_UUr { 
-        input: 
-            file = recipient_UU, 
-            txt = MMd_UUr_txt.out, 
-            out_file = "~{srr_name}-to-~{recipient_name}_MMd_UUr.bam",
-            resources = resources
-        }
-
-    call picard.filter_reads as recipient_MUd_UUr { 
-        input: 
-            file = recipient_UU, 
-            txt = MUd_UUr_txt.out, 
-            out_file = "~{srr_name}-to-~{recipient_name}_MUd_UUr.bam",
-            resources = resources
-        }
-
-    call picard.filter_reads as recipient_UMd_UUr { 
-        input: 
-            file = recipient_UU, 
-            txt = UMd_UUr_txt.out, 
-            out_file = "~{srr_name}-to-~{recipient_name}_UMd_UUr.bam",
-            resources = resources
-        }
-
-    call picard.filter_reads as recipient_UUd_UUr { 
-        input: 
-            file = recipient_UU, 
-            txt = UUd_UUr_txt.out, 
-            out_file = "~{srr_name}-to-~{recipient_name}_UUd_UUr.bam",
-            resources = resources
-        }
+#    call picard.filter_reads as recipient_UMd_UMr { 
+#        input: 
+#            file = recipient_UM, 
+#            txt = UMd_UMr_txt.out, 
+#            out_file = "~{srr_name}-to-~{recipient_name}_UMd_UMr.bam",
+#            resources = resources
+#        }
+#
+#    call picard.filter_reads as recipient_UUd_UMr { 
+#        input: 
+#            file = recipient_UM, 
+#            txt = UUd_UMr_txt.out, 
+#            out_file = "~{srr_name}-to-~{recipient_name}_UUd_UMr.bam",
+#            resources = resources
+#        }
+#
+#    call picard.filter_reads as recipient_MMd_UUr { 
+#        input: 
+#            file = recipient_UU, 
+#            txt = MMd_UUr_txt.out, 
+#            out_file = "~{srr_name}-to-~{recipient_name}_MMd_UUr.bam",
+#            resources = resources
+#        }
+#
+#    call picard.filter_reads as recipient_MUd_UUr { 
+#        input: 
+#            file = recipient_UU, 
+#            txt = MUd_UUr_txt.out, 
+#            out_file = "~{srr_name}-to-~{recipient_name}_MUd_UUr.bam",
+#            resources = resources
+#        }
+#
+#    call picard.filter_reads as recipient_UMd_UUr { 
+#        input: 
+#            file = recipient_UU, 
+#            txt = UMd_UUr_txt.out, 
+#            out_file = "~{srr_name}-to-~{recipient_name}_UMd_UUr.bam",
+#            resources = resources
+#        }
+#
+#    call picard.filter_reads as recipient_UUd_UUr { 
+#        input: 
+#            file = recipient_UU, 
+#            txt = UUd_UUr_txt.out, 
+#            out_file = "~{srr_name}-to-~{recipient_name}_UUd_UUr.bam",
+#            resources = resources
+#        }
 
     Array[File?] all_bams = [
-        donor_MMd_MMr.out, 
+        #donor_MMd_MMr.out, 
         donor_MMd_MUr.out, 
         donor_MMd_UMr.out, 
-        donor_MMd_UUr.out, 
+        #donor_MMd_UUr.out, 
         donor_MUd_MMr.out, 
-        donor_MUd_MUr.out, 
+        #donor_MUd_MUr.out, 
         donor_MUd_UMr.out, 
-        donor_MUd_UUr.out, 
+        #donor_MUd_UUr.out, 
         donor_UMd_MMr.out, 
         donor_UMd_MUr.out, 
-        donor_UMd_UMr.out, 
-        donor_UMd_UUr.out, 
+        #donor_UMd_UMr.out, 
+        #donor_UMd_UUr.out, 
         #donor_UUd_MMr.out, 
-        donor_UUd_MUr.out, 
-        donor_UUd_UMr.out, 
-        donor_UUd_UUr.out, 
-        recipient_MMd_MMr.out, 
+        #donor_UUd_MUr.out, 
+        #donor_UUd_UMr.out, 
+        #donor_UUd_UUr.out, 
+        #recipient_MMd_MMr.out, 
         recipient_MUd_MMr.out, 
         recipient_UMd_MMr.out, 
         #recipient_UUd_MMr.out, 
         recipient_MMd_MUr.out, 
-        recipient_MUd_MUr.out, 
+        #recipient_MUd_MUr.out, 
         recipient_UMd_MUr.out, 
-        recipient_UUd_MUr.out, 
+        #recipient_UUd_MUr.out, 
         recipient_MMd_UMr.out, 
-        recipient_MUd_UMr.out, 
-        recipient_UMd_UMr.out, 
-        recipient_UUd_UMr.out, 
-        recipient_MMd_UUr.out, 
-        recipient_MUd_UUr.out, 
-        recipient_UMd_UUr.out, 
-        recipient_UUd_UUr.out]
+        recipient_MUd_UMr.out] 
+        #recipient_UMd_UMr.out, 
+        #recipient_UUd_UMr.out, 
+        #recipient_MMd_UUr.out, 
+        #recipient_MUd_UUr.out, 
+        #recipient_UMd_UUr.out, 
+        #recipient_UUd_UUr.out]
 
     output {
         Array[File] bams = select_all(all_bams)

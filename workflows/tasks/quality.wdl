@@ -57,16 +57,20 @@ task multi_qc {
         read_count_prefix: 'Number of'
         read_count_desc: 'Number of'
         EOF
-        for quality_file in ~{sep=' ' quality_files}; do ls ${quality_file} .; done;
-        multiqc \
-            -n ~{report_name} \
-            ~{true="--fullnames" false="" enable_fullnames} \
-            ~{include} \
-            -c multiqc_config.txt
+
+        if [ "$(ls -A ~{include})" ]
+        then   
+            for quality_file in ~{sep=' ' quality_files}; do ls ${quality_file} .; done;
+            multiqc \
+                -n ~{report_name} \
+                ~{true="--fullnames" false="" enable_fullnames} \
+                ~{include} \
+                -c multiqc_config.txt
+        fi
     >>>
 
     output {
-        File out = "~{report_name}"
+        File? out = "~{report_name}"
     }
 
     runtime {
