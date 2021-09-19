@@ -8,7 +8,7 @@
 
 java \
   -DLOG_MODE=pretty \
-  -Dconfig.file=../../cromwell_config/google_cloud.conf \
+  -Dconfig.file=../../cromwell_config/cloud_google.conf \
   -jar ../../binaries/cromwell-52.jar \
     run ../multi_donor_recipient.wdl \
     --inputs ../inputs/multi_donor_recipient_cloud.json \

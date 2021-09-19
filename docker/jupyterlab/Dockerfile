@@ -1,8 +1,5 @@
 FROM jupyter/r-notebook:latest
 
-COPY install_libraries.R .
-RUN Rscript install_libraries.R
-
 RUN python3 -m pip install papermill
 
 ENV DEBIAN_FRONTEND noninteractive
@@ -20,7 +17,8 @@ RUN apt-get update -y && apt-get install -y \
     curl \
     libc6-dev \
     less \
-    unzip
+    unzip \
+    libfontconfig1-dev
 
 RUN cd /usr/local/bin && \
     curl -SL https://github.com/bedops/bedops/archive/v${bedops_version}.tar.gz \
@@ -31,3 +29,6 @@ RUN cp /usr/local/bin/bedops-${bedops_version}/bin/* /usr/local/bin/
 ENV PATH /usr/local/bin/bedops-${bedops_version}/bin:$PATH
 
 USER $NB_UID
+
+COPY install_libraries.R .
+RUN Rscript install_libraries.R

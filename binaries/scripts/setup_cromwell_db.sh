@@ -12,12 +12,14 @@ sudo docker run -itd \
     --name mysql \
     --hostname mysql \
     --restart always \
+    -e MYSQL_ROOT_HOST=% \
     -e MYSQL_ROOT_PASSWORD=cromwell \
     -e MYSQL_DATABASE=cromwell_db \
     -e MYSQL_USER=cromwell \
     -e MYSQL_PASSWORD=cromwell \
+    -e MYSQL_ALLOW_EMPTY_PASSWORD=yes \
     -p 3306:3306 \
-    mysql/mysql-server:5.7
+    mysql/mysql-server:8.0
 
 
 # Delete / connect to instance

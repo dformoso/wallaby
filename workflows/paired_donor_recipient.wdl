@@ -176,6 +176,3 @@ workflow main {
         File? out_multiqc_recipient_crossing_multiqc_report = recipient_crossing_multiqc.out
     }
 }
-
-
-

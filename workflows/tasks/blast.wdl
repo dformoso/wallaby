@@ -13,7 +13,6 @@ task n {
 
     command <<<
         tar xfv ~{blastdb}
-        export BLASTDB=`pwd`
         for fasta in ~{sep="  " fastas}
             do
                 if 

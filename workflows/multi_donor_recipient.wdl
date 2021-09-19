@@ -104,7 +104,7 @@ workflow multi_donor_recipient {
                 srr_name = srr_name,
                 fastq_1 = srr_trim_adapters.fastq_1_paired,
                 fastq_2 = srr_trim_adapters.fastq_2_paired,
-                aligner_type = aligner_type,
+                aligner_type = aligner_type
         }
     }
 
@@ -132,8 +132,4 @@ workflow multi_donor_recipient {
         Array[File?] out_multiqc_all_donor_metrics_reports = select_all(donor_recipient.out_multiqc_donor_crossing_multiqc_report)
         Array[File?] out_multiqc_all_recipient_metrics_reports = select_all(donor_recipient.out_multiqc_recipient_crossing_multiqc_report)
     }
-
 }
-
-
-
