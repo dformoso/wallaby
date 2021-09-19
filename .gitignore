@@ -2,7 +2,7 @@ womtool-*.jar
 cromwell-*.jar
 data/blast/
 data/ref_genomes/human/*
-.git/*
 workflows/cromwell-*
 legacy/
-notebooks/.ipynb_checkpoints/*
+.*
+.git/*
