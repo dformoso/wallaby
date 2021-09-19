@@ -3,7 +3,6 @@ version 1.0
 import "qnames.wdl" as qnames
 import "../tasks/tools.wdl" as tools
 import "../tasks/picard.wdl" as picard
-import "../tasks/structs/compute.wdl"
 
 workflow main {
 

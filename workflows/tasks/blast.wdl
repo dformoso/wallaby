@@ -33,7 +33,7 @@ task n {
     >>>
 
     output {
-        Array[File] blasted = glob("*.fasta.blastn")
+        Array[File] blasted = glob("*.fa.blastn")
     }
 
     runtime {

@@ -1,7 +1,6 @@
 version 1.0
 
 import "../tasks/blast.wdl" as blast
-import "../tasks/structs/compute.wdl"
 
 workflow main {
 

@@ -4,7 +4,6 @@ import "../tasks/samtools.wdl" as samtools
 import "../tasks/tools.wdl" as tools
 import "../tasks/picard.wdl" as picard
 import "../tasks/prinseq.wdl" as prinseq
-import "../tasks/structs/compute.wdl"
 
 # Removes low complexity sequences
 workflow main {

@@ -83,7 +83,7 @@ task align {
                 ~{"-E " + bwa_gap_extension_penalty} \
                 ~{"-t " + resources.cpu} \
                 ~{true="-a" false="" bwa_output_all_found_alignments} \
-                "$(ls -- *.fasta | head -n 1)" \
+                "$(ls -- *.fa | head -n 1)" \
                 ~{fastq_1} \
                 ~{fastq_2} \
                 > ~{out_file}

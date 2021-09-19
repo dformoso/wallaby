@@ -5,6 +5,7 @@ import "tasks/align.wdl" as align
 import "tasks/download.wdl" as download
 import "tasks/trimmomatic.wdl" as trimmomatic
 import "tasks/quality.wdl" as quality
+import "tasks/structs/compute.wdl"
 
 workflow multi_donor_recipient {
 

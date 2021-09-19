@@ -1,8 +1,0 @@
-{
-    "multi_donor_recipient.donor_name": "sars-cov-2",
-    "multi_donor_recipient.donor_ref_genome": "gs://genomics_data/data/ref_genomes/sars-cov-2/wuhan-hu-1.fasta",
-    "multi_donor_recipient.recipient_name": "USCShg38",
-    "multi_donor_recipient.recipient_ref_genome": "gs://genomics_data/data/ref_genomes/human/USCS.hg38.fasta",
-    "multi_donor_recipient.srr_list": "../../data/SRR_list.txt",
-    "multi_donor_recipient.aligner_type": "star"
-}
