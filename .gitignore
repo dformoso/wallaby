@@ -5,3 +5,4 @@ data/ref_genomes/human/*
 .git/*
 workflows/cromwell-*
 legacy/
+notebooks/.ipynb*
