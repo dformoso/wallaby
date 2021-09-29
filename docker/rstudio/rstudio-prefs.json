@@ -1,0 +1,39 @@
+{
+    "save_workspace": "never",
+    "always_save_history": false,
+    "reuse_sessions_for_project_links": true,
+    "jobs_tab_visibility": "shown",
+    "initial_working_directory": "~",
+    "editor_theme": "Tomorrow Night",
+    "panes": {
+        "quadrants": [
+            "Source",
+            "Console",
+            "TabSet2",
+            "TabSet1"
+        ],
+        "tabSet1": [
+            "Environment",
+            "History",
+            "Connections",
+            "Build",
+            "VCS",
+            "Tutorial",
+            "Presentation"
+        ],
+        "tabSet2": [
+            "Files",
+            "Plots",
+            "Packages",
+            "Help",
+            "Viewer"
+        ],
+        "hiddenTabSet": [],
+        "console_left_on_top": false,
+        "console_right_on_top": true,
+        "additional_source_columns": 0
+    },
+    "visual_markdown_editing_show_doc_outline": false,
+    "posix_terminal_shell": "bash",
+    "shiny_viewer_type": "pane"
+}
