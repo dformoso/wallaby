@@ -9,7 +9,7 @@ task srr {
     }
 
     command <<<
-        prefetch ~{srr}
+        prefetch ~{srr} --max-size 50G
         fasterq-dump -c 4000MB -b 4000MB -m 4000MB --split-files --threads 8  ~{srr}
         rm -rf ~{srr}/
     >>>

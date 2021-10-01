@@ -26,6 +26,7 @@ sudo docker build --rm -t dformoso/prinseq:latest prinseq
 sudo docker build --rm -t dformoso/quality:latest quality
 sudo docker build --rm -t dformoso/jupyterlab:latest jupyterlab
 sudo docker build --rm -t dformoso/bedops:latest bedops
+sudo docker build --rm -t dformoso/rstudio:latest rstudio
 
 # Push docker containers to docker hub
 sudo docker push dformoso/albacore:latest
@@ -46,4 +47,5 @@ sudo docker push dformoso/prinseq:latest
 sudo docker push dformoso/quality:latest
 sudo docker push dformoso/jupyterlab:latest 
 sudo docker push dformoso/bedops:latest 
+sudo docker push dformoso/rstudio:latest 
 
