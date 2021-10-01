@@ -3,6 +3,7 @@ cromwell-*.jar
 data/blast/
 data/ref_genomes/human/*
 workflows/cromwell-*
+workflows/final-*
 legacy/
 .*
 .*/
