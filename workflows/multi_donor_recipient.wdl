@@ -6,6 +6,7 @@ import "tasks/download.wdl" as download
 import "tasks/trimmomatic.wdl" as trimmomatic
 import "tasks/quality.wdl" as quality
 import "tasks/structs/compute.wdl"
+import "tasks/sample.wdl" as sample
 
 workflow multi_donor_recipient {
 
@@ -48,19 +49,28 @@ workflow multi_donor_recipient {
                 resources = server.size["local_instance"]
         }
 
-        # SRRs Quality Control metrics
-        call quality.fast_qc as srr_fastqc_before_trim {
+        # Random sampling of FASTQ reads
+        call sample.fastq as random_sampling {
             input:
                 fastq_1 = downloaded_srr.out_1,
                 fastq_2 = downloaded_srr.out_2,
+                sampling = 0.1,
+                resources = server.size["local_instance"]
+        }
+
+        # SRRs Quality Control metrics
+        call quality.fast_qc as srr_fastqc_before_trim {
+            input:
+                fastq_1 = random_sampling.out_1,
+                fastq_2 = random_sampling.out_2,
                 resources = server.size["local_instance"]
         }
 
         # Quality trim the SRR reads
         call trimmomatic.trim as srr_trim_adapters {
             input:
-                fastq_1 = downloaded_srr.out_1,
-                fastq_2 = downloaded_srr.out_2,
+                fastq_1 = random_sampling.out_1,
+                fastq_2 = random_sampling.out_2,
                 adapter = "all_adapters.fa",
                 seed_mismatches = 2,
                 paired_clip_threshold = 30,

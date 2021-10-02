@@ -27,6 +27,7 @@ sudo docker build --rm -t dformoso/quality:latest quality
 sudo docker build --rm -t dformoso/jupyterlab:latest jupyterlab
 sudo docker build --rm -t dformoso/bedops:latest bedops
 sudo docker build --rm -t dformoso/rstudio:latest rstudio
+sudo docker build --rm -t dformoso/seqtk:latest seqtk
 
 # Push docker containers to docker hub
 sudo docker push dformoso/albacore:latest
@@ -48,4 +49,5 @@ sudo docker push dformoso/quality:latest
 sudo docker push dformoso/jupyterlab:latest 
 sudo docker push dformoso/bedops:latest 
 sudo docker push dformoso/rstudio:latest 
+sudo docker push dformoso/seqtk:latest 
 

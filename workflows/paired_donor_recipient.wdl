@@ -3,7 +3,7 @@ version 1.0
 import "subworkflows/align.wdl" as align
 import "subworkflows/bucketize.wdl" as bucketize
 import "subworkflows/cross.wdl" as cross
-import "subworkflows/filter.wdl" as filter
+#import "subworkflows/filter.wdl" as filter
 import "subworkflows/metrics.wdl" as metrics
 import "tasks/quality.wdl" as quality
 import "tasks/samtools.wdl" as samtools
@@ -88,21 +88,21 @@ workflow main {
     }
 
     # Filter out low complexity sequences
-    call filter.main as filtered {
-        input:
-            bam_files = crossing.bams,
-            filter_shorter_than = 5,
-            filter_longer_than = 10000,
-            filter_if_gc_content_lower_than = 10,
-            filter_if_gc_content_higher_than = 90,
-            filter_if_avg_quality_below = 20,
-            low_complexity_method = 'dust',
-            low_complexity_threshold = '7',
-            resources = server.size["local_instance"]
-    }
+#    call filter.main as filtered {
+#        input:
+#            bam_files = crossing.bams,
+#            filter_shorter_than = 5,
+#            filter_longer_than = 10000,
+#            filter_if_avg_quality_below = 20,
+#            filter_if_gc_content_lower_than = 10,
+#            filter_if_gc_content_higher_than = 90,
+#            low_complexity_method = 'dust',
+#            low_complexity_threshold = '7',
+#            resources = server.size["local_instance"]
+#    }
 
     # Create indexes (BAI files) for all crossed_filtered BAM files
-    scatter (bam in filtered.bams) {
+    scatter (bam in crossing.bams) {
         call samtools.index as indexing_bams {
             input:
                 file = bam,
@@ -111,7 +111,7 @@ workflow main {
     }
 
     # Create BED files for all crossed_filtered BAM files
-    scatter (bam in filtered.bams) {
+    scatter (bam in crossing.bams) {
         call samtools.bam_to_bed as bams_to_beds {
             input:
                 file = bam,
@@ -134,7 +134,7 @@ workflow main {
     
     call metrics.main as crossing_metrics {
         input:
-            bams = filtered.bams,
+            bams = crossing.bams,
             resources = server.size["local_instance"]
     }
 
@@ -143,7 +143,7 @@ workflow main {
         input:
             quality_files = flatten(
                 [
-                filtered.bams,
+                crossing.bams,
                 crossing_metrics.stats,
                 crossing_metrics.flagstats
                 ]),
@@ -158,7 +158,7 @@ workflow main {
         input:
             quality_files = flatten(
                 [
-                filtered.bams,
+                crossing.bams,
                 crossing_metrics.stats,
                 crossing_metrics.flagstats
                 ]),
@@ -174,7 +174,7 @@ workflow main {
         Array[File] out_bucket_recipient_bams = recipient_bucketize.bams
         Array[File] out_bucket_recipient_bais = recipient_bucketize.bais
 
-        Array[File] out_crossing_bams = filtered.bams
+        Array[File] out_crossing_bams = crossing.bams
         Array[File] out_crossing_bais = indexing_bams.out
         Array[File] out_crossing_beds = bams_to_beds.out
 
