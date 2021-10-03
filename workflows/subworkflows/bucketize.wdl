@@ -89,52 +89,52 @@ workflow main {
     }
 
     # Read 1 is Unmapped and Read 2 is Unmapped in/to Ref Genome - UU
-    call samtools.view as UU_R1 { 
-        input: 
-            file = bam, 
-            out_file = "~{base_filename}_UU_R1.bam", 
-            include = "77",
-            resources = resources
-    }
+    #call samtools.view as UU_R1 { 
+    #    input: 
+    #        file = bam, 
+    #        out_file = "~{base_filename}_UU_R1.bam", 
+    #        include = "77",
+    #        resources = resources
+    #}
 
-    call samtools.view as UU_R2 { 
-        input: 
-            file = bam, 
-            out_file = "~{base_filename}_UU_R2.bam", 
-            include = "141",
-            resources = resources
-    }
+    #call samtools.view as UU_R2 { 
+    #    input: 
+    #        file = bam, 
+    #        out_file = "~{base_filename}_UU_R2.bam", 
+    #        include = "141",
+    #        resources = resources
+    #}
 
-    call samtools.merge as UU_bam { 
-        input: 
-            files = [UU_R1.out, UU_R2.out], 
-            out_file = "~{base_filename}_UU.bam",
-            resources = resources
-    }
+    #call samtools.merge as UU_bam { 
+    #    input: 
+    #        files = [UU_R1.out, UU_R2.out], 
+    #        out_file = "~{base_filename}_UU.bam",
+    #        resources = resources
+    #}
 
-    call samtools.index as UU_bai { 
-    input: 
-        file = UU_bam.out, 
-        out_file = "~{base_filename}_UU.bai", 
-        resources = resources
-    }
+    #call samtools.index as UU_bai { 
+    #input: 
+    #    file = UU_bam.out, 
+    #    out_file = "~{base_filename}_UU.bai", 
+    #    resources = resources
+    #}
 
     output {
         File MM = MM_bam.out
         File MU = MU_bam.out
         File UM = UM_bam.out
-        File UU = UU_bam.out
+        #File UU = UU_bam.out
         Array[File] bams = [
             MM_bam.out,
             MU_bam.out,
-            UM_bam.out,
-            UU_bam.out
+            UM_bam.out
+            #UU_bam.out
         ]
         Array[File] bais = [
             MM_bai.out,
             MU_bai.out,
-            UM_bai.out,
-            UU_bai.out
+            UM_bai.out
+            #UU_bai.out
         ]
     }
 

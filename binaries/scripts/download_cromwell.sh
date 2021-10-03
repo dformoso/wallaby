@@ -5,5 +5,4 @@
 
 sudo apt-get install -y wget --quiet
 
-wget -P ../ https://github.com/broadinstitute/cromwell/releases/download/60/cromwell-60.jar
-wget -P ../ https://github.com/broadinstitute/cromwell/releases/download/60/womtool-60.jar
+wget -P ../ https://github.com/broadinstitute/cromwell/releases/download/69/cromwell-69.jar

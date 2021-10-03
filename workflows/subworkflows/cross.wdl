@@ -10,11 +10,11 @@ workflow main {
         File donor_MM
         File donor_MU
         File donor_UM
-        File donor_UU
+        #File donor_UU
         File recipient_MM
         File recipient_MU
         File recipient_UM
-        File recipient_UU
+        #File recipient_UU
         String donor_name
         String recipient_name
         String srr_name
@@ -27,7 +27,7 @@ workflow main {
             MM_bam = donor_MM,
             MU_bam = donor_MU,
             UM_bam = donor_UM,
-            UU_bam = donor_UU,
+            #UU_bam = donor_UU
             base_filename = "~{srr_name}-to-${donor_name}",
             resources = resources
     }
@@ -37,7 +37,7 @@ workflow main {
             MM_bam = recipient_MM,
             MU_bam = recipient_MU,
             UM_bam = recipient_UM,
-            UU_bam = recipient_UU,
+            #UU_bam = recipient_UU
             base_filename = "~{srr_name}-to-${recipient_name}",
             resources = resources
     }

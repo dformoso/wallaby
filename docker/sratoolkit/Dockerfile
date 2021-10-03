@@ -22,5 +22,13 @@ ENV PATH="/usr/local/ncbi/sra-toolkit/bin:${PATH}"
 RUN mkdir ~/.ncbi/
 COPY user-settings.mkfg /root/.ncbi
 
+WORKDIR /seqtk
+
+RUN apt-get update
+RUN apt-get install git build-essential libz-dev -y
+RUN git clone https://github.com/lh3/seqtk.git;
+RUN cd seqtk; make
+ENV PATH="/seqtk/seqtk:$PATH"
+
 WORKDIR /tmp
 CMD ["/bin/bash"]
