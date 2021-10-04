@@ -18,6 +18,7 @@ sudo docker run -itd \
     -e MYSQL_USER=cromwell \
     -e MYSQL_PASSWORD=cromwell \
     -e MYSQL_ALLOW_EMPTY_PASSWORD=yes \
+    -e TZ='Australia/Sydney' \
     -p 3306:3306 \
     mysql/mysql-server:8.0
 
