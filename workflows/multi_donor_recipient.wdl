@@ -15,7 +15,6 @@ workflow multi_donor_recipient {
         String recipient_name
         File recipient_ref_genome
         File srr_list
-        Float srr_sampling_rate
     }
 
     # Compute resources
@@ -43,7 +42,8 @@ workflow multi_donor_recipient {
         call download.srr as downloaded_srr {
             input:
                 srr = srr_name,
-                sampling_rate = srr_sampling_rate,
+                sample = "false",
+                sampling_factor = 0.2,
                 resources = server.size["local_instance"]
         }
 
