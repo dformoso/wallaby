@@ -6,7 +6,6 @@ import "../tasks/samtools.wdl" as samtools
 workflow main {
 
     input {
-        String aligner_type 
         File fastq_1
         File fastq_2
         Array[File] index_object
@@ -20,7 +19,6 @@ workflow main {
             index_object = index_object, 
             fastq_1 = fastq_1,
             fastq_2 = fastq_2,
-            aligner_type = aligner_type,
             out_file = "~{base_filename}.sam",
             resources = resources
     }

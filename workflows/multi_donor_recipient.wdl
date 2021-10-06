@@ -15,7 +15,6 @@ workflow multi_donor_recipient {
         String recipient_name
         File recipient_ref_genome
         File srr_list
-        String aligner_type
     }
 
     # Compute resources
@@ -28,14 +27,12 @@ workflow multi_donor_recipient {
     call align.index as donor_index { 
         input: 
             fasta = donor_ref_genome,
-            aligner_type = aligner_type,
             resources = server.size["local_instance"]
     }
 
     call align.index as recipient_index { 
         input: 
             fasta = recipient_ref_genome,
-            aligner_type = aligner_type,
             resources = server.size["local_instance"]
     }
 
@@ -105,8 +102,7 @@ workflow multi_donor_recipient {
                 recipient_index = recipient_index.index_object,
                 srr_name = srr_name,
                 fastq_1 = srr_trim_adapters.fastq_1_paired,
-                fastq_2 = srr_trim_adapters.fastq_2_paired,
-                aligner_type = aligner_type
+                fastq_2 = srr_trim_adapters.fastq_2_paired
         }
     }
 

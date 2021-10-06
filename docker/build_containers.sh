@@ -19,6 +19,7 @@ sudo docker build --rm -t dformoso/porechop:latest porechop
 sudo docker build --rm -t dformoso/trimmomatic:latest trimmomatic
 sudo docker build --rm -t dformoso/sratoolkit:latest sratoolkit
 sudo docker build --rm -t dformoso/bwa:latest bwa
+sudo docker build --rm -t dformoso/bwa_samtools:latest bwa_samtools
 sudo docker build --rm -t dformoso/star:latest star
 sudo docker build --rm -t dformoso/aligners:latest aligners
 sudo docker build --rm -t dformoso/picard-tools:latest picard-tools
@@ -41,6 +42,7 @@ sudo docker push dformoso/porechop:latest
 sudo docker push dformoso/sratoolkit:latest
 sudo docker push dformoso/trimmomatic:latest
 sudo docker push dformoso/bwa:latest
+sudo docker push dformoso/bwa_samtools:latest
 sudo docker push dformoso/star:latest
 sudo docker push dformoso/aligners:latest
 sudo docker push dformoso/picard-tools:latest

@@ -1,10 +1,11 @@
 version 1.0
 
-import "subworkflows/align.wdl" as align
+#import "subworkflows/align.wdl" as align
 import "subworkflows/bucketize.wdl" as bucketize
 import "subworkflows/cross.wdl" as cross
 #import "subworkflows/filter.wdl" as filter
 import "subworkflows/metrics.wdl" as metrics
+import "tasks/align.wdl" as align
 import "tasks/quality.wdl" as quality
 import "tasks/samtools.wdl" as samtools
 import "tasks/structs/compute.wdl"
@@ -21,8 +22,6 @@ workflow main {
         String srr_name
         File fastq_1
         File fastq_2
-
-        String aligner_type
     }
 
     # Compute resources
@@ -31,9 +30,8 @@ workflow main {
     # Donor Reference Genome
     
     ## Align
-    call align.main as donor_align {
+    call align.align_convert_index as donor_align {
         input:
-            aligner_type = aligner_type,
             index_object = donor_index,
             fastq_1 = fastq_1,
             fastq_2 = fastq_2,
@@ -52,9 +50,8 @@ workflow main {
     # Recipient Reference Genome
 
     ## Align 
-    call align.main as recipient_align {
+    call align.align_convert_index as recipient_align {
         input:
-            aligner_type = aligner_type,
             index_object = recipient_index,
             fastq_1 = fastq_1,
             fastq_2 = fastq_2,
