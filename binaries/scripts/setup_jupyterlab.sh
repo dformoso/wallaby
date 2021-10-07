@@ -9,7 +9,8 @@
 # The instance will be able to operate docker containers 
 # in the host system if docker is installed
 
-##### !!!! REPLACE YOUR LOCAL DIRECTORY BELOW !!!! #####
+pwd=`pwd`
+root_dir=`echo $pwd | rev | cut -d'/' -f4- | rev`
 
 sudo docker stop jupyter || true && docker rm jupyter || true
 sudo docker run -itd \
@@ -20,7 +21,7 @@ sudo docker run -itd \
   -e CHOWN_HOME=yes \
   --user root \
   -p 8888:8888 \
-  -v "/research/projects/wallaby:/home/jovyan/wallaby" \
+  -v "${root_dir}:/home/jovyan" \
   dformoso/jupyterlab:latest \
   start-notebook.sh --NotebookApp.token='' 
 

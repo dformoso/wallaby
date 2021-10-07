@@ -5,7 +5,8 @@
 
 # https://github.com/rocker-org/rocker-versioned
 
-##### !!!! REPLACE YOUR LOCAL DIRECTORY BELOW !!!! #####
+pwd=`pwd`
+root_dir=`echo $pwd | rev | cut -d'/' -f4- | rev`
 
 sudo docker stop rstudio || true && docker rm rstudio || true
 sudo docker run -itd \
@@ -15,7 +16,7 @@ sudo docker run -itd \
   -e USER=rstudio \
   -e PASSWORD=rstudio \
   -p 8787:8787 \
-  -v "/research/projects/wallaby:/home/rstudio/wallaby" \
+  -v "${root_dir}:/home/rstudio" \
   dformoso/rstudio:latest 
 
 # Access RStudio
