@@ -431,6 +431,7 @@ create_viz_donor <- function(ref_genome = "hg38",
         kp <- suppressWarnings(kpPlotDensity(kp, data = grange, 
                                              window.size = window.size, 
                                              col = "blue", r0 = r0, r1 = r1))
+        
         kpAxis(kp, ymax = kp$latest.plot$computed.values$max.density, 
                cex = 2, 
                r0 = r0, r1 = r1)
@@ -450,6 +451,7 @@ create_viz_recipient <- function(graph_type = "recipient",
     # reverse order of granges and granges_labels so that they plot in the right order
     # as plotKaryotype reverses it again
     granges <- rev(granges)
+    
     granges_labels <- rev(granges_labels)
     
     # Set up plot parameters
@@ -469,7 +471,13 @@ create_viz_recipient <- function(graph_type = "recipient",
                         plot.params = pp, 
                         labels.plotter = NULL, 
                         main = title,
-                        cex = 2)
+                        cex = 2,
+                        chromosomes=c("chr1", "chr2", "chr3", "chr4", "chr5", 
+                                      "chr6", "chr7", "chr8", "chr9", "chr10",
+                                      "chr11", "chr12", "chr13", "chr14", "chr15", 
+                                      "chr16", "chr17", "chr18", "chr19", "chr20",
+                                      "chr21", "chr22", "chrX", "chrY", "chrM"))
+
     kpAddChromosomeNames(kp, srt = 90, cex = 2) 
     
     # Create the tracks in the plot, depending on how many tracks there are
@@ -480,9 +488,10 @@ create_viz_recipient <- function(graph_type = "recipient",
         r0 <- (track_no-1) * track_width + (track_no-1) * track_sep
         r1 <- track_no * track_width + (track_no-1) * track_sep
         
-        kp <- suppressWarnings(kpPlotDensity(kp, data = grange, 
+        kp <- suppressWarnings(kpPlotDensity(kp, data = grange, ymin = 0,
                                              window.size = window.size, col = "blue", 
                                              r0 = r0, r1 = r1))
+        
         kpAxis(kp, ymax = kp$latest.plot$computed.values$max.density, 
                cex = 2, 
                r0 = r0, r1 = r1)
@@ -500,11 +509,13 @@ plot_all_srrs <- function(srr_names, srrs_summary_table, crossings, donor_grange
 
     # loop over all srrs
     for (srr_name in srr_names) {
-        # display title
+        # display main title
         display_markdown(paste("###", srr_name))
+        # display graph title
         display_markdown("#### Donor reads density graph")
         # graph donor analysis
-        png(paste("./plots/plots_donor_" , srr_name , ".png", sep = ""), width = 1480, height = 800, res = 60)
+        no_tracks <- length(donor_granges_all_srrs[[srr_name]])
+        png(paste("./plots/plots_donor_" , srr_name , ".png", sep = ""), width = 1480, height = 200*no_tracks, res = 60)
         title_prepend <- paste(srr_name, ' aligned to ', donor_name, ', and crossed with ', recipient_name, sep = "")
         create_viz_donor(ref_genome = donor_ref_genome, 
                          granges = donor_granges_all_srrs[[srr_name]],  
@@ -514,9 +525,11 @@ plot_all_srrs <- function(srr_names, srrs_summary_table, crossings, donor_grange
         dev.off()
         display_png(file=paste("./plots/plots_donor_", srr_name,".png", sep=""))
         
+        # display graph title
         display_markdown("#### Recipient reads density graph")
         # graph recipient analysis
-        png(paste("./plots/plots_recipient_" , srr_name , ".png", sep = ""), width = 1480, height = 800, res = 60)
+        no_tracks <- length(recip_granges_all_srrs[[srr_name]])
+        png(paste("./plots/plots_recipient_" , srr_name , ".png", sep = ""), width = 1480, height = 200*no_tracks, res = 60)
         title_prepend <- paste(srr_name, ' aligned to ', recipient_name, ', and crossed with ', donor_name, sep = "")
         create_viz_recipient(ref_genome="hg38", 
                              granges = recip_granges_all_srrs[[srr_name]], 
