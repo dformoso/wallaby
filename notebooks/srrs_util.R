@@ -362,12 +362,14 @@ plot_reads_region <- function(srr, id = 1, crossings_table_recipient, recip_bams
     
     # create a track which holds genes and exons names
     gr_track <- GeneRegionTrack(TxDb.Hsapiens.UCSC.hg38.knownGene,
-                                genome = 'hg38', exonAnnotation = 'transcript',
+                                genome = 'hg38', 
                                 chromosome = chr, name = "Exons", 
                                 background.title = "red", fill = "orange",
-                                transcriptAnnotation='gene', showID = TRUE, 
-                                geneSymbol = TRUE, showExonId = TRUE,
-                                collapseTranscripts = "shortest")
+                                showID = TRUE, collapse = TRUE,
+                                transcriptAnnotation = NULL, exonAnnotation = 'gene',
+                                showExonId = TRUE, mergeGroups = TRUE,
+                                showOverplotting = TRUE,
+                                max.height = 10, min.height = 0.01)
     
     # create a track which holds the reads, coloring mismatches and indels
     a_tracks <- mapply(function(x, y) { AlignmentsTrack(x, name = y, isPaired = TRUE, 
@@ -513,11 +515,14 @@ plot_all_srrs <- function(srr_names, srrs_summary_table,
                           crossings, donor_granges_all_srrs, recip_granges_all_srrs, 
                           recip_bams_all_srrs, donor_ref_genome, 
                           recipient_ref_genome, donor_name, recipient_name) {
-    # delete all existing plots in the "plots" folder
-    was_deleted <- do.call(file.remove, list(list.files("./plots", full.names = TRUE)))
 
     # loop over all srrs
     for (srr_name in srr_names) {
+        # delete all existing plots in the "plots" folder, and create directorty if it doesn't exist
+        image_folder <- paste("plots", "/", srr_name, sep = "")
+        suppressWarnings(dir.create(image_folder))
+        was_deleted <- do.call(file.remove, list(list.files(image_folder, full.names = TRUE)))
+        
         # extract table for srr
         crossings_table_recipient <- srrs_summary_table[srrs_summary_table[, srr == srr_name], ]
         crossings_table_recipient <- crossings_table_recipient[, !"srr"]
@@ -534,7 +539,7 @@ plot_all_srrs <- function(srr_names, srrs_summary_table,
             display_markdown("#### Donor reads density graph")
             # graph donor analysis
             no_tracks <- length(donor_granges_all_srrs[[srr_name]])
-            png(paste("./plots/plots_donor_" , srr_name , ".png", sep = ""), 
+            png(paste(image_folder, "/donor.png", sep = ""), 
                 width = 1480, height = 200 + 100*no_tracks, res = 60)
             title_prepend <- paste(srr_name, ' aligned to ', 
                                    donor_name, ', and crossed with ', 
@@ -545,13 +550,13 @@ plot_all_srrs <- function(srr_names, srrs_summary_table,
                              title_prepend = title_prepend)
             # display plot as image
             dev.off()
-            display_png(file=paste("./plots/plots_donor_", srr_name,".png", sep=""))
+            display_png(file=paste(image_folder, "/donor.png", sep=""))
 
             # display graph title
             display_markdown("#### Recipient reads density graph")
             # graph recipient analysis
             no_tracks <- length(recip_granges_all_srrs[[srr_name]])
-            png(paste("./plots/plots_recipient_" , srr_name , ".png", sep = ""), 
+            png(paste(image_folder, "/recipient.png", sep = ""), 
                 width = 1480, height = 200 + 100*no_tracks, res = 60)
             title_prepend <- paste(srr_name, ' aligned to ', 
                                    recipient_name, ', and crossed with ', 
@@ -562,7 +567,7 @@ plot_all_srrs <- function(srr_names, srrs_summary_table,
                                  title_prepend = title_prepend)
             # display plot as image
             dev.off()
-            display_png(file=paste("./plots/plots_recipient_", srr_name,".png", sep=""))
+            display_png(file=paste(image_folder, "/recipient.png", sep=""))
 
             # create a visualization for all 'id's
             for (idn in ids) {
@@ -572,7 +577,7 @@ plot_all_srrs <- function(srr_names, srrs_summary_table,
                         crossings_table_recipient[id == idn,]$unique_crossings[[1]], ",")))
                     height <- 400 + 150 * crossings_number
                     # open image writer
-                    png(paste("./plots/plots_reads_" , srr_name , idn, ".png", sep = ""), 
+                    png(paste(image_folder, "/reads_", idn, ".png", sep = ""), 
                         width = 1480, height = height, res = 60)
                         # plot graph
                         plot_reads_region(srr = srr_name,
@@ -585,7 +590,7 @@ plot_all_srrs <- function(srr_names, srrs_summary_table,
                                           donor_name, recipient_name)
                     # display plot as image
                     dev.off()
-                    display_png(file=paste("./plots/plots_reads_", srr_name, idn,".png", sep=""))
+                    display_png(file=paste(image_folder, "/reads_", idn,".png", sep=""))
             }
         }
     }
