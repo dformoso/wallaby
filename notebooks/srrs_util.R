@@ -327,6 +327,9 @@ plot_reads_region <- function(srr, id = 1, crossings_table_recipient, recip_bams
                               extend_left = 20, extend_right = 20, 
                               ref_genome, donor_name, recipient_name) {
     
+    
+    options(ucscChromosomeNames=FALSE)
+    
     # extend the graph to the left and right by this margin
     extend_left <- 20
     extend_right <- 20
@@ -487,7 +490,7 @@ create_viz_recipient <- function(graph_type = "recipient",
                                       "chr6", "chr7", "chr8", "chr9", "chr10",
                                       "chr11", "chr12", "chr13", "chr14", "chr15", 
                                       "chr16", "chr17", "chr18", "chr19", "chr20",
-                                      "chr21", "chr22", "chrX", "chrY", "chrM"))
+                                      "chr21", "chr22", "chrX", "chrY"))
 
     kpAddChromosomeNames(kp, srt = 90, cex = 2) 
     
@@ -532,7 +535,7 @@ plot_all_srrs <- function(srr_names, srrs_summary_table,
         # extract id list
         ids <- unlist(as.list(crossings_table_recipient[,"id"]$id))
         # skip if there's no overlaps
-        if (ids[[1]] != "<NA>") {
+        if (ids[[1]] != "<NA>" || length(ids[[1]]) == 0) {
              # display main title
             display_markdown(paste("###", srr_name))
             # display graph title
