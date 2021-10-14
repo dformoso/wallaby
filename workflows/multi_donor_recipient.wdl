@@ -123,12 +123,12 @@ workflow multi_donor_recipient {
         Array[Array[File]] out_bucket_recipient_bams = donor_recipient.out_bucket_recipient_bams
         Array[Array[File]] out_bucket_recipient_bais = donor_recipient.out_bucket_recipient_bais
 
-        Array[Array[File]] out_crossing_bams = donor_recipient.out_crossing_bams
-        Array[Array[File]] out_crossing_bais = donor_recipient.out_crossing_bais
-        Array[Array[File]] out_crossing_beds = donor_recipient.out_crossing_beds
+        Array[Array[File]] out_filtered_bams = donor_recipient.out_filtered_bams
+        Array[Array[File]] out_filtered_bais = donor_recipient.out_filtered_bais
+        Array[Array[File]] out_filtered_beds = donor_recipient.out_filtered_beds
 
         Array[File?] out_multiqc_before_and_after_trim_report = select_all(srr_multiqc_after_trim.out)
-        Array[File?] out_multiqc_all_donor_metrics_reports = select_all(donor_recipient.out_multiqc_donor_crossing_multiqc_report)
-        Array[File?] out_multiqc_all_recipient_metrics_reports = select_all(donor_recipient.out_multiqc_recipient_crossing_multiqc_report)
+        Array[File?] out_multiqc_all_donor_metrics_reports = select_all(donor_recipient.out_multiqc_donor_filtered_multiqc_report)
+        Array[File?] out_multiqc_all_recipient_metrics_reports = select_all(donor_recipient.out_multiqc_recipient_filtered_multiqc_report)
     }
 }

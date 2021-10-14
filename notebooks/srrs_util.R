@@ -105,7 +105,7 @@ summary_table_recipient <- function(granges,
                                     min_num_reads, 
                                     src,
                                     Hsapiens) {
-    
+
     # convert all granges to dataframes
     granges_df <- lapply(granges, annoGR2DF)
     # assign all granges labels (crossing names) as each dataframe's name
@@ -244,6 +244,8 @@ srrs_summary_table_recipient <- function(granges_list,
 
         # create a summary table for each granges object
         granges <- unname(granges_list[srr][[1]])
+        
+        # check if there are valid files for the given SRRs
         if (length(granges) != 0) {
             granges_labels <- str_split(names(granges_list[srr][[1]]), " ")
             summary_table <- summary_table_recipient (granges = granges,
@@ -257,25 +259,42 @@ srrs_summary_table_recipient <- function(granges_list,
             summary_table$srr <- srr
             # add the table to the list
             srrs_list[[srr]] <- summary_table
+        } else {
+            srrs_list[[srr]] <- data.table(srr = srr,
+                                           id = "<NA>",
+                                           chr = "<NA>", 
+                                           start = 0, 
+                                           stop = 0, 
+                                           num_crossings = 0, 
+                                           unique_crossings = "<NA>", 
+                                           num_reads = 0, 
+                                           gene_name = "<NA>", 
+                                           sequence = "<NA>")
         }
     }
-    
-    # bind all the tables by row
-    srrs_summary_table <- do.call(rbind, c(srrs_list, fill=TRUE))
-    # reorder the table
-    setcolorder(srrs_summary_table, c("srr", "id", "chr", "start", "stop", 
-                                      "num_crossings", "unique_crossings", 
-                                      "num_reads", "gene_name", "sequence"))
 
-    # stylize the output
-    srrs_summary_table %>%
-        kable("html") %>%
-        kable_styling(bootstrap_options = "striped", full_width = F, position = "left") %>%
-        column_spec(10, width = "30em", width_max = "30em") %>%
-        as.character() %>%
-        display_html()
-    
-    return (srrs_summary_table)
+    # check if there are valid files for the given SRRs
+    if (length(srrs_list) != 0) {
+        # bind all the tables by row
+        srrs_summary_table <- do.call(rbind, c(srrs_list, fill=TRUE))
+        # reorder the table
+        setcolorder(srrs_summary_table, c("srr", "id", "chr", "start", "stop", 
+                                          "num_crossings", "unique_crossings", 
+                                          "num_reads", "gene_name", "sequence"))
+
+        # stylize the output
+        srrs_summary_table %>%
+            kable("html") %>%
+            kable_styling(bootstrap_options = "striped", full_width = F, position = "left") %>%
+            column_spec(10, width = "30em", width_max = "30em") %>%
+            as.character() %>%
+            display_html()
+
+        return (srrs_summary_table)
+        } else {
+            print("No files matching SRRs")
+            return
+    }
 }
                                        
 # Function to Create a Summary Table for many SRRs
@@ -288,9 +307,11 @@ srrs_summary_table_donor <- function(granges_list,
     
     # iterate over all granges
     for (srr in names(granges_list)) {
-
+        
         # create a summary table for each granges object
         granges <- unname(granges_list[srr][[1]])
+        
+        # check if there are valid files for the given SRRs
         if (length(granges) != 0) {
             granges_labels <- str_split(names(granges_list[srr][[1]]), " ")
             summary_table <- summary_table_donor (granges = granges,
@@ -302,24 +323,39 @@ srrs_summary_table_donor <- function(granges_list,
             summary_table$srr <- srr
             # add the table to the list
             srrs_list[[srr]] <- summary_table
+        } else {
+            srrs_list[[srr]] <- data.table(srr = srr,
+                                           id = "<NA>",
+                                           chr = "<NA>", 
+                                           start = 0, 
+                                           stop = 0, 
+                                           num_crossings = 0, 
+                                           unique_crossings = "<NA>", 
+                                           num_reads = 0)
         }
     }
     
-    # bind all the tables by row
-    srrs_summary_table <- do.call(rbind, c(srrs_list, fill=TRUE))
-    # reorder the table
-    setcolorder(srrs_summary_table, c("srr", "id", "chr", "start", "stop", 
-                                      "num_crossings", "unique_crossings", 
-                                      "num_reads"))
+    # check if there are valid files for the given SRRs
+    if (length(srrs_list) != 0) {
+        # bind all the tables by row
+        srrs_summary_table <- do.call(rbind, c(srrs_list, fill=TRUE))
+        # reorder the table
+        setcolorder(srrs_summary_table, c("srr", "id", "chr", "start", "stop", 
+                                          "num_crossings", "unique_crossings", 
+                                          "num_reads"))
 
-    # stylize the output
-    srrs_summary_table %>%
-        kable("html") %>%
-        kable_styling(bootstrap_options = "striped", full_width = F, position = "left") %>%
-        as.character() %>%
-        display_html()
+        # stylize the output
+        srrs_summary_table %>%
+            kable("html") %>%
+            kable_styling(bootstrap_options = "striped", full_width = F, position = "left") %>%
+            as.character() %>%
+            display_html()
     
     return (srrs_summary_table)
+    } else {
+        print("No files matching SRRs")
+        return
+    }
 }
                                        
 # Function to create a visualization for specific overlap regions

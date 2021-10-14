@@ -1,14 +1,13 @@
 version 1.0
 
-#import "subworkflows/align.wdl" as align
 import "subworkflows/bucketize.wdl" as bucketize
 import "subworkflows/cross.wdl" as cross
-#import "subworkflows/filter.wdl" as filter
 import "subworkflows/metrics.wdl" as metrics
 import "tasks/align.wdl" as align
 import "tasks/quality.wdl" as quality
 import "tasks/samtools.wdl" as samtools
 import "tasks/structs/compute.wdl"
+import "tasks/filter.wdl" as filter
 
 workflow main {
 
@@ -73,11 +72,9 @@ workflow main {
             donor_MM = donor_bucketize.MM,
             donor_MU = donor_bucketize.MU,
             donor_UM = donor_bucketize.UM,
-            #donor_UU = donor_bucketize.UU,
             recipient_MM = recipient_bucketize.MM,
             recipient_MU = recipient_bucketize.MU,
             recipient_UM = recipient_bucketize.UM,
-            #recipient_UU = recipient_bucketize.UU,
             donor_name = "${donor_name}",
             recipient_name = "${recipient_name}",
             srr_name = "${srr_name}",
@@ -85,21 +82,26 @@ workflow main {
     }
 
     # Filter out low complexity sequences
-#    call filter.main as filtered {
-#        input:
-#            bam_files = crossing.bams,
-#            filter_shorter_than = 5,
-#            filter_longer_than = 10000,
-#            filter_if_avg_quality_below = 20,
-#            filter_if_gc_content_lower_than = 10,
-#            filter_if_gc_content_higher_than = 90,
-#            low_complexity_method = 'dust',
-#            low_complexity_threshold = '7',
-#            resources = server.size["local_instance"]
-#    }
+    scatter (bam in crossing.bams) {
+        call filter.bam_reads as filtered {
+            input:
+                bam = bam,
+                filter = "true",
+                validation_stringency = "SILENT",
+                filter_shorter_than = 5,
+                filter_longer_than = 10000,
+                filter_if_avg_quality_below = 20,
+                filter_if_gc_content_lower_than = 30,
+                filter_if_gc_content_higher_than = 70,
+                low_complexity_method = 'dust',
+                low_complexity_threshold = '20',
+                filter_type = "includeReadList",
+                resources = server.size["local_instance"]
+        }
+    }
 
     # Create indexes (BAI files) for all crossed_filtered BAM files
-    scatter (bam in crossing.bams) {
+    scatter (bam in filtered.bams) {
         call samtools.index as indexing_bams {
             input:
                 file = bam,
@@ -108,7 +110,7 @@ workflow main {
     }
 
     # Create BED files for all crossed_filtered BAM files
-    scatter (bam in crossing.bams) {
+    scatter (bam in filtered.bams) {
         call samtools.bam_to_bed as bams_to_beds {
             input:
                 file = bam,
@@ -129,20 +131,20 @@ workflow main {
             resources = server.size["local_instance"]
     }
     
-    call metrics.main as crossing_metrics {
+    call metrics.main as filtered_metrics {
         input:
-            bams = crossing.bams,
+            bams = filtered.bams,
             resources = server.size["local_instance"]
     }
 
     # Compare quality control for all donor files
-    call quality.multi_qc as donor_crossing_multiqc {
+    call quality.multi_qc as donor_filtered_multiqc {
         input:
             quality_files = flatten(
                 [
-                crossing.bams,
-                crossing_metrics.stats,
-                crossing_metrics.flagstats
+                filtered.bams,
+                filtered_metrics.stats,
+                filtered_metrics.flagstats
                 ]),
             report_name = "${srr_name}-to-${donor_name}_multiqc_metrics.html",
             enable_fullnames = false,
@@ -151,13 +153,13 @@ workflow main {
     }
 
     # Compare quality control for all recipient files
-    call quality.multi_qc as recipient_crossing_multiqc {
+    call quality.multi_qc as recipient_filtered_multiqc {
         input:
             quality_files = flatten(
                 [
-                crossing.bams,
-                crossing_metrics.stats,
-                crossing_metrics.flagstats
+                filtered.bams,
+                filtered_metrics.stats,
+                filtered_metrics.flagstats
                 ]),
             report_name = "${srr_name}-to-${recipient_name}_multiqc_metrics.html",
             enable_fullnames = false,
@@ -171,9 +173,9 @@ workflow main {
         Array[File] out_bucket_recipient_bams = recipient_bucketize.bams
         Array[File] out_bucket_recipient_bais = recipient_bucketize.bais
 
-        Array[File] out_crossing_bams = crossing.bams
-        Array[File] out_crossing_bais = indexing_bams.out
-        Array[File] out_crossing_beds = bams_to_beds.out
+        Array[File] out_filtered_bams = filtered.bams
+        Array[File] out_filtered_bais = indexing_bams.out
+        Array[File] out_filtered_beds = bams_to_beds.out
 
         Array[File] out_donor_stats = donor_bucketized_metrics.stats
         Array[File] out_donor_flagstats = donor_bucketized_metrics.flagstats
@@ -181,10 +183,10 @@ workflow main {
         Array[File] out_recipient_stats = recipient_bucketized_metrics.stats
         Array[File] out_recipient_flagstats = recipient_bucketized_metrics.flagstats
 
-        Array[File] out_crossing_stats = crossing_metrics.stats
-        Array[File] out_crossing_flagstats = crossing_metrics.flagstats
+        Array[File] out_filtered_stats = filtered_metrics.stats
+        Array[File] out_filtered_flagstats = filtered_metrics.flagstats
 
-        File? out_multiqc_donor_crossing_multiqc_report = donor_crossing_multiqc.out
-        File? out_multiqc_recipient_crossing_multiqc_report = recipient_crossing_multiqc.out
+        File? out_multiqc_donor_filtered_multiqc_report = donor_filtered_multiqc.out
+        File? out_multiqc_recipient_filtered_multiqc_report = recipient_filtered_multiqc.out
     }
 }
