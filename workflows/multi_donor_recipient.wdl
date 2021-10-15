@@ -118,17 +118,14 @@ workflow multi_donor_recipient {
         Array[File] out_post_fastq_1_html = srr_fastqc_after_trim.fastq_1_html
         Array[File] out_post_fastq_2_html = srr_fastqc_after_trim.fastq_2_html
 
-        Array[Array[File]] out_bucket_donor_bams = donor_recipient.out_bucket_donor_bams
-        Array[Array[File]] out_bucket_donor_bais = donor_recipient.out_bucket_donor_bais
-        Array[Array[File]] out_bucket_recipient_bams = donor_recipient.out_bucket_recipient_bams
-        Array[Array[File]] out_bucket_recipient_bais = donor_recipient.out_bucket_recipient_bais
+        Array[Array[File]] out_filtered_bams = donor_recipient.filtered_bams
+        Array[Array[File]] out_filtered_bais = donor_recipient.filtered_bais
+        Array[Array[File]] out_filtered_beds = donor_recipient.filtered_beds
 
-        Array[Array[File]] out_filtered_bams = donor_recipient.out_filtered_bams
-        Array[Array[File]] out_filtered_bais = donor_recipient.out_filtered_bais
-        Array[Array[File]] out_filtered_beds = donor_recipient.out_filtered_beds
+        Array[File?] out_multiqc_before_and_after_trim_html = select_all(srr_multiqc_after_trim.html)
+        Array[File?] out_multiqc_before_and_after_trim_zip = select_all(srr_multiqc_after_trim.zip)
 
-        Array[File?] out_multiqc_before_and_after_trim_report = select_all(srr_multiqc_after_trim.out)
-        Array[File?] out_multiqc_all_donor_metrics_reports = select_all(donor_recipient.out_multiqc_donor_filtered_multiqc_report)
-        Array[File?] out_multiqc_all_recipient_metrics_reports = select_all(donor_recipient.out_multiqc_recipient_filtered_multiqc_report)
+        Array[File?] out_multiqc_all_donor = select_all(donor_recipient.multiqc_donor_filtered_html)
+        Array[File?] out_multiqc_all_recipient = select_all(donor_recipient.multiqc_recipient_filtered_zip)
     }
 }

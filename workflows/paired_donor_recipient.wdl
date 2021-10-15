@@ -91,10 +91,10 @@ workflow main {
                 filter_shorter_than = 5,
                 filter_longer_than = 10000,
                 filter_if_avg_quality_below = 20,
-                filter_if_gc_content_lower_than = 30,
-                filter_if_gc_content_higher_than = 70,
+                filter_if_gc_content_lower_than = 10,
+                filter_if_gc_content_higher_than = 90,
                 low_complexity_method = 'dust',
-                low_complexity_threshold = '20',
+                low_complexity_threshold = '7',
                 filter_type = "includeReadList",
                 resources = server.size["local_instance"]
         }
@@ -168,25 +168,22 @@ workflow main {
     }
 
     output {
-        Array[File] out_bucket_donor_bams = donor_bucketize.bams
-        Array[File] out_bucket_donor_bais = donor_bucketize.bais
-        Array[File] out_bucket_recipient_bams = recipient_bucketize.bams
-        Array[File] out_bucket_recipient_bais = recipient_bucketize.bais
+        Array[File] filtered_bams = filtered.bams
+        Array[File] filtered_bais = indexing_bams.out
+        Array[File] filtered_beds = bams_to_beds.out
 
-        Array[File] out_filtered_bams = filtered.bams
-        Array[File] out_filtered_bais = indexing_bams.out
-        Array[File] out_filtered_beds = bams_to_beds.out
+        Array[File] donor_stats = donor_bucketized_metrics.stats
+        Array[File] donor_flagstats = donor_bucketized_metrics.flagstats
 
-        Array[File] out_donor_stats = donor_bucketized_metrics.stats
-        Array[File] out_donor_flagstats = donor_bucketized_metrics.flagstats
+        Array[File] recipient_stats = recipient_bucketized_metrics.stats
+        Array[File] recipient_flagstats = recipient_bucketized_metrics.flagstats
 
-        Array[File] out_recipient_stats = recipient_bucketized_metrics.stats
-        Array[File] out_recipient_flagstats = recipient_bucketized_metrics.flagstats
+        Array[File] filtered_stats = filtered_metrics.stats
+        Array[File] filtered_flagstats = filtered_metrics.flagstats
 
-        Array[File] out_filtered_stats = filtered_metrics.stats
-        Array[File] out_filtered_flagstats = filtered_metrics.flagstats
-
-        File? out_multiqc_donor_filtered_multiqc_report = donor_filtered_multiqc.out
-        File? out_multiqc_recipient_filtered_multiqc_report = recipient_filtered_multiqc.out
+        File? multiqc_donor_filtered_html = donor_filtered_multiqc.html
+        File? multiqc_donor_filtered_zip = donor_filtered_multiqc.zip
+        File? multiqc_recipient_filtered_html = recipient_filtered_multiqc.html
+        File? multiqc_recipient_filtered_zip = recipient_filtered_multiqc.zip
     }
 }

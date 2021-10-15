@@ -64,13 +64,15 @@ task multi_qc {
             multiqc \
                 -n ~{report_name} \
                 ~{true="--fullnames" false="" enable_fullnames} \
+                --zip-data-dir \
                 ~{include} \
                 -c multiqc_config.txt
         fi
     >>>
 
     output {
-        File? out = "~{report_name}"
+        File? html = "~{report_name}"
+        File? zip = "~{basename(report_name, ".html")}_data.zip"
     }
 
     runtime {
