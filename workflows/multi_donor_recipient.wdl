@@ -82,7 +82,7 @@ workflow multi_donor_recipient {
         }
 
         # Compare quality control SRRs metrics before and after trimmomatic
-        call quality.multi_qc as srr_multiqc_after_trim {
+        call quality.multi_qc as srr_multiqc_trim {
             input:
                 quality_files = flatten(
                     [
@@ -122,8 +122,8 @@ workflow multi_donor_recipient {
         Array[Array[File]] out_filtered_bais = donor_recipient.filtered_bais
         Array[Array[File]] out_filtered_beds = donor_recipient.filtered_beds
 
-        Array[File?] out_multiqc_before_and_after_trim_html = select_all(srr_multiqc_after_trim.html)
-        Array[File?] out_multiqc_before_and_after_trim_zip = select_all(srr_multiqc_after_trim.zip)
+        Array[File?] out_multiqc_trim_html = select_all(srr_multiqc_trim.html)
+        Array[File?] out_multiqc_trim_zip = select_all(srr_multiqc_trim.zip)
 
         Array[File?] out_multiqc_all_donor = select_all(donor_recipient.multiqc_donor_filtered_html)
         Array[File?] out_multiqc_all_recipient = select_all(donor_recipient.multiqc_recipient_filtered_zip)
