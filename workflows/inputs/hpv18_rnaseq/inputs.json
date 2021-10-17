@@ -3,5 +3,5 @@
     "multi_donor_recipient.donor_ref_genome": "../../data/ref_genomes/hpv/HPV18.fa",
     "multi_donor_recipient.recipient_name": "UCSChg38",
     "multi_donor_recipient.recipient_ref_genome": "../../data/ref_genomes/human/hg38.fa",
-    "multi_donor_recipient.srr_list": "../../workflows/inputs/hpv18_srr_list.txt"
+    "multi_donor_recipient.srr_list": "../../workflows/inputs/hpv18_rnaseq/srr_list.txt"
 }

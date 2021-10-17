@@ -24,7 +24,7 @@ workflow main {
     }
 
     # Compute resources
-    Compute server = read_json("../config/sizes.json")
+    Compute server = read_json("../inputs/sizes.json")
 
     # Donor Reference Genome
     
@@ -119,15 +119,9 @@ workflow main {
     }
 
     # Calculate metrics
-    call metrics.main as donor_bucketized_metrics {
+    call metrics.main as crossing_metrics {
         input:
-            bams = donor_bucketize.bams,
-            resources = server.size["local_instance"]
-    }
-
-    call metrics.main as recipient_bucketized_metrics {
-        input:
-            bams = recipient_bucketize.bams,
+            bams = crossing.bams,
             resources = server.size["local_instance"]
     }
     
@@ -138,30 +132,36 @@ workflow main {
     }
 
     # Compare quality control for all donor files
-    call quality.multi_qc as donor_filtered_multiqc {
+    call quality.multi_qc as donor_multiqc {
         input:
             quality_files = flatten(
                 [
+                crossing.bams,
+                crossing_metrics.stats,
+                crossing_metrics.flagstats,
                 filtered.bams,
                 filtered_metrics.stats,
                 filtered_metrics.flagstats
                 ]),
-            report_name = "${srr_name}-to-${donor_name}_multiqc_metrics.html",
+            report_name = "${srr_name}-to-${donor_name}_multiqc_report.html",
             enable_fullnames = false,
             include = "../inputs/*/*${donor_name}*",
             resources = server.size["local_instance"]
     }
 
     # Compare quality control for all recipient files
-    call quality.multi_qc as recipient_filtered_multiqc {
+    call quality.multi_qc as recipient_multiqc {
         input:
             quality_files = flatten(
                 [
+                crossing.bams,
+                crossing_metrics.stats,
+                crossing_metrics.flagstats,
                 filtered.bams,
                 filtered_metrics.stats,
                 filtered_metrics.flagstats
                 ]),
-            report_name = "${srr_name}-to-${recipient_name}_multiqc_metrics.html",
+            report_name = "${srr_name}-to-${recipient_name}_multiqc_report.html",
             enable_fullnames = false,
             include = "../inputs/*/*${recipient_name}*",
             resources = server.size["local_instance"]
@@ -172,18 +172,9 @@ workflow main {
         Array[File] filtered_bais = indexing_bams.out
         Array[File] filtered_beds = bams_to_beds.out
 
-        Array[File] donor_stats = donor_bucketized_metrics.stats
-        Array[File] donor_flagstats = donor_bucketized_metrics.flagstats
-
-        Array[File] recipient_stats = recipient_bucketized_metrics.stats
-        Array[File] recipient_flagstats = recipient_bucketized_metrics.flagstats
-
-        Array[File] filtered_stats = filtered_metrics.stats
-        Array[File] filtered_flagstats = filtered_metrics.flagstats
-
-        File? multiqc_donor_filtered_html = donor_filtered_multiqc.html
-        File? multiqc_donor_filtered_zip = donor_filtered_multiqc.zip
-        File? multiqc_recipient_filtered_html = recipient_filtered_multiqc.html
-        File? multiqc_recipient_filtered_zip = recipient_filtered_multiqc.zip
+        File? multiqc_donor_html = donor_multiqc.html
+        File? multiqc_donor_zip = donor_multiqc.zip
+        File? multiqc_recipient_html = recipient_multiqc.html
+        File? multiqc_recipient_zip = recipient_multiqc.zip
     }
 }

@@ -1,13 +1,13 @@
-womtool-*.jar
 cromwell-*.jar
 data/blast/
 data/ref_genomes/human/*
 workflows/cromwell-*
 workflows/outputs*
+workflows/executions/
+notebooks/plots/
 legacy/
 .*
 .*/
 .git/*
 .ipynb_checkpoints
 diagrams/
-wdl-ide/

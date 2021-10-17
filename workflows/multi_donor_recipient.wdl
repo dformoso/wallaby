@@ -18,7 +18,7 @@ workflow multi_donor_recipient {
     }
 
     # Compute resources
-    Compute server = read_json("../config/sizes.json")
+    Compute server = read_json("../inputs/sizes.json")
     
     # Download all FASTQ files from the given SRR numbers
     Array[String] srrs = read_lines(srr_list)
@@ -89,7 +89,7 @@ workflow multi_donor_recipient {
                     srr_fastqc_before_trim.files,
                     srr_fastqc_after_trim.files
                     ]),
-                report_name = "${srr_name}_multiqc_trim_report.html",
+                report_name = "${srr_name}_multiqc_report.html",
                 include = "../inputs/*",            
                 resources = server.size["local_instance"]
         }
@@ -108,16 +108,6 @@ workflow multi_donor_recipient {
     }
 
     output {        
-        Array[File] out_pre_fastq_1_zip = srr_fastqc_before_trim.fastq_1_zip
-        Array[File] out_pre_fastq_2_zip = srr_fastqc_before_trim.fastq_2_zip
-        Array[File] out_pre_fastq_1_html = srr_fastqc_before_trim.fastq_1_html
-        Array[File] out_pre_fastq_2_html = srr_fastqc_before_trim.fastq_2_html
-
-        Array[File] out_post_fastq_1_zip = srr_fastqc_after_trim.fastq_1_zip
-        Array[File] out_post_fastq_2_zip = srr_fastqc_after_trim.fastq_2_zip
-        Array[File] out_post_fastq_1_html = srr_fastqc_after_trim.fastq_1_html
-        Array[File] out_post_fastq_2_html = srr_fastqc_after_trim.fastq_2_html
-
         Array[Array[File]] out_filtered_bams = donor_recipient.filtered_bams
         Array[Array[File]] out_filtered_bais = donor_recipient.filtered_bais
         Array[Array[File]] out_filtered_beds = donor_recipient.filtered_beds
@@ -125,7 +115,9 @@ workflow multi_donor_recipient {
         Array[File?] out_multiqc_trim_html = select_all(srr_multiqc_trim.html)
         Array[File?] out_multiqc_trim_zip = select_all(srr_multiqc_trim.zip)
 
-        Array[File?] out_multiqc_all_donor = select_all(donor_recipient.multiqc_donor_filtered_html)
-        Array[File?] out_multiqc_all_recipient = select_all(donor_recipient.multiqc_recipient_filtered_zip)
+        Array[File?] out_multiqc_donor_html = select_all(donor_recipient.multiqc_donor_html)
+        Array[File?] out_multiqc_donor_zip = select_all(donor_recipient.multiqc_donor_zip)
+        Array[File?] out_multiqc_recipient_html = select_all(donor_recipient.multiqc_recipient_html)
+        Array[File?] out_multiqc_recipient_zip = select_all(donor_recipient.multiqc_recipient_zip)
     }
 }

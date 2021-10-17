@@ -88,7 +88,7 @@ task bam_reads {
                 then 
                 java -jar /usr/picard/picard.jar FilterSamReads \
                     ~{"INPUT=" + bam} \
-                    ~{"OUTPUT=" + "~{basename(bam, ".bam")}.bam"} \
+                    ~{"OUTPUT=" + "~{basename(bam, ".bam")}_filtered.bam"} \
                     ~{"READ_LIST_FILE=" + "filtered_reads.merged.txt"} \
                     ~{"FILTER=" + filter_type}
                 fi
@@ -104,7 +104,7 @@ task bam_reads {
     >>>
 
     output {
-        File bams = "~{basename(bam, ".bam")}.bam"
+        File bams = "~{basename(bam, ".bam")}_filtered.bam"
     }
 
     runtime {

@@ -42,7 +42,7 @@ load_beds <- function(srr_names, crossings, name) {
                                                     '-to-',
                                                     name,
                                                     "_", cross, 
-                                                    ".bed", 
+                                                    "_filtered.bed", 
                                                     sep = ""), 
                                       recursive = TRUE, 
                                       full.names = TRUE)
@@ -79,7 +79,7 @@ load_bams <- function(srr_names, crossings, name) {
                                                     '-to-',
                                                     name,
                                                     "_", cross, 
-                                                    ".bam$", 
+                                                    "_filtered.bam$", 
                                                     sep = ""), 
                                       recursive = TRUE, 
                                       full.names = TRUE)
@@ -360,15 +360,11 @@ srrs_summary_table_donor <- function(granges_list,
                                        
 # Function to create a visualization for specific overlap regions
 plot_reads_region <- function(srr, id = 1, crossings_table_recipient, recip_bams,
-                              extend_left = 20, extend_right = 20, 
+                              extend_left, extend_right, 
                               ref_genome, donor_name, recipient_name) {
     
     
     options(ucscChromosomeNames=FALSE)
-    
-    # extend the graph to the left and right by this margin
-    extend_left <- 20
-    extend_right <- 20
     
     # extract chromosome, start, and end positions from the given overlap table
     chr <- toString(crossings_table_recipient[id,]$chr)
@@ -553,13 +549,14 @@ create_viz_recipient <- function(graph_type = "recipient",
 plot_all_srrs <- function(srr_names, srrs_summary_table, 
                           crossings, donor_granges_all_srrs, recip_granges_all_srrs, 
                           recip_bams_all_srrs, donor_ref_genome, 
-                          recipient_ref_genome, donor_name, recipient_name) {
+                          recipient_ref_genome, donor_name, recipient_name,
+                          extend_left = 20, extend_right = 20) {
 
     # loop over all srrs
     for (srr_name in srr_names) {
         # delete all existing plots in the "plots" folder, and create directorty if it doesn't exist
-        image_folder <- paste("plots", "/", srr_name, sep = "")
-        suppressWarnings(dir.create(image_folder))
+        image_folder <- paste("plots", "/", donor_name, "/", srr_name, sep = "")
+        suppressWarnings(dir.create(image_folder, recursive = TRUE))
         was_deleted <- do.call(file.remove, list(list.files(image_folder, full.names = TRUE)))
         
         # extract table for srr
@@ -623,8 +620,8 @@ plot_all_srrs <- function(srr_names, srrs_summary_table,
                                           id = as.integer(idn), 
                                           crossings_table_recipient = crossings_table_recipient, 
                                           recip_bams = recip_bams,
-                                          extend_left = 20, 
-                                          extend_right = 20, 
+                                          extend_left = extend_left, 
+                                          extend_right = extend_right, 
                                           ref_genome = recipient_ref_genome, 
                                           donor_name, recipient_name)
                     # display plot as image

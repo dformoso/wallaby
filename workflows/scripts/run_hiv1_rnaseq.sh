@@ -4,8 +4,8 @@
 
 java \
   -DLOG_MODE=pretty \
-  -Dconfig.file=../../cromwell_config/local_cpu.conf \
+  -Dconfig.file=../cromwell_config/local_cpu.conf \
   -jar ../../binaries/cromwell-69.jar \
     run ../multi_donor_recipient.wdl \
-    --inputs ../inputs/hiv1_inputs.json \
-    --options ../../cromwell_config/hiv1_rnaseq_options.json
+    --inputs ../inputs/hiv1_rnaseq/inputs.json \
+    --options ../inputs/hiv1_rnaseq/options.json
