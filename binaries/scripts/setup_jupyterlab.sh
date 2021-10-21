@@ -25,7 +25,6 @@ sudo docker run -itd \
   dformoso/jupyterlab:latest \
   start-notebook.sh --NotebookApp.token='' 
 
-
 # Access Jupyter
   # http://localhost:8888/lab
 

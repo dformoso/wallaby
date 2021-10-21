@@ -16,7 +16,7 @@ setup_enviroment <- function() {
 
     # List of Bioconductor packages to either Load, or Install and Load
     pacman::p_load(BSgenome, BSgenome.Hsapiens.UCSC.hg38, GenomicFeatures, 
-                   GenomicAlignments,  Rsubread,  Rsamtools, bamsignals, ensembldb,
+                   GenomicAlignments, Rsubread, Rsamtools, bamsignals, ensembldb,
                    rtracklayer, GenomicRanges, org.Hs.eg.db, Organism.dplyr,
                    TxDb.Hsapiens.UCSC.hg38.knownGene, regioneR, karyoploteR,
                    seqinr, Repitools, Gviz, Biostrings, install = FALSE)
@@ -385,8 +385,11 @@ plot_reads_region <- function(srr, id = 1, crossings_table_recipient, recip_bams
         bams <- c(bams, recip_bams[grepl(crossing, recip_bams, fixed = TRUE)])
     }
     
+    data <- read.table("../../wallaby/data/ref_genomes/human/cytoBandIdeo.txt", header=F, sep="\t")
+    colnames(data) <-c('chrom', 'chromStart', 'chromEnd', 'name', 'gieStain')
     # create a track which holds a schematic display of a chromosome
-    i_track <- IdeogramTrack(genome = "hg38", chromosome = chr, 
+    i_track <- IdeogramTrack(genome = "hg38", bands = data,
+                             chromosome = chr, 
                              from = as.numeric(start) - extend_left, 
                              to = as.numeric(end) + extend_right, 
                              showId = TRUE,  showBandId = TRUE, 
@@ -407,16 +410,30 @@ plot_reads_region <- function(srr, id = 1, crossings_table_recipient, recip_bams
                                 max.height = 10, min.height = 0.01)
     
     # create a track which holds the reads, coloring mismatches and indels
-    a_tracks <- mapply(function(x, y) { AlignmentsTrack(x, name = y, isPaired = TRUE, 
-                                                        stacking = 'full', max.height = 10,
-                                                        chromosome = chr, min.height = 0.01, 
-                                                        background.title = "blue", fill="black",
-                                                        alpha = 0.90, alpha.mismatch = 1,
-                                                        type = "pileup", showMismatches = TRUE, 
-                                                        showIndels = TRUE, col.mates = "purple", 
-                                                        from = as.numeric(start) - extend_left, 
-                                                        to = as.numeric(end) + extend_right)
-                                      }, bams, crossings)
+    a_tracks <- mapply(function(x, y) { 
+        bam <- scanBam(x, 
+                       use.names = TRUE, 
+                       strandMode = TRUE,
+                       flag = scanBamFlag(isUnmappedQuery = FALSE), 
+                       param = ScanBamParam(
+                           what = c("cigar"), 
+                           which = GRanges(
+                               seqnames = Rle(c(chr)),      
+                               ranges = IRanges(as.numeric(as.numeric(start) - extend_left):as.numeric(as.numeric(end) + extend_right))
+                           )))[[1]]
+        
+        track <- AlignmentsTrack(x, name = y, 
+                        isPaired = TRUE, 
+                        stacking = 'full', max.height = 10,
+                        chromosome = chr, min.height = 0.01, 
+                        background.title = "blue", fill="black",
+                        alpha = 0.90, alpha.mismatch = 1,
+                        type = "pileup", showMismatches = TRUE, 
+                        showIndels = TRUE, col.mates = "purple", 
+                        from = as.numeric(start) - extend_left, 
+                        to = as.numeric(end) + extend_right)
+        
+    }, bams, crossings)
     
     # create a track which holds each letter
     s_track <- SequenceTrack(readDNAStringSet(recipient_ref_genome), chromosome = chr, min.width = 0.1, cex = 0.5)

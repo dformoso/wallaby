@@ -28,7 +28,12 @@ RUN cd /usr/local/bin && \
 RUN cp /usr/local/bin/bedops-${bedops_version}/bin/* /usr/local/bin/
 ENV PATH /usr/local/bin/bedops-${bedops_version}/bin:$PATH
 
+RUN apt-get update && apt-get install -y npm
+
 USER $NB_UID
+
+RUN pip install nbtools==21.9.0b1
+RUN pip install igv-jupyter && jupyter lab build
 
 COPY install_libraries.R .
 RUN Rscript install_libraries.R

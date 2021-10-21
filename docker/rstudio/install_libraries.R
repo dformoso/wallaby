@@ -18,40 +18,10 @@ package.check <- lapply(
   }
 )
 
-# Options for tricky packages a.k.a.: BSgenome.Hsapiens.UCSC.hg38
-options(timeout = 300)
-BiocManager::install("BSgenome.Hsapiens.UCSC.hg38")
-
 # List of CRAN packages to either Load, or Install and Load
-pacman::p_load(dplyr, 
-               ggplot2,
-               shiny,
-               shinyLP,
-               DT, 
-               ggrepel, 
-               tidyr,, 
-               data.table,
-               kableExtra,
-               knitr,
-               IRdisplay,
-               shiny)
+pacman::p_load(shiny)
 
 # List of Bioconductor packages to either Load, or Install and Load
-pacman::p_load(BSgenome,
-               BSgenome.Hsapiens.UCSC.hg38,
-               GenomicFeatures,
-               GenomicAlignments, 
-               Rsubread, 
-               Rsamtools,
-               bamsignals, 
-               rtracklayer,
-               GenomicRanges,
-               TxDb.Hsapiens.UCSC.hg38.knownGene, 
-               regioneR,
-               karyoploteR, 
-               seqinr,
-               Repitools,
-               org.Hs.eg.db, 
-               Organism.dplyr,
-               Gviz, 
-               Biostrings)
+pacman::p_load(igvR, 
+               VariantAnnotation, 
+               AnnotationHub)
