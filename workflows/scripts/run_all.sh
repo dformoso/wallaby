@@ -4,4 +4,3 @@
 
 ./run_hpv16_rnaseq.sh
 ./run_hpv18_rnaseq.sh
-./run_hiv1_rnaseq.sh

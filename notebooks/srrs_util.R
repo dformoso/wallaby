@@ -206,7 +206,7 @@ summary_table_donor <- function(granges,
     merged_final <- merged_final[merged_final[, num_reads > (min_num_reads - 1)]]
     merged_final <- merged_final[merged_final[, num_crossings > (min_num_crossings - 1)]]
 
-        # there might be no matches, so check for that before looking for a gene name
+    # there might be no matches, so check for that before looking for a gene name
     if (nrow(merged_final) != 0) {
         # delete the 'group' column
         merged_final <- merged_final[, !"group"]

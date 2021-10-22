@@ -2,6 +2,7 @@ version 1.0
 
 import "qnames.wdl" as qnames
 import "../tasks/tools.wdl" as tools
+import "../tasks/samtools.wdl" as samtools
 import "../tasks/picard.wdl" as picard
 
 workflow main {
@@ -441,39 +442,56 @@ workflow main {
 #            resources = resources
 #        }
 
+    # Merging files that belong to the same group
+    call samtools.merge as donor_1Md_2Mr { 
+        input: 
+            files = select_all([donor_MUd_MMr.out, donor_UMd_MMr.out]), 
+            out_file = "~{srr_name}-to-~{donor_name}_1Md_2Mr.bam",
+            resources = resources
+        }
+
+    call samtools.merge as donor_1Md_1Mr { 
+        input: 
+            files = select_all([donor_MUd_UMr.out, donor_UMd_MUr.out]), 
+            out_file = "~{srr_name}-to-~{donor_name}_1Md_1Mr.bam",
+            resources = resources
+        }
+
+    call samtools.merge as donor_2Md_1Mr { 
+        input: 
+            files = select_all([donor_MMd_MUr.out, donor_MMd_UMr.out]), 
+            out_file = "~{srr_name}-to-~{donor_name}_2Md_1Mr.bam",
+            resources = resources
+        }
+
+    call samtools.merge as recipient_1Md_2Mr { 
+        input: 
+            files = select_all([recipient_MUd_MMr.out, recipient_UMd_MMr.out]), 
+            out_file = "~{srr_name}-to-~{recipient_name}_1Md_2Mr.bam",
+            resources = resources
+        }
+
+    call samtools.merge as recipient_1Md_1Mr { 
+        input: 
+            files = select_all([recipient_MUd_UMr.out, recipient_UMd_MUr.out]), 
+            out_file = "~{srr_name}-to-~{recipient_name}_1Md_1Mr.bam",
+            resources = resources
+        }
+
+    call samtools.merge as recipient_2Md_1Mr { 
+        input: 
+            files = select_all([recipient_MMd_MUr.out, recipient_MMd_UMr.out]), 
+            out_file = "~{srr_name}-to-~{recipient_name}_2Md_1Mr.bam",
+            resources = resources
+        }
+
     Array[File?] all_bams = [
-        #donor_MMd_MMr.out, 
-        donor_MMd_MUr.out, 
-        donor_MMd_UMr.out, 
-        #donor_MMd_UUr.out, 
-        donor_MUd_MMr.out, 
-        #donor_MUd_MUr.out, 
-        donor_MUd_UMr.out, 
-        #donor_MUd_UUr.out, 
-        donor_UMd_MMr.out, 
-        donor_UMd_MUr.out, 
-        #donor_UMd_UMr.out, 
-        #donor_UMd_UUr.out, 
-        #donor_UUd_MMr.out, 
-        #donor_UUd_MUr.out, 
-        #donor_UUd_UMr.out, 
-        #donor_UUd_UUr.out, 
-        #recipient_MMd_MMr.out, 
-        recipient_MUd_MMr.out, 
-        recipient_UMd_MMr.out, 
-        #recipient_UUd_MMr.out, 
-        recipient_MMd_MUr.out, 
-        #recipient_MUd_MUr.out, 
-        recipient_UMd_MUr.out, 
-        #recipient_UUd_MUr.out, 
-        recipient_MMd_UMr.out, 
-        recipient_MUd_UMr.out] 
-        #recipient_UMd_UMr.out, 
-        #recipient_UUd_UMr.out, 
-        #recipient_MMd_UUr.out, 
-        #recipient_MUd_UUr.out, 
-        #recipient_UMd_UUr.out, 
-        #recipient_UUd_UUr.out]
+        donor_1Md_2Mr.out, 
+        donor_1Md_1Mr.out, 
+        donor_2Md_1Mr.out, 
+        recipient_1Md_2Mr.out, 
+        recipient_1Md_1Mr.out, 
+        recipient_2Md_1Mr.out]
 
     output {
         Array[File] bams = select_all(all_bams)

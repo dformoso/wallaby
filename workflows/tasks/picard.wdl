@@ -4,8 +4,8 @@ import "structs/compute.wdl"
 
 task filter_reads {
     input {
-        File file
-        File txt
+        File? file
+        File? txt
         String out_file
         String filter = "includeReadList"
         Resources resources
