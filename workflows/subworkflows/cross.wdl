@@ -443,44 +443,51 @@ workflow main {
 #        }
 
     # Merging files that belong to the same group
-    call samtools.merge as donor_1Md_2Mr { 
+    call samtools.merge_if_exists as donor_1Md_2Mr { 
         input: 
-            files = select_all([donor_MUd_MMr.out, donor_UMd_MMr.out]), 
+            bam1 = donor_MUd_MMr.out,
+            bam2 = donor_UMd_MMr.out, 
             out_file = "~{srr_name}-to-~{donor_name}_1Md_2Mr.bam",
             resources = resources
         }
 
-    call samtools.merge as donor_1Md_1Mr { 
+    call samtools.merge_if_exists as donor_1Md_1Mr { 
         input: 
-            files = select_all([donor_MUd_UMr.out, donor_UMd_MUr.out]), 
+            bam1 = donor_MUd_UMr.out,
+            bam2 = donor_UMd_MUr.out, 
             out_file = "~{srr_name}-to-~{donor_name}_1Md_1Mr.bam",
             resources = resources
         }
 
-    call samtools.merge as donor_2Md_1Mr { 
+    call samtools.merge_if_exists as donor_2Md_1Mr { 
         input: 
-            files = select_all([donor_MMd_MUr.out, donor_MMd_UMr.out]), 
+            
+            bam1 = donor_MMd_MUr.out,
+            bam2 = donor_MMd_UMr.out, 
             out_file = "~{srr_name}-to-~{donor_name}_2Md_1Mr.bam",
             resources = resources
         }
 
-    call samtools.merge as recipient_1Md_2Mr { 
+    call samtools.merge_if_exists as recipient_1Md_2Mr { 
         input: 
-            files = select_all([recipient_MUd_MMr.out, recipient_UMd_MMr.out]), 
+            bam1 = recipient_MUd_MMr.out,
+            bam2 = recipient_UMd_MMr.out,
             out_file = "~{srr_name}-to-~{recipient_name}_1Md_2Mr.bam",
             resources = resources
         }
 
-    call samtools.merge as recipient_1Md_1Mr { 
+    call samtools.merge_if_exists as recipient_1Md_1Mr { 
         input: 
-            files = select_all([recipient_MUd_UMr.out, recipient_UMd_MUr.out]), 
+            bam1 = recipient_MUd_UMr.out,
+            bam2 = recipient_UMd_MUr.out,
             out_file = "~{srr_name}-to-~{recipient_name}_1Md_1Mr.bam",
             resources = resources
         }
 
-    call samtools.merge as recipient_2Md_1Mr { 
+    call samtools.merge_if_exists as recipient_2Md_1Mr { 
         input: 
-            files = select_all([recipient_MMd_MUr.out, recipient_MMd_UMr.out]), 
+            bam1 = recipient_MMd_MUr.out,
+            bam2 = recipient_MMd_UMr.out,
             out_file = "~{srr_name}-to-~{recipient_name}_2Md_1Mr.bam",
             resources = resources
         }

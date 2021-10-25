@@ -20,7 +20,7 @@ sudo docker run -itd \
   -e GRANT_SUDO=yes \
   -e CHOWN_HOME=yes \
   --user root \
-  -p 8888:8888 \
+  -p 8888:8888 \ 
   -v "${root_dir}:/home/jovyan" \
   dformoso/jupyterlab:latest \
   start-notebook.sh --NotebookApp.token='' 

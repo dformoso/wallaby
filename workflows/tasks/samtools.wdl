@@ -135,6 +135,39 @@ task merge {
     }
 }
 
+task merge_if_exists {
+    input {
+        File? bam1
+        File? bam2
+        String out_file
+        Resources resources
+    }
+
+    command <<<
+        if [ -f "~{bam1}" ] ||  [ -f "~{bam2}" ] ; then
+            samtools merge \
+                ~{"-@ " + resources.cpu} \
+                ~{out_file} \
+                ~{bam1} ~{bam2}
+        fi
+    >>>
+
+    output {
+        File? out = out_file
+    }
+
+    runtime {
+        continueOnReturnCode: false
+        cpu: resources.cpu
+        memory: resources.memory_gb
+        docker: "dformoso/samtools:latest"
+        disks: resources.disks
+        zones: resources.zones
+        preemptible: resources.preemptible
+        maxRetries: resources.maxRetries
+    }
+}
+
 task mpileup {
     input {
         File fasta

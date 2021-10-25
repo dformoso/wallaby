@@ -18,7 +18,9 @@ RUN apt-get update -y && apt-get install -y \
     libc6-dev \
     less \
     unzip \
-    libfontconfig1-dev
+    libfontconfig1-dev \
+    samtools \
+    default-jre
 
 RUN cd /usr/local/bin && \
     curl -SL https://github.com/bedops/bedops/archive/v${bedops_version}.tar.gz \

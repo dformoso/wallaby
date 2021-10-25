@@ -461,7 +461,7 @@ create_viz_donor <- function(ref_genome = "hg38",
     # Set up plot parameters
     plot.type <- 4
     tracks <- length(granges)
-    track_sep <- 0.05
+    track_sep <- 0.1
     track_width <- 1 / (tracks) - track_sep
     window.size <- 10
     title <- paste(title_prepend, "- window size (in bases): ", window.size)
@@ -518,7 +518,7 @@ create_viz_recipient <- function(graph_type = "recipient",
     # Set up plot parameters
     plot.type <- 4
     tracks <- length(granges)
-    track_sep <- 0.05
+    track_sep <- 0.1
     track_width <- 1 / tracks - track_sep
     genome = "hg38"
     window.size <- 1e6
