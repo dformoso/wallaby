@@ -97,3 +97,30 @@ task concat_text {
         maxRetries: resources.maxRetries
     }
 }
+
+task merge_csvs {
+    
+    input {
+        Array[File] csvs
+        Resources resources
+    }
+
+    command <<<
+        awk '(NR == 1) || (FNR > 1)' ~{sep=' ' csvs} > putative_insertion_table.csv
+    >>>
+
+    output {
+        File out = "putative_insertion_table.csv"
+    }
+
+    runtime {
+        continueOnReturnCode: false
+        cpu: resources.cpu
+        memory: resources.memory_gb
+        docker: "dformoso/samtools:latest"
+        disks: resources.disks
+        zones: resources.zones
+        preemptible: resources.preemptible
+        maxRetries: resources.maxRetries
+    }
+}

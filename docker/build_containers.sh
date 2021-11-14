@@ -31,6 +31,7 @@ sudo docker build --rm -t dformoso/rstudio:latest rstudio
 sudo docker build --rm -t dformoso/seqtk:latest seqtk
 sudo docker build --rm -t dformoso/filter-tools:latest filter-tools
 sudo docker build --rm -t dformoso/apache2:latest apache2
+sudo docker build --rm -t dformoso/overlaps:latest overlaps
 
 # Push docker containers to docker hub
 sudo docker push dformoso/albacore:latest
@@ -56,4 +57,4 @@ sudo docker push dformoso/rstudio:latest
 sudo docker push dformoso/seqtk:latest 
 sudo docker push dformoso/filter-tools:latest 
 sudo docker push dformoso/apache2:latest 
-
+sudo docker push dformoso/overlaps:latest 

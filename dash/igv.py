@@ -17,15 +17,15 @@ donor_names = [
 ]
 recipient_names = [ { 'value' : 'UCSChg38', 'label' : 'UCSChg38' } ]
 
-outputs_path_hpv16 = 'http://159.196.33.135:8080/hpv16_rnaseq/'
+outputs_path_hpv16 = 'http://192.168.86.200:8080/hpv16_rnaseq/'
 insertion_table_hpv16 = pd.read_csv(
     outputs_path_hpv16 + 'hpv16_to_hg38_table.csv', 
     dtype={'srr': str, 'id': str }).drop(columns=['sequence'])
-outputs_path_hpv18 = 'http://159.196.33.135:8080/hpv18_rnaseq/'
+outputs_path_hpv18 = 'http://192.168.86.200:8080/hpv18_rnaseq/'
 insertion_table_hpv18 = pd.read_csv(
     outputs_path_hpv18 + 'hpv18_to_hg38_table.csv',
      dtype={'srr': str, 'id': str }).drop(columns=['sequence'])
-outputs_path_hiv1 = 'http://159.196.33.135:8080/hiv1_rnaseq/'
+outputs_path_hiv1 = 'http://192.168.86.200:8080/hiv1_rnaseq/'
 insertion_table_hiv1 = pd.read_csv(
     outputs_path_hiv1 + 'hiv1_to_hg38_table.csv', 
     dtype={'srr': str, 'id': str }).drop(columns=['sequence'])
@@ -192,7 +192,7 @@ def render_content(tab, srr, id, donor, recipient):
                     'name': crossing,
                     'url': outputs_path + srr + '-to-' + recipient + '_' + crossing + '_filtered.bam',
                     'indexURL': outputs_path + srr + '-to-' + recipient + '_' + crossing + '_filtered.bam.bai', 
-                    'format': 'bam', 'type': 'alignment', 'showSoftClips': 'true',
+                    'format': 'bam', 'type': 'alignment', 'showSoftClips': 'true', 'alignmentRowHeight' : '14',
                     'viewAsPairs': 'true', 'showMismatches' : 'true', 'colorBy' : 'strand', 
                     'coverageColor' : 'rgb(210, 100, 102)'
                 }
@@ -209,7 +209,7 @@ def render_content(tab, srr, id, donor, recipient):
                     'name': crossing,
                     'url': outputs_path + srr + '-to-' + donor + '_' + crossing + '_filtered.bam',
                     'indexURL': outputs_path + srr + '-to-' + donor + '_' + crossing + '_filtered.bam.bai', 
-                    'format': 'bam', 'type': 'alignment', 'showSoftClips': 'true',
+                    'format': 'bam', 'type': 'alignment', 'showSoftClips': 'true', 'alignmentRowHeight' : '14',
                     'viewAsPairs': 'true', 'showMismatches' : 'true', 'colorBy' : 'strand', 
                     'coverageColor' : 'rgb(210, 100, 102)'
                 }

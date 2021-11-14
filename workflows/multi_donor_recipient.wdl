@@ -5,6 +5,7 @@ import "tasks/align.wdl" as align
 import "tasks/download.wdl" as download
 import "tasks/trimmomatic.wdl" as trimmomatic
 import "tasks/quality.wdl" as quality
+import "tasks/tools.wdl" as tools
 import "tasks/structs/compute.wdl"
 
 workflow multi_donor_recipient {
@@ -99,18 +100,31 @@ workflow multi_donor_recipient {
             input:
                 donor_name = donor_name,
                 donor_index = donor_index.index_object,
+                donor_ref_genome = donor_ref_genome,
                 recipient_name = recipient_name,
                 recipient_index = recipient_index.index_object,
+                recipient_ref_genome = recipient_ref_genome,
                 srr_name = srr_name,
                 fastq_1 = srr_trim_adapters.fastq_1_paired,
                 fastq_2 = srr_trim_adapters.fastq_2_paired
         }
+
+    }
+
+    # Merge all putative insertion tables into one .csv file
+    call tools.merge_csvs as overlap_loci_table {
+        input:
+            csvs = donor_recipient.overlap_loci_csv,
+            resources = server.size["local_instance"]
     }
 
     output {        
         Array[Array[File]] out_filtered_bams = donor_recipient.filtered_bams
         Array[Array[File]] out_filtered_bais = donor_recipient.filtered_bais
         Array[Array[File]] out_filtered_beds = donor_recipient.filtered_beds
+        Array[Array[File]] out_overlap_loci_bams = donor_recipient.overlap_loci_bams
+        Array[Array[File]] out_overlap_loci_bais = donor_recipient.overlap_loci_bais
+        File out_overlap_loci_table = overlap_loci_table.out
 
         Array[File?] out_multiqc_trim_html = select_all(srr_multiqc_trim.html)
         Array[File?] out_multiqc_trim_zip = select_all(srr_multiqc_trim.zip)

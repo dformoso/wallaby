@@ -6,17 +6,20 @@ import "subworkflows/metrics.wdl" as metrics
 import "tasks/align.wdl" as align
 import "tasks/quality.wdl" as quality
 import "tasks/samtools.wdl" as samtools
-import "tasks/structs/compute.wdl"
 import "tasks/filter.wdl" as filter
+import "tasks/overlaps.wdl" as overlaps
+import "tasks/structs/compute.wdl"
 
 workflow main {
 
     input {
         String donor_name
         Array[File] donor_index
+        File donor_ref_genome
 
         String recipient_name
         Array[File] recipient_index
+        File recipient_ref_genome
 
         String srr_name
         File fastq_1
@@ -102,7 +105,7 @@ workflow main {
 
     # Create indexes (BAI files) for all crossed_filtered BAM files
     scatter (bam in filtered.bams) {
-        call samtools.index as indexing_bams {
+        call samtools.index as filtered_bam_to_bai {
             input:
                 file = bam,
                 resources = server.size["local_instance"]
@@ -111,14 +114,14 @@ workflow main {
 
     # Create BED files for all crossed_filtered BAM files
     scatter (bam in filtered.bams) {
-        call samtools.bam_to_bed as bams_to_beds {
+        call samtools.bam_to_bed as filtered_bam_to_bed {
             input:
                 file = bam,
                 resources = server.size["local_instance"]
         }
     }
 
-    # Calculate metrics
+    # Calculate metrics for crossed and filtered files
     call metrics.main as crossing_metrics {
         input:
             bams = crossing.bams,
@@ -131,7 +134,7 @@ workflow main {
             resources = server.size["local_instance"]
     }
 
-    # Compare quality control for all donor files
+    # Compare quality control between crossed and filtered donor files
     call quality.multi_qc as donor_multiqc {
         input:
             quality_files = flatten(
@@ -149,7 +152,7 @@ workflow main {
             resources = server.size["local_instance"]
     }
 
-    # Compare quality control for all recipient files
+    # Compare quality control between crossed and filtered recipient files
     call quality.multi_qc as recipient_multiqc {
         input:
             quality_files = flatten(
@@ -167,10 +170,38 @@ workflow main {
             resources = server.size["local_instance"]
     }
 
+    # Create putative insertion table and bam files for loci of interest
+    call overlaps.putative_insertions as overlap_loci {
+        input:
+            bams = filtered_bams,
+            bais = filtered_bam_to_bai.out,
+            beds = filtered_bam_to_bed.out,
+            srr_name = srr_name,
+            donor_name = donor_name,
+            donor_ref_genome = donor_ref_genome,
+            recipient_name = recipient_name,
+            recipient_ref_genome = recipient_ref_genome,
+            min_num_crossings = "1",
+            min_num_reads = "5",
+            resources = server.size["local_instance"]
+    }
+
+    # Create indexes (BAI files) for all overlap loci BAM files
+    scatter (bam in overlap_loci.out) {
+        call samtools.index as overlap_bam_to_bai {
+            input:
+                file = bam,
+                resources = server.size["local_instance"]
+        }
+    }
+
     output {
         Array[File] filtered_bams = filtered.bams
-        Array[File] filtered_bais = indexing_bams.out
-        Array[File] filtered_beds = bams_to_beds.out
+        Array[File] filtered_bais = filtered_bam_to_bai.out
+        Array[File] filtered_beds = filtered_bam_to_bed.out
+        Array[File] overlap_loci_bams = overlap_loci.out
+        Array[File] overlap_loci_bais = overlap_bam_to_bai.out
+        File overlap_loci_csv = overlap_loci.csv
 
         File? multiqc_donor_html = donor_multiqc.html
         File? multiqc_donor_zip = donor_multiqc.zip
