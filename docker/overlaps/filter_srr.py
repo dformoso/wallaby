@@ -13,13 +13,13 @@ crossings = ["1Md_2Mr", "1Md_1Mr", "2Md_1Mr"]
 padding_left = 0
 padding_right = 0
 
-recipient_1Md_2Mr = srr + "-to-UCSChg38_" + "1Md_2Mr" + "_filtered.bam"
-recipient_1Md_1Mr = srr + "-to-UCSChg38_" + "1Md_1Mr" + "_filtered.bam"
-recipient_2Md_1Mr = srr + "-to-UCSChg38_" + "2Md_1Mr" + "_filtered.bam"
+recipient_1Md_2Mr = srr + "-to-" + recipient_name + "_" + "1Md_2Mr" + "_filtered.bam"
+recipient_1Md_1Mr = srr + "-to-" + recipient_name + "_" + "1Md_1Mr" + "_filtered.bam"
+recipient_2Md_1Mr = srr + "-to-" + recipient_name + "_" + "2Md_1Mr" + "_filtered.bam"
 
-donor_1Md_2Mr = srr + "-to-hpv16_" + "1Md_2Mr" + "_filtered.bam"
-donor_1Md_1Mr = srr + "-to-hpv16_" + "1Md_1Mr" + "_filtered.bam"
-donor_2Md_1Mr = srr + "-to-hpv16_" + "2Md_1Mr" + "_filtered.bam"
+donor_1Md_2Mr = srr + "-to-" + donor_name + "_" + "1Md_2Mr" + "_filtered.bam"
+donor_1Md_1Mr = srr + "-to-" + donor_name + "_" + "1Md_1Mr" + "_filtered.bam"
+donor_2Md_1Mr = srr + "-to-" + donor_name + "_" + "2Md_1Mr" + "_filtered.bam"
 
 for srr_id in insertion_table["id"]:
     insertion_table_srr = insertion_table[insertion_table["srr"] == srr]

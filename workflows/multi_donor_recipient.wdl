@@ -11,12 +11,15 @@ import "tasks/structs/compute.wdl"
 workflow multi_donor_recipient {
 
     input {
-        String donor_name
         File donor_ref_genome
-        String recipient_name
+        File donor_ref_genome_fai
+        File donor_ref_genome_gff  # .gff must exist, but it can be an empty file
         File recipient_ref_genome
         File srr_list
     }
+
+    String donor_name = basename(donor_ref_genome, ".fa")
+    String recipient_name = basename(recipient_ref_genome, ".fa")
 
     # Compute resources
     Compute server = read_json("../inputs/sizes.json")
@@ -118,17 +121,33 @@ workflow multi_donor_recipient {
             resources = server.size["local_instance"]
     }
 
-    output {        
+    # Adding files neede for the downstream visualization tools
+    call tools.summary_and_inputs as summary_and_inputs {
+        input:
+            donor_name = donor_name,
+            donor_ref_genome = donor_ref_genome,
+            donor_ref_genome_fai = donor_ref_genome_fai,
+            donor_ref_genome_gff = donor_ref_genome_gff,
+            recipient_name = recipient_name,
+            resources = server.size["local_instance"]
+    }
+
+    output {
+        File out_summary = summary_and_inputs.summary
+        File out_donor_ref_genome = summary_and_inputs.out_donor_ref_genome
+        File out_donor_ref_genome_fai = summary_and_inputs.out_donor_ref_genome_fai
+        File out_donor_ref_genome_gff = summary_and_inputs.out_donor_ref_genome_gff
+
         Array[Array[File]] out_filtered_bams = donor_recipient.filtered_bams
         Array[Array[File]] out_filtered_bais = donor_recipient.filtered_bais
         Array[Array[File]] out_filtered_beds = donor_recipient.filtered_beds
         Array[Array[File]] out_overlap_loci_bams = donor_recipient.overlap_loci_bams
         Array[Array[File]] out_overlap_loci_bais = donor_recipient.overlap_loci_bais
+        
         File out_overlap_loci_table = overlap_loci_table.out
 
         Array[File?] out_multiqc_trim_html = select_all(srr_multiqc_trim.html)
         Array[File?] out_multiqc_trim_zip = select_all(srr_multiqc_trim.zip)
-
         Array[File?] out_multiqc_donor_html = select_all(donor_recipient.multiqc_donor_html)
         Array[File?] out_multiqc_donor_zip = select_all(donor_recipient.multiqc_donor_zip)
         Array[File?] out_multiqc_recipient_html = select_all(donor_recipient.multiqc_recipient_html)

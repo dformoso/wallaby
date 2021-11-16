@@ -124,3 +124,40 @@ task merge_csvs {
         maxRetries: resources.maxRetries
     }
 }
+
+task summary_and_inputs {
+    
+    input {
+        String donor_name
+        String recipient_name
+        File donor_ref_genome
+        File donor_ref_genome_fai
+        File donor_ref_genome_gff
+        Resources resources
+    }
+
+    command <<<
+        echo "~{donor_name}, ~{recipient_name}" > donor_and_recipient.csv
+        ln ~{donor_ref_genome} .
+        ln ~{donor_ref_genome_fai} .
+        ln ~{donor_ref_genome_gff} .
+    >>>
+
+    output {
+        File summary = "donor_and_recipient.csv"
+        File out_donor_ref_genome = basename(donor_ref_genome)
+        File out_donor_ref_genome_fai = basename(donor_ref_genome_fai)
+        File out_donor_ref_genome_gff = basename(donor_ref_genome_gff)
+    }
+
+    runtime {
+        continueOnReturnCode: false
+        cpu: resources.cpu
+        memory: resources.memory_gb
+        docker: "dformoso/samtools:latest"
+        disks: resources.disks
+        zones: resources.zones
+        preemptible: resources.preemptible
+        maxRetries: resources.maxRetries
+    }
+}

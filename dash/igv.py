@@ -1,197 +1,332 @@
 import dash
-import dash_table as dt
 import dash_auth
+import dash_bio as dashbio
+from dash import dash_table as dt
+from dash.dependencies import Input, Output
+from dash import dcc
+from dash import html
+import os, glob, csv, time
 import pandas as pd
 
-from dash.dependencies import Input, Output
-from dash.exceptions import PreventUpdate
-import dash_bio as dashbio
-import dash_core_components as dcc
-import dash_html_components as html
-import os, glob
+batch = [ { 'value' : 'http://192.168.86.200:8080/test_sample/', 'label' : 'hpv16_rnaseq_test' } ]
 
-donor_names = [ 
-    { 'value' : 'hpv16', 'label' : 'hpv16' }, 
-    { 'value' : 'hpv18', 'label' : 'hpv18' },
-    { 'value' : 'hiv1', 'label' : 'hiv1' }
-]
-recipient_names = [ { 'value' : 'UCSChg38', 'label' : 'UCSChg38' } ]
+donor = pd.read_csv(batch[0]['value'] + 'donor_and_recipient.csv').columns[0].replace(" ", "")
+donor_name = [ { 'value' : donor, 'label' : donor } ]
 
-outputs_path_hpv16 = 'http://192.168.86.200:8080/hpv16_rnaseq/'
-insertion_table_hpv16 = pd.read_csv(
-    outputs_path_hpv16 + 'hpv16_to_hg38_table.csv', 
-    dtype={'srr': str, 'id': str }).drop(columns=['sequence'])
-outputs_path_hpv18 = 'http://192.168.86.200:8080/hpv18_rnaseq/'
-insertion_table_hpv18 = pd.read_csv(
-    outputs_path_hpv18 + 'hpv18_to_hg38_table.csv',
-     dtype={'srr': str, 'id': str }).drop(columns=['sequence'])
-outputs_path_hiv1 = 'http://192.168.86.200:8080/hiv1_rnaseq/'
-insertion_table_hiv1 = pd.read_csv(
-    outputs_path_hiv1 + 'hiv1_to_hg38_table.csv', 
-    dtype={'srr': str, 'id': str }).drop(columns=['sequence'])
+recipient = pd.read_csv(batch[0]['value'] + 'donor_and_recipient.csv').columns[1].replace(" ", "")
+recipient_name = [ { 'value' : recipient, 'label' : recipient } ]
 
-VALID_USERNAME_PASSWORD_PAIRS = {
-    'dash': 'r0tt3nch1ck3n'
+tabs_styles = {
+    'height': '44px'
+}
+tab_style = {
+    'borderBottom': '1px solid #d6d6d6',
+    'padding': '6px',
+    'fontWeight': 'bold'
+}
+
+tab_selected_style = {
+    'borderTop': '1px solid #d6d6d6',
+    'borderBottom': '1px solid #d6d6d6',
+    'backgroundColor': '#119DFF',
+    'color': 'white',
+    'padding': '6px',
+    'fontWeight': 'bold'
 }
 
 app = dash.Dash(__name__)
 
-auth = dash_auth.BasicAuth(
-    app,
-    VALID_USERNAME_PASSWORD_PAIRS
-)
+VALID_USERNAME_PASSWORD_PAIRS = {'dash': 'dash'}
+auth = dash_auth.BasicAuth( app, VALID_USERNAME_PASSWORD_PAIRS)
 
 app.layout = html.Div([
     dcc.Tabs(
-        id='tab-selection', 
-        value='tab-1', 
+        id='tab-select', value='tab-0', style = tabs_styles,
         children=[
             dcc.Tab(
-                label = 'Table of Available Samples', 
-                value = 'tab-1',
+                label = 'Data Selection', value = 'tab-0', 
+                style = tab_style, selected_style = tab_selected_style,
                 children = [
+                    html.Br(),
+                    html.Div([
+                        html.Div(
+                            id='dataset', 
+                            children = 'Please select a dataset name:',
+                            style={'width': '20%', 'display': 'inline-block'}),
+                        html.Div(
+                            id='donor', 
+                            children = 'Donor Organism:',
+                            style={'width': '20%', 'display': 'inline-block'}),
+                        html.Div(
+                            id='recipient', 
+                            children = 'Recipient Organism:',
+                            style={'width': '20%', 'display': 'inline-block'}),
+                        html.Div(
+                            id='srr', 
+                            children = 'SRR Identifier:',
+                            style={'width': '20%', 'display': 'inline-block'}),
+                        html.Div(
+                            id='id', 
+                            children = 'Overlap Locus ID:',
+                            style={'width': '20%', 'display': 'inline-block'})
+                    ]),
                     html.Div([
                         html.Div([
                             dcc.Dropdown(
-                                id = 'default-igv-donor-select',
-                                options = donor_names,
-                                value = 'hpv16'
+                                id = 'batch-select',
+                                options = batch, value = 'http://192.168.86.200:8080/test_sample/', 
+                                clearable = False
                             )
-                        ], style={'width': '25%', 'display': 'inline-block'}),
+                        ], style={'width': '20%', 'display': 'inline-block'}),
                         
                         html.Div([
                             dcc.Dropdown(
-                                id = 'default-igv-recipient-select',
-                                options = recipient_names,
-                                value = 'UCSChg38'
+                                id = 'donor-select',
+                                options = donor_name, value = donor, clearable = False, 
+                                disabled = True
                             )
-                        ], style={'width': '25%', 'display': 'inline-block'}),
+                        ], style={'width': '20%', 'display': 'inline-block'}),
                         
                         html.Div([
                             dcc.Dropdown(
-                                id = 'default-igv-srr-select'
+                                id = 'recipient-select',
+                                options = recipient_name, value = recipient, 
+                                clearable = False, disabled = True
                             )
-                        ], style={'width': '25%', 'display': 'inline-block'}),
+                        ], style={'width': '20%', 'display': 'inline-block'}),
+                        
+                        html.Div([
+                            dcc.Dropdown(id = 'srr-select')
+                        ], style={'width': '20%', 'display': 'inline-block'}),
 
                         html.Div([
-                            dcc.Dropdown(
-                                id = 'default-igv-id-select',
-                                value = '1'
-                            )
-                        ], style={'width': '25%', 'display': 'inline-block'})
+                            dcc.Dropdown(id = 'id-select', value = '1')
+                        ], style={'width': '20%', 'display': 'inline-block'})
                     ]),
                 ]   
             ),
-            dcc.Tab(
-                label = 'IGV Visualization', 
-                value = 'tab-2'),
+            dcc.Tab(label = 'Metrics Reports', value = 'tab-1', 
+            style = tab_style, selected_style = tab_selected_style),
+            dcc.Tab(label = 'Reads at Locus - Mapped to Recipient', value = 'tab-2', 
+            style = tab_style, selected_style = tab_selected_style),
+            dcc.Tab(label = 'Reads Mapped to Donor', value = 'tab-3', 
+            style = tab_style, selected_style = tab_selected_style),
+            dcc.Tab(label = 'Locus-filtered Reads', value = 'tab-4', 
+            style = tab_style, selected_style = tab_selected_style),
             ]
         ),
-    
     html.Div(id='tabs-content')
 ])
 
 ################
-# Donor change > Update the SRRs and default SRR
+# Batch change > Update the SRRs and default SRR
 @app.callback(
-    Output('default-igv-srr-select', 'options'),
-    Output('default-igv-srr-select', 'value'),
-    Input('default-igv-donor-select', 'value')
+    Output('srr-select', 'options'),
+    Output('srr-select', 'value'),
+    Input('batch-select', 'value')
 )
-def update_options(donor):
-    if not donor:
-        raise PreventUpdate
-    else:
-        if donor == 'hpv16':
-            insertion_table = insertion_table_hpv16
-        elif donor == 'hpv18':
-            insertion_table = insertion_table_hpv18
-        elif donor == 'hiv1':
-            insertion_table = insertion_table_hiv1
-        # Extract ids for SRR and build dictionary from it
-        srrs = insertion_table['srr'].drop_duplicates()
-        return [{ 'value' : srr, 'label' : srr } for srr in srrs], srrs[0]
+def update_options(batch):
+    insertion_table = pd.read_csv(batch + 'putative_insertion_table.csv', 
+    dtype={'srr': str, 'id': str })
+    # Extract ids for SRR and build dictionary from it
+    srrs = insertion_table['srr'].drop_duplicates()
+    return [{ 'value' : srr, 'label' : srr } for srr in srrs], srrs[0]
 
 ###################
-# Donor or SRR change > Update the SRR IDs
+# Batch or SRR change > Update the SRR IDs
 @app.callback(
-    Output('default-igv-id-select', 'options'),
-    Input('default-igv-donor-select', 'value'),
-    Input('default-igv-srr-select', 'value')
+    Output('id-select', 'options'),
+    Input('srr-select', 'value'),
+    Input('batch-select', 'value')
 )
-def update_options(donor, srr):
-    if not donor or not srr:
-        raise PreventUpdate
-    else:
-        if donor == 'hpv16':
-            insertion_table = insertion_table_hpv16
-        elif donor == 'hpv18':
-            insertion_table = insertion_table_hpv18
-        elif donor == 'hiv1':
-            insertion_table = insertion_table_hiv1
-        # Extract ids for SRR and build dictionary from it
-        insertion_table_srr = insertion_table[insertion_table['srr'] == srr]
-        ids = insertion_table_srr['id']
-        return [{ 'value' : id, 'label' : id } for id in ids]
+def update_options(srr, batch):
+    insertion_table = pd.read_csv(batch + 'putative_insertion_table.csv', dtype={'srr': str, 'id': str })
+    # Extract ids for SRR and build dictionary from it
+    insertion_table_srr = insertion_table[insertion_table['srr'] == srr]
+    ids = insertion_table_srr['id']
+    return [{ 'value' : id, 'label' : id } for id in ids]
 
 ###########################
-# Return the IGV components
+# Return Tab Components
 @app.callback(
     Output('tabs-content', 'children'),
-    Input('tab-selection', 'value'),
-    Input('default-igv-srr-select', 'value'),
-    Input('default-igv-id-select', 'value'),
-    Input('default-igv-donor-select', 'value'),
-    Input('default-igv-recipient-select', 'value')
+    Input('tab-select', 'value'),
+    Input('srr-select', 'value'),
+    Input('id-select', 'value'),
+    Input('donor-select', 'value'),
+    Input('recipient-select', 'value'),
+    Input('batch-select', 'value')
 )
+def render_content(tab, srr, id, donor, recipient, batch):
+    # Load insertion table
+    insertion_table = pd.read_csv(batch + 'putative_insertion_table.csv', dtype={'srr': str, 'id': str })
+    # Defaults
+    padding_left = 150
+    padding_right = 150
 
-def render_content(tab, srr, id, donor, recipient):
-    if donor == 'hpv16':
-        insertion_table = insertion_table_hpv16
-        outputs_path = outputs_path_hpv16
-    elif donor == 'hpv18':
-        insertion_table = insertion_table_hpv18
-        outputs_path = outputs_path_hpv18
-    elif donor == 'hiv1':
-        insertion_table = insertion_table_hiv1
-        outputs_path = outputs_path_hiv1
-
-    if tab == 'tab-1':
+    if tab == 'tab-0':
         return html.Div([
+            html.Br(),
+            html.Div(
+                id='table', 
+                children = 'Table of putative insertions:',
+                style={'width': '20%', 'display': 'inline-block'}),
             dt.DataTable(
                 id = 'tbl', data = insertion_table.to_dict('records'),
                 columns = [{'name': i, 'id': i} for i in insertion_table.columns],
                 style_cell = {'textAlign': 'left'}
             )
         ])
+
+    if tab == 'tab-1':
+        return html.Div([
+            dcc.Tabs(style = tabs_styles,
+                children = [
+                dcc.Tab(label='Paired-End .FASTQ MultiQC Report',
+                        style = tab_style, selected_style = tab_selected_style,
+                        children=[
+                    html.Iframe(
+                        src = batch + srr + '_multiqc_report.html',
+                        style = {"height": "1067px", "width": "100%"},
+                    )
+                ]),
+                dcc.Tab(label='Paired-End Donor .BAM MultiQC Report',
+                        style = tab_style, selected_style = tab_selected_style,
+                        children=[
+                    html.Iframe(
+                        src = batch + srr + '-to-' + donor + '_multiqc_report.html',
+                        style = {"height": "1067px", "width": "100%"}
+                    )
+                ]),
+                dcc.Tab(label='Paired-End Recipient .BAM MultiQC Report',
+                        style = tab_style, selected_style = tab_selected_style, children=[
+                    html.Iframe(
+                        src = batch + srr + '-to-' + recipient + '_multiqc_report.html',
+                        style = {"height": "1067px", "width": "100%"}
+                    )
+                ]),
+            ])
+        ])
+
+
+
     elif tab == 'tab-2':
-
-        # Defaults
-        padding_left = 150
-        padding_right = 150
-
         # Extract track names
         insertion_table_srr = insertion_table[(insertion_table['srr'] == str(srr)) & (insertion_table['id'] == str(id))]
         crossings = str(insertion_table_srr['unique_crossings'].values[0]).split('|')
 
         # Calculate locus
-        insertion_table_srr_id = insertion_table_srr[insertion_table_srr['id'] == id]
-        chromosome = str(insertion_table_srr_id['chr'].values[0])
-        start = str(insertion_table_srr_id['start'].values[0] - padding_left)
-        stop = str(insertion_table_srr_id['stop'].values[0] + padding_right)
+        srr_id = insertion_table_srr[insertion_table_srr['id'] == id]
+        chromosome = str(srr_id['chr'].values[0])
+        start = str(srr_id['start'].values[0] - padding_left)
+        stop = str(srr_id['stop'].values[0] + padding_right)
         locus = str(chromosome + ':' + start + '-' + stop)
 
-        repicient_tracks = []
+        recipient_tracks = []
         # Create to-recipient alignment tracks
         for crossing in crossings:
-            repicient_tracks.append(
+            recipient_tracks.append(
                 {
                     # Docs: 
                     # https://github.com/igvteam/igv.js/wiki/Alignment-Track
                     # https://github.com/igvteam/igv.js/blob/c6773940de86cf2938f40feec86d1905a866deba/js/bam/bamTrack.js
                     'name': crossing,
-                    'url': outputs_path + srr + '-to-' + recipient + '_' + crossing + '_filtered.bam',
-                    'indexURL': outputs_path + srr + '-to-' + recipient + '_' + crossing + '_filtered.bam.bai', 
+                    'url': batch + srr + '-to-' + recipient + '_' + crossing + '_filtered.bam',
+                    'indexURL': batch + srr + '-to-' + recipient + '_' + crossing + '_filtered.bam.bai', 
+                    'format': 'bam', 'type': 'alignment', 'showSoftClips': 'true', 'alignmentRowHeight' : '14',
+                    'viewAsPairs': 'true', 'showMismatches' : 'true', 'colorBy' : 'strand', 
+                    'coverageColor' : 'rgb(210, 100, 102)'
+                }
+            )
+        
+        # Return html
+        return html.Div([
+            html.Div([
+                dashbio.Igv(
+                    id = 'hg38',
+                    genome = 'hg38',
+                    locus = locus,
+                    tracks = recipient_tracks
+                )
+            ], style={'width': '100%', 'display': 'inline-block'})
+        ])
+
+    elif tab == 'tab-3':
+        # Extract track names
+        insertion_table_srr = insertion_table[(insertion_table['srr'] == str(srr)) & (insertion_table['id'] == str(id))]
+        crossings = str(insertion_table_srr['unique_crossings'].values[0]).split('|')
+
+        # Calculate locus
+        srr_id = insertion_table_srr[insertion_table_srr['id'] == id]
+        chromosome = str(srr_id['chr'].values[0])
+        start = str(srr_id['start'].values[0] - padding_left)
+        stop = str(srr_id['stop'].values[0] + padding_right)
+        locus = str(chromosome + ':' + start + '-' + stop)
+
+        donor_tracks = []
+        # Create to-donor alignment tracks
+        for crossing in crossings:
+            donor_tracks.append(
+                {
+                    # Docs: 
+                    # https://github.com/igvteam/igv.js/wiki/Alignment-Track
+                    # https://github.com/igvteam/igv.js/blob/c6773940de86cf2938f40feec86d1905a866deba/js/bam/bamTrack.js
+                    'name': crossing,
+                    'url': batch + srr + '-to-' + donor + '_' + crossing + '_filtered.bam',
+                    'indexURL': batch + srr + '-to-' + donor + '_' + crossing + '_filtered.bam.bai', 
+                    'format': 'bam', 'type': 'alignment', 'showSoftClips': 'true', 'alignmentRowHeight' : '14',
+                    'viewAsPairs': 'true', 'showMismatches' : 'true', 'colorBy' : 'strand', 
+                    'coverageColor' : 'rgb(210, 100, 102)'
+                }
+            )
+        
+        donor_tracks.append(
+            {
+                'name': 'Annotations',
+                'url': batch + donor + '.gff', 'isCompressed' : 'false',
+                'displayMode': 'EXPANDED',
+                'nameField': 'gene'
+            }
+        )
+        # Return html
+        return html.Div([
+            html.Div([
+                dashbio.Igv(
+                    id = donor,
+                    reference = {
+                        'id': donor,
+                        'name': donor,
+                        'fastaURL': batch + donor + '.fa',
+                        'indexURL': batch + donor + '.fa.fai',
+                        'tracks': donor_tracks,
+                    },
+                )
+            ], style={'width': '100%', 'display': 'inline-block'})
+        ])
+
+    elif tab == 'tab-4':
+        # Extract track names
+        insertion_table_srr = insertion_table[(insertion_table['srr'] == str(srr)) & (insertion_table['id'] == str(id))]
+        crossings = str(insertion_table_srr['unique_crossings'].values[0]).split('|')
+
+        # Calculate locus
+        srr_id = insertion_table_srr[insertion_table_srr['id'] == id]
+        chromosome = str(srr_id['chr'].values[0])
+        start = str(srr_id['start'].values[0] - padding_left)
+        stop = str(srr_id['stop'].values[0] + padding_right)
+        locus = str(chromosome + ':' + start + '-' + stop)
+
+        recipient_tracks = []
+        # Create to-recipient alignment tracks
+        for crossing in crossings:
+            recipient_tracks.append(
+                {
+                    # Docs: 
+                    # https://github.com/igvteam/igv.js/wiki/Alignment-Track
+                    # https://github.com/igvteam/igv.js/blob/c6773940de86cf2938f40feec86d1905a866deba/js/bam/bamTrack.js
+                    'name': crossing,
+                    'url': batch + srr + '-to-' + recipient + '_' + crossing + '_filtered_id' + id + '.bam',
+                    'indexURL': batch + srr + '-to-' + recipient + '_' + crossing + '_filtered_id' + id + '.bam.bai', 
                     'format': 'bam', 'type': 'alignment', 'showSoftClips': 'true', 'alignmentRowHeight' : '14',
                     'viewAsPairs': 'true', 'showMismatches' : 'true', 'colorBy' : 'strand', 
                     'coverageColor' : 'rgb(210, 100, 102)'
@@ -207,23 +342,22 @@ def render_content(tab, srr, id, donor, recipient):
                     # https://github.com/igvteam/igv.js/wiki/Alignment-Track
                     # https://github.com/igvteam/igv.js/blob/c6773940de86cf2938f40feec86d1905a866deba/js/bam/bamTrack.js
                     'name': crossing,
-                    'url': outputs_path + srr + '-to-' + donor + '_' + crossing + '_filtered.bam',
-                    'indexURL': outputs_path + srr + '-to-' + donor + '_' + crossing + '_filtered.bam.bai', 
+                    'url': batch + srr + '-to-' + donor + '_' + crossing + '_filtered_id' + id + '.bam',
+                    'indexURL': batch + srr + '-to-' + donor + '_' + crossing + '_filtered_id' + id + '.bam.bai', 
                     'format': 'bam', 'type': 'alignment', 'showSoftClips': 'true', 'alignmentRowHeight' : '14',
                     'viewAsPairs': 'true', 'showMismatches' : 'true', 'colorBy' : 'strand', 
                     'coverageColor' : 'rgb(210, 100, 102)'
                 }
             )
-        
-        if donor == 'hpv16':
-            donor_tracks.append(
-                {
-                    'name': 'Annotations',
-                    'url': outputs_path + 'hpv16.gff', 'isCompressed' : 'false',
-                    'displayMode': 'EXPANDED',
-                    'nameField': 'gene'
-                }
-            )
+
+        donor_tracks.append(
+            {
+                'name': 'Annotations',
+                'url': batch + donor + '.gff', 'isCompressed' : 'false',
+                'displayMode': 'EXPANDED',
+                'nameField': 'gene'
+            }
+        )
         # Return html
         return html.Div([
             html.Div([
@@ -231,7 +365,7 @@ def render_content(tab, srr, id, donor, recipient):
                     id = 'hg38',
                     genome = 'hg38',
                     locus = locus,
-                    tracks = repicient_tracks
+                    tracks = recipient_tracks
                 )
             ], style={'width': '50%', 'display': 'inline-block'}),
             html.Div([
@@ -240,13 +374,15 @@ def render_content(tab, srr, id, donor, recipient):
                     reference = {
                         'id': donor,
                         'name': donor,
-                        'fastaURL': outputs_path + donor + '.fa',
-                        'indexURL': outputs_path + donor + '.fa.fai',
+                        'fastaURL': batch + donor + '.fa',
+                        'indexURL': batch + donor + '.fa.fai',
                         'tracks': donor_tracks,
                     },
                 )
             ], style={'width': '50%', 'display': 'inline-block'})
         ])
+
+
 
 if __name__ == '__main__':
     #app.run_server(debug=True)

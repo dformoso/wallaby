@@ -1,7 +1,7 @@
 {
-    "multi_donor_recipient.donor_name": "hpv16",
-    "multi_donor_recipient.donor_ref_genome": "../../data/ref_genomes/hpv/HPV16.fa",
-    "multi_donor_recipient.recipient_name": "UCSChg38",
+    "multi_donor_recipient.donor_ref_genome": "../../data/ref_genomes/hpv/hpv16.fa",
+    "multi_donor_recipient.donor_ref_genome_fai": "../../data/ref_genomes/hpv/hpv16.fa.fai",
+    "multi_donor_recipient.donor_ref_genome_gff": "../../data/ref_genomes/hpv/hpv16.gff",
     "multi_donor_recipient.recipient_ref_genome": "../../data/ref_genomes/human/hg38.fa",
     "multi_donor_recipient.srr_list": "../../workflows/inputs/hpv16_rnaseq/srr_list.txt"
 }
