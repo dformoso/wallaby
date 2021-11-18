@@ -186,21 +186,11 @@ workflow main {
             resources = server.size["local_instance"]
     }
 
-    # Create indexes (BAI files) for all overlap loci BAM files
-    scatter (bam in overlap_loci.out) {
-        call samtools.index as overlap_bam_to_bai {
-            input:
-                file = bam,
-                resources = server.size["local_instance"]
-        }
-    }
-
     output {
         Array[File] filtered_bams = filtered.bams
         Array[File] filtered_bais = filtered_bam_to_bai.out
         Array[File] filtered_beds = filtered_bam_to_bed.out
-        Array[File] overlap_loci_bams = overlap_loci.out
-        Array[File] overlap_loci_bais = overlap_bam_to_bai.out
+        Array[File] overlap_loci_bams_and_bais = select_all(overlap_loci.bams_and_bais)
         File overlap_loci_csv = overlap_loci.csv
 
         File? multiqc_donor_html = donor_multiqc.html

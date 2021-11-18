@@ -1,6 +1,7 @@
 {
     "multi_donor_recipient.donor_ref_genome": "../../data/ref_genomes/hiv/hiv1.fa",
     "multi_donor_recipient.donor_ref_genome_fai": "../../data/ref_genomes/hiv/hiv1.fa.fai",
+    "multi_donor_recipient.donor_ref_genome_gff": "../../data/ref_genomes/hiv/hiv1.gff",
     "multi_donor_recipient.recipient_ref_genome": "../../data/ref_genomes/human/hg38.fa",
     "multi_donor_recipient.srr_list": "../../workflows/inputs/hiv1_rnaseq/srr_list.txt"
 }

@@ -111,13 +111,12 @@ workflow multi_donor_recipient {
                 fastq_1 = srr_trim_adapters.fastq_1_paired,
                 fastq_2 = srr_trim_adapters.fastq_2_paired
         }
-
     }
 
     # Merge all putative insertion tables into one .csv file
     call tools.merge_csvs as overlap_loci_table {
         input:
-            csvs = donor_recipient.overlap_loci_csv,
+            csvs = select_all(donor_recipient.overlap_loci_csv),
             resources = server.size["local_instance"]
     }
 
@@ -141,8 +140,7 @@ workflow multi_donor_recipient {
         Array[Array[File]] out_filtered_bams = donor_recipient.filtered_bams
         Array[Array[File]] out_filtered_bais = donor_recipient.filtered_bais
         Array[Array[File]] out_filtered_beds = donor_recipient.filtered_beds
-        Array[Array[File]] out_overlap_loci_bams = donor_recipient.overlap_loci_bams
-        Array[Array[File]] out_overlap_loci_bais = donor_recipient.overlap_loci_bais
+        Array[Array[File]] out_overlap_loci_bams_and_bais = donor_recipient.overlap_loci_bams_and_bais
         
         File out_overlap_loci_table = overlap_loci_table.out
 

@@ -8,13 +8,20 @@ from dash import html
 import os, glob, csv, time
 import pandas as pd
 
-batch = [ { 'value' : 'http://192.168.86.200:8080/test_sample/', 'label' : 'hpv16_rnaseq_test' } ]
+batches = [ 
+    { 'value' : 'http://159.196.33.135:8080/hpv16_rnaseq/', 'label' : 'HPV16 RNAseq Dataset' },
+    { 'value' : 'http://159.196.33.135:8080/hpv18_rnaseq/', 'label' : 'HPV18 RNAseq Dataset' } 
+]
 
-donor = pd.read_csv(batch[0]['value'] + 'donor_and_recipient.csv').columns[0].replace(" ", "")
-donor_name = [ { 'value' : donor, 'label' : donor } ]
+donors = []
+for batch in batches:
+    donor = pd.read_csv(batch['value'] + 'donor_and_recipient.csv').columns[0].replace(" ", "")
+    donors.append({ 'value' : donor, 'label' : donor })
+recipients = []
+for batch in batches:
+    recipient = pd.read_csv(batch['value'] + 'donor_and_recipient.csv').columns[1].replace(" ", "")
+    recipients.append({ 'value' : recipient, 'label' : recipient })
 
-recipient = pd.read_csv(batch[0]['value'] + 'donor_and_recipient.csv').columns[1].replace(" ", "")
-recipient_name = [ { 'value' : recipient, 'label' : recipient } ]
 
 tabs_styles = {
     'height': '44px'
@@ -36,7 +43,7 @@ tab_selected_style = {
 
 app = dash.Dash(__name__)
 
-VALID_USERNAME_PASSWORD_PAIRS = {'dash': 'dash'}
+VALID_USERNAME_PASSWORD_PAIRS = {'dash': 'r0tt3nf1sh'}
 auth = dash_auth.BasicAuth( app, VALID_USERNAME_PASSWORD_PAIRS)
 
 app.layout = html.Div([
@@ -74,7 +81,7 @@ app.layout = html.Div([
                         html.Div([
                             dcc.Dropdown(
                                 id = 'batch-select',
-                                options = batch, value = 'http://192.168.86.200:8080/test_sample/', 
+                                options = batches, value = batches[0]['value'], 
                                 clearable = False
                             )
                         ], style={'width': '20%', 'display': 'inline-block'}),
@@ -82,15 +89,15 @@ app.layout = html.Div([
                         html.Div([
                             dcc.Dropdown(
                                 id = 'donor-select',
-                                options = donor_name, value = donor, clearable = False, 
-                                disabled = True
+                                options = donors, value = donors[0]['value'], 
+                                clearable = False, disabled = True
                             )
                         ], style={'width': '20%', 'display': 'inline-block'}),
                         
                         html.Div([
                             dcc.Dropdown(
                                 id = 'recipient-select',
-                                options = recipient_name, value = recipient, 
+                                options = recipients, value = recipients[0]['value'], 
                                 clearable = False, disabled = True
                             )
                         ], style={'width': '20%', 'display': 'inline-block'}),
@@ -123,6 +130,8 @@ app.layout = html.Div([
 @app.callback(
     Output('srr-select', 'options'),
     Output('srr-select', 'value'),
+    Output('donor-select', 'value'),
+    Output('recipient-select', 'value'),
     Input('batch-select', 'value')
 )
 def update_options(batch):
@@ -130,7 +139,11 @@ def update_options(batch):
     dtype={'srr': str, 'id': str })
     # Extract ids for SRR and build dictionary from it
     srrs = insertion_table['srr'].drop_duplicates()
-    return [{ 'value' : srr, 'label' : srr } for srr in srrs], srrs[0]
+
+    donor = pd.read_csv(batch + 'donor_and_recipient.csv').columns[0].replace(" ", "")
+    recipient = pd.read_csv(batch + 'donor_and_recipient.csv').columns[1].replace(" ", "")
+
+    return [{ 'value' : srr, 'label' : srr } for srr in srrs], srrs[0], donor, recipient
 
 ###################
 # Batch or SRR change > Update the SRR IDs
@@ -160,6 +173,11 @@ def update_options(srr, batch):
 def render_content(tab, srr, id, donor, recipient, batch):
     # Load insertion table
     insertion_table = pd.read_csv(batch + 'putative_insertion_table.csv', dtype={'srr': str, 'id': str })
+    insertion_table_renamed = insertion_table.rename(columns = {
+        "srr": "SRR name", "id": "Overlap locus ID", "chr": "Chromosome", "start": "Start locus",
+        "stop": "End locus", "num_crossings": "Number of crossings", 
+        "unique_crossings": "List of unique crossings", "num_reads": "Number of reads", 
+        "gene_name": "Gene name"})
     # Defaults
     padding_left = 150
     padding_right = 150
@@ -172,8 +190,8 @@ def render_content(tab, srr, id, donor, recipient, batch):
                 children = 'Table of putative insertions:',
                 style={'width': '20%', 'display': 'inline-block'}),
             dt.DataTable(
-                id = 'tbl', data = insertion_table.to_dict('records'),
-                columns = [{'name': i, 'id': i} for i in insertion_table.columns],
+                id = 'tbl', data = insertion_table_renamed.to_dict('records'),
+                columns = [{'name': i, 'id': i} for i in insertion_table_renamed.columns],
                 style_cell = {'textAlign': 'left'}
             )
         ])
@@ -265,6 +283,7 @@ def render_content(tab, srr, id, donor, recipient, batch):
 
         donor_tracks = []
         # Create to-donor alignment tracks
+        
         for crossing in crossings:
             donor_tracks.append(
                 {
@@ -381,8 +400,6 @@ def render_content(tab, srr, id, donor, recipient, batch):
                 )
             ], style={'width': '50%', 'display': 'inline-block'})
         ])
-
-
 
 if __name__ == '__main__':
     #app.run_server(debug=True)

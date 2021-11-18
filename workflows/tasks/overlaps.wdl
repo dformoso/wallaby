@@ -55,11 +55,22 @@ task putative_insertions {
             ~{donor_name} \
             ~{recipient_name}
 
-        ls *id*.bam
+        # Create Index for all Bams
+        for file in *id*.bam; do
+            samtools index \
+                ~{"-@ " + resources.cpu} \
+                "$file"
+        done
+
+        # Send all bams to stdout to be collected by the output variable
+        if ls *id*.bam* 1> /dev/null 2>&1; then
+            ls *id*.bam*
+        fi
+        
     >>>
 
     output {
-        Array[File] out = read_lines(stdout())
+        Array[File?] bams_and_bais = select_all(read_lines(stdout()))
         File csv = "~{srr_name}_putative_insertion_table.csv"
     }
 
