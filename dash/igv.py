@@ -13,6 +13,20 @@ batches = [
     { 'value' : 'http://159.196.33.135:8080/hpv18_rnaseq/', 'label' : 'HPV18 RNAseq Dataset' } 
 ]
 
+batches_info = { 
+    'value' : 'http://159.196.33.135:8080/hpv16_rnaseq/', 'label' : 
+        ['https://pubmed.ncbi.nlm.nih.gov/30552977',
+        'https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE91065',
+        'https://www.ncbi.nlm.nih.gov/nuccore/NC_001526.4?report=fasta',
+        'https://hgdownload.soe.ucsc.edu/goldenPath/hg38/bigZips']
+    ,
+     'value' : 'http://159.196.33.135:8080/hpv18_rnaseq/', 'label' : 
+        ['https://pubmed.ncbi.nlm.nih.gov/30552977',
+        'https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE91065',
+        'https://www.ncbi.nlm.nih.gov/nuccore/NC_001357.1?report=fasta',
+        'https://hgdownload.soe.ucsc.edu/goldenPath/hg38/bigZips']
+    }
+
 donors = []
 for batch in batches:
     donor = pd.read_csv(batch['value'] + 'donor_and_recipient.csv').columns[0].replace(" ", "")
@@ -51,54 +65,42 @@ app.layout = html.Div([
         id='tab-select', value='tab-0', style = tabs_styles,
         children=[
             dcc.Tab(
-                label = 'Data Selection', value = 'tab-0', 
-                style = tab_style, selected_style = tab_selected_style,
+                label = 'Data Selection', value = 'tab-0', style = tab_style, selected_style = tab_selected_style,
                 children = [
                     html.Br(),
                     html.Div([
                         html.Div(
-                            id='dataset', 
-                            children = 'Please select a dataset name:',
+                            id='dataset', children = 'Please select a dataset name:',
                             style={'width': '20%', 'display': 'inline-block'}),
                         html.Div(
-                            id='donor', 
-                            children = 'Donor Organism:',
+                            id='donor', children = 'Donor Organism:',
                             style={'width': '20%', 'display': 'inline-block'}),
                         html.Div(
-                            id='recipient', 
-                            children = 'Recipient Organism:',
+                            id='recipient', children = 'Recipient Organism:',
                             style={'width': '20%', 'display': 'inline-block'}),
                         html.Div(
-                            id='srr', 
-                            children = 'SRR Identifier:',
+                            id='srr', children = 'SRR Identifier:',
                             style={'width': '20%', 'display': 'inline-block'}),
                         html.Div(
-                            id='id', 
-                            children = 'Overlap Locus ID:',
+                            id='id', children = 'Overlap Locus ID:',
                             style={'width': '20%', 'display': 'inline-block'})
                     ]),
                     html.Div([
                         html.Div([
                             dcc.Dropdown(
-                                id = 'batch-select',
-                                options = batches, value = batches[0]['value'], 
-                                clearable = False
+                                id = 'batch-select', options = batches, value = batches[0]['value'], clearable = False
                             )
                         ], style={'width': '20%', 'display': 'inline-block'}),
                         
                         html.Div([
                             dcc.Dropdown(
-                                id = 'donor-select',
-                                options = donors, value = donors[0]['value'], 
-                                clearable = False, disabled = True
+                                id = 'donor-select', options = donors, value = donors[0]['value'], clearable = False, disabled = True
                             )
                         ], style={'width': '20%', 'display': 'inline-block'}),
                         
                         html.Div([
                             dcc.Dropdown(
-                                id = 'recipient-select',
-                                options = recipients, value = recipients[0]['value'], 
-                                clearable = False, disabled = True
+                                id = 'recipient-select', options = recipients, value = recipients[0]['value'], clearable = False, disabled = True
                             )
                         ], style={'width': '20%', 'display': 'inline-block'}),
                         
@@ -109,7 +111,7 @@ app.layout = html.Div([
                         html.Div([
                             dcc.Dropdown(id = 'id-select', value = '1')
                         ], style={'width': '20%', 'display': 'inline-block'})
-                    ]),
+                    ])
                 ]   
             ),
             dcc.Tab(label = 'Metrics Reports', value = 'tab-1', 
@@ -132,6 +134,7 @@ app.layout = html.Div([
     Output('srr-select', 'value'),
     Output('donor-select', 'value'),
     Output('recipient-select', 'value'),
+    Output('id-select', 'value'),
     Input('batch-select', 'value')
 )
 def update_options(batch):
@@ -143,7 +146,7 @@ def update_options(batch):
     donor = pd.read_csv(batch + 'donor_and_recipient.csv').columns[0].replace(" ", "")
     recipient = pd.read_csv(batch + 'donor_and_recipient.csv').columns[1].replace(" ", "")
 
-    return [{ 'value' : srr, 'label' : srr } for srr in srrs], srrs[0], donor, recipient
+    return [{ 'value' : srr, 'label' : srr } for srr in srrs], srrs[0], donor, recipient, 1
 
 ###################
 # Batch or SRR change > Update the SRR IDs
@@ -173,7 +176,8 @@ def update_options(srr, batch):
 def render_content(tab, srr, id, donor, recipient, batch):
     # Load insertion table
     insertion_table = pd.read_csv(batch + 'putative_insertion_table.csv', dtype={'srr': str, 'id': str })
-    insertion_table_renamed = insertion_table.rename(columns = {
+    insertion_table_renamed = insertion_table
+    insertion_table_renamed = insertion_table_renamed.rename(columns = {
         "srr": "SRR name", "id": "Overlap locus ID", "chr": "Chromosome", "start": "Start locus",
         "stop": "End locus", "num_crossings": "Number of crossings", 
         "unique_crossings": "List of unique crossings", "num_reads": "Number of reads", 
@@ -232,9 +236,9 @@ def render_content(tab, srr, id, donor, recipient, batch):
         # Extract track names
         insertion_table_srr = insertion_table[(insertion_table['srr'] == str(srr)) & (insertion_table['id'] == str(id))]
         crossings = str(insertion_table_srr['unique_crossings'].values[0]).split('|')
-
+    
         # Calculate locus
-        srr_id = insertion_table_srr[insertion_table_srr['id'] == id]
+        srr_id = insertion_table_srr[insertion_table_srr['id'] == str(id)]
         chromosome = str(srr_id['chr'].values[0])
         start = str(srr_id['start'].values[0] - padding_left)
         stop = str(srr_id['stop'].values[0] + padding_right)
@@ -275,7 +279,7 @@ def render_content(tab, srr, id, donor, recipient, batch):
         crossings = str(insertion_table_srr['unique_crossings'].values[0]).split('|')
 
         # Calculate locus
-        srr_id = insertion_table_srr[insertion_table_srr['id'] == id]
+        srr_id = insertion_table_srr[insertion_table_srr['id'] == str(id)]
         chromosome = str(srr_id['chr'].values[0])
         start = str(srr_id['start'].values[0] - padding_left)
         stop = str(srr_id['stop'].values[0] + padding_right)
@@ -329,7 +333,7 @@ def render_content(tab, srr, id, donor, recipient, batch):
         crossings = str(insertion_table_srr['unique_crossings'].values[0]).split('|')
 
         # Calculate locus
-        srr_id = insertion_table_srr[insertion_table_srr['id'] == id]
+        srr_id = insertion_table_srr[insertion_table_srr['id'] == str(id)]
         chromosome = str(srr_id['chr'].values[0])
         start = str(srr_id['start'].values[0] - padding_left)
         stop = str(srr_id['stop'].values[0] + padding_right)
@@ -344,8 +348,8 @@ def render_content(tab, srr, id, donor, recipient, batch):
                     # https://github.com/igvteam/igv.js/wiki/Alignment-Track
                     # https://github.com/igvteam/igv.js/blob/c6773940de86cf2938f40feec86d1905a866deba/js/bam/bamTrack.js
                     'name': crossing,
-                    'url': batch + srr + '-to-' + recipient + '_' + crossing + '_filtered_id' + id + '.bam',
-                    'indexURL': batch + srr + '-to-' + recipient + '_' + crossing + '_filtered_id' + id + '.bam.bai', 
+                    'url': batch + srr + '-to-' + recipient + '_' + crossing + '_filtered_id' + str(id) + '.bam',
+                    'indexURL': batch + srr + '-to-' + recipient + '_' + crossing + '_filtered_id' + str(id) + '.bam.bai', 
                     'format': 'bam', 'type': 'alignment', 'showSoftClips': 'true', 'alignmentRowHeight' : '14',
                     'viewAsPairs': 'true', 'showMismatches' : 'true', 'colorBy' : 'strand', 
                     'coverageColor' : 'rgb(210, 100, 102)'
@@ -361,8 +365,8 @@ def render_content(tab, srr, id, donor, recipient, batch):
                     # https://github.com/igvteam/igv.js/wiki/Alignment-Track
                     # https://github.com/igvteam/igv.js/blob/c6773940de86cf2938f40feec86d1905a866deba/js/bam/bamTrack.js
                     'name': crossing,
-                    'url': batch + srr + '-to-' + donor + '_' + crossing + '_filtered_id' + id + '.bam',
-                    'indexURL': batch + srr + '-to-' + donor + '_' + crossing + '_filtered_id' + id + '.bam.bai', 
+                    'url': batch + srr + '-to-' + donor + '_' + crossing + '_filtered_id' + str(id) + '.bam',
+                    'indexURL': batch + srr + '-to-' + donor + '_' + crossing + '_filtered_id' + str(id) + '.bam.bai', 
                     'format': 'bam', 'type': 'alignment', 'showSoftClips': 'true', 'alignmentRowHeight' : '14',
                     'viewAsPairs': 'true', 'showMismatches' : 'true', 'colorBy' : 'strand', 
                     'coverageColor' : 'rgb(210, 100, 102)'
