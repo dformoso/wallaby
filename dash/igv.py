@@ -10,22 +10,8 @@ import pandas as pd
 
 batches = [ 
     { 'value' : 'http://159.196.33.135:8080/hpv16_rnaseq/', 'label' : 'HPV16 RNAseq Dataset' },
-    { 'value' : 'http://159.196.33.135:8080/hpv18_rnaseq/', 'label' : 'HPV18 RNAseq Dataset' } 
+    { 'value' : 'http://159.196.33.135:8080/hpv18_rnaseq/', 'label' : 'HPV18 RNAseq Dataset' }
 ]
-
-batches_info = { 
-    'value' : 'http://159.196.33.135:8080/hpv16_rnaseq/', 'label' : 
-        ['https://pubmed.ncbi.nlm.nih.gov/30552977',
-        'https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE91065',
-        'https://www.ncbi.nlm.nih.gov/nuccore/NC_001526.4?report=fasta',
-        'https://hgdownload.soe.ucsc.edu/goldenPath/hg38/bigZips']
-    ,
-     'value' : 'http://159.196.33.135:8080/hpv18_rnaseq/', 'label' : 
-        ['https://pubmed.ncbi.nlm.nih.gov/30552977',
-        'https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE91065',
-        'https://www.ncbi.nlm.nih.gov/nuccore/NC_001357.1?report=fasta',
-        'https://hgdownload.soe.ucsc.edu/goldenPath/hg38/bigZips']
-    }
 
 donors = []
 for batch in batches:
@@ -61,6 +47,13 @@ VALID_USERNAME_PASSWORD_PAIRS = {'dash': 'r0tt3nf1sh'}
 auth = dash_auth.BasicAuth( app, VALID_USERNAME_PASSWORD_PAIRS)
 
 app.layout = html.Div([
+    html.Div([
+        html.B('Wallaby', style={'color': 'blue', 'fontSize': 40, 'font-family': 'sans-serif', 'font-style': 'italic'}), 
+        html.A('Lateral Gene Transfer Pipeline', 
+            href='https://github.com/dformoso/wallaby', 
+            style={'color': 'grey', 'fontSize': 15, 'font-family': 'arial', 'marginLeft': '1.5em'}),
+    ]),
+    html.Br(),
     dcc.Tabs(
         id='tab-select', value='tab-0', style = tabs_styles,
         children=[
@@ -70,19 +63,19 @@ app.layout = html.Div([
                     html.Br(),
                     html.Div([
                         html.Div(
-                            id='dataset', children = 'Please select a dataset name:',
+                            id='dataset', children = 'Select a dataset name:',
                             style={'width': '20%', 'display': 'inline-block'}),
                         html.Div(
-                            id='donor', children = 'Donor Organism:',
+                            id='donor', children = 'Donor organism:',
                             style={'width': '20%', 'display': 'inline-block'}),
                         html.Div(
-                            id='recipient', children = 'Recipient Organism:',
+                            id='recipient', children = 'Recipient organism:',
                             style={'width': '20%', 'display': 'inline-block'}),
                         html.Div(
-                            id='srr', children = 'SRR Identifier:',
+                            id='srr', children = 'SRR identifier:',
                             style={'width': '20%', 'display': 'inline-block'}),
                         html.Div(
-                            id='id', children = 'Overlap Locus ID:',
+                            id='id', children = 'Putative insertion locus ID:',
                             style={'width': '20%', 'display': 'inline-block'})
                     ]),
                     html.Div([
@@ -111,7 +104,8 @@ app.layout = html.Div([
                         html.Div([
                             dcc.Dropdown(id = 'id-select', value = '1')
                         ], style={'width': '20%', 'display': 'inline-block'})
-                    ])
+                    ]),
+                    html.A('Dataset Descriptions', href='https://docs.google.com/document/d/1gGA3AkDHxAyWHd7-1k-Y6uIUpJTZ13qBDZJb62DJYgI/edit?usp=sharing'),
                 ]   
             ),
             dcc.Tab(label = 'Metrics Reports', value = 'tab-1', 
@@ -178,7 +172,7 @@ def render_content(tab, srr, id, donor, recipient, batch):
     insertion_table = pd.read_csv(batch + 'putative_insertion_table.csv', dtype={'srr': str, 'id': str })
     insertion_table_renamed = insertion_table
     insertion_table_renamed = insertion_table_renamed.rename(columns = {
-        "srr": "SRR name", "id": "Overlap locus ID", "chr": "Chromosome", "start": "Start locus",
+        "srr": "SRR identifier", "id": "Putative insertion locus ID", "chr": "Chromosome", "start": "Start locus",
         "stop": "End locus", "num_crossings": "Number of crossings", 
         "unique_crossings": "List of unique crossings", "num_reads": "Number of reads", 
         "gene_name": "Gene name"})
