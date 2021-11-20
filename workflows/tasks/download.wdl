@@ -5,8 +5,8 @@ import "structs/compute.wdl"
 task srr {
     input {
         String srr
-        String sample = "false"
-        Float sampling_factor = 1
+        String sample
+        Float sampling_factor
         Resources resources
     }
 

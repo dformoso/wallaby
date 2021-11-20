@@ -10,7 +10,8 @@ import pandas as pd
 
 batches = [ 
     { 'value' : 'http://159.196.33.135:8080/hpv16_rnaseq/', 'label' : 'HPV16 RNAseq Dataset' },
-    { 'value' : 'http://159.196.33.135:8080/hpv18_rnaseq/', 'label' : 'HPV18 RNAseq Dataset' }
+    { 'value' : 'http://159.196.33.135:8080/hpv18_rnaseq/', 'label' : 'HPV18 RNAseq Dataset' },
+    { 'value' : 'http://159.196.33.135:8080/hiv1_rnaseq/', 'label' : 'HIV1 RNAseq Dataset' }
 ]
 
 donors = []

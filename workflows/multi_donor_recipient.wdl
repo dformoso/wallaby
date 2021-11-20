@@ -47,7 +47,7 @@ workflow multi_donor_recipient {
             input:
                 srr = srr_name,
                 sample = "false",
-                sampling_factor = 0.2,
+                sampling_factor = 1,
                 resources = server.size["local_instance"]
         }
 
