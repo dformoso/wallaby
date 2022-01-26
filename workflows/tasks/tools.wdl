@@ -161,3 +161,42 @@ task summary_and_inputs {
         maxRetries: resources.maxRetries
     }
 }
+
+task untar_fastqs {
+    input {
+        String fastq_name
+        File fastq_tar
+        String sample
+        Float sampling_factor
+        Resources resources
+    }
+
+    command <<<
+        tar -xzvf ~{fastq_tar}
+        if [ "~{sample}" = "true" ]; then
+            seqtk sample -s 11 "~{fastq_name}_R1.fastq" ~{sampling_factor} > "~{fastq_name}_R1_sampled.fastq"
+            seqtk sample -s 11 "~{fastq_name}_R2.fastq" ~{sampling_factor} > "~{fastq_name}_R2_sampled.fastq"
+            rm -rf ~{fastq_name}/
+            rm -rf "~{fastq_name}_R1.fastq"
+            rm -rf "~{fastq_name}_R2.fastq"
+            mv "~{fastq_name}_R1_sampled.fastq" "~{fastq_name}_R1.fastq"
+            mv "~{fastq_name}_R2_sampled.fastq" "~{fastq_name}_R2.fastq"
+        fi
+    >>>
+
+    output {
+        File out_1 = "~{fastq_name}_R1.fastq"
+        File out_2 = "~{fastq_name}_R2.fastq"
+    }
+
+    runtime {
+        continueOnReturnCode: false
+        cpu: resources.cpu
+        memory: resources.memory_gb
+        docker: "dformoso/sratoolkit:latest"
+        disks: resources.disks
+        zones: resources.zones
+        preemptible: resources.preemptible
+        maxRetries: resources.maxRetries
+    }
+}

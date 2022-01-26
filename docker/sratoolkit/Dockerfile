@@ -12,6 +12,7 @@ RUN apt-get -y -m update && \
 
 RUN apt-get clean
 
+# Install sra-toolkit
 RUN mkdir -p /usr/local/ncbi/sra-toolkit
 WORKDIR /usr/local/ncbi/sra-toolkit
 RUN curl -s https://ftp-trace.ncbi.nlm.nih.gov/sra/sdk/2.10.9/sratoolkit.2.10.9-ubuntu64.tar.gz | \
@@ -22,6 +23,7 @@ ENV PATH="/usr/local/ncbi/sra-toolkit/bin:${PATH}"
 RUN mkdir ~/.ncbi/
 COPY user-settings.mkfg /root/.ncbi
 
+# Install seqtk
 WORKDIR /seqtk
 
 RUN apt-get update
@@ -31,4 +33,5 @@ RUN cd seqtk; make
 ENV PATH="/seqtk/seqtk:$PATH"
 
 WORKDIR /tmp
+
 CMD ["/bin/bash"]

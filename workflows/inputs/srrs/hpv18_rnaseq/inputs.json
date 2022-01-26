@@ -3,5 +3,5 @@
     "multi_donor_recipient.donor_ref_genome_fai": "../../data/ref_genomes/hpv/hpv18.fa.fai",
     "multi_donor_recipient.donor_ref_genome_gff": "../../data/ref_genomes/hpv/hpv18.gff",
     "multi_donor_recipient.recipient_ref_genome": "../../data/ref_genomes/human/hg38.fa",
-    "multi_donor_recipient.srr_list": "../../workflows/inputs/hpv18_rnaseq/srr_list.txt"
+    "multi_donor_recipient.srr_list": "../../workflows/inputs/srrs/hpv18_rnaseq/srr_list.txt"
 }

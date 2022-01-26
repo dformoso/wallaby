@@ -6,6 +6,6 @@ java \
   -DLOG_MODE=pretty \
   -Dconfig.file=../config/local_cpu.conf \
   -jar ../../binaries/cromwell-69.jar \
-    run ../multi_donor_recipient.wdl \
-    --inputs ../inputs/line1_rnaseq/inputs.json \
-    --options ../inputs/line1_rnaseq/options.json
+    run ../srrs_multi_donor_recipient.wdl \
+    --inputs ../inputs/srrs/line1_rnaseq/inputs.json \
+    --options ../inputs/srrs/line1_rnaseq/options.json

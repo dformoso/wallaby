@@ -1,0 +1,23 @@
+{
+    "multi_donor_recipient.donor_ref_genome": "../../data/ref_genomes/hiv/hiv1.fa",
+    "multi_donor_recipient.donor_ref_genome_fai": "../../data/ref_genomes/hiv/hiv1.fa.fai",
+    "multi_donor_recipient.donor_ref_genome_gff": "../../data/ref_genomes/hiv/hiv1.gff",
+    "multi_donor_recipient.recipient_ref_genome": "../../data/ref_genomes/human/hg38.fa",
+    "multi_donor_recipient.fastqs": [
+        "../../data/sequenced_samples/hiv_unsw/2026_17_N.tar.gz",
+        "../../data/sequenced_samples/hiv_unsw/2026_CMDRn.tar.gz",
+        "../../data/sequenced_samples/hiv_unsw/2026_CMDRp.tar.gz",
+        "../../data/sequenced_samples/hiv_unsw/2026_EMDRn.tar.gz",
+        "../../data/sequenced_samples/hiv_unsw/2026_EMDRp.tar.gz",
+        "../../data/sequenced_samples/hiv_unsw/2026_TMDRn.tar.gz",
+        "../../data/sequenced_samples/hiv_unsw/2026_TMDRp.tar.gz",
+        "../../data/sequenced_samples/hiv_unsw/2303_17_N.tar.gz",
+        "../../data/sequenced_samples/hiv_unsw/2303_CMDRn.tar.gz",
+        "../../data/sequenced_samples/hiv_unsw/2303_CMDRp.tar.gz",
+        "../../data/sequenced_samples/hiv_unsw/2303_EMDRn.tar.gz",
+        "../../data/sequenced_samples/hiv_unsw/2303_EMDRp.tar.gz",
+        "../../data/sequenced_samples/hiv_unsw/2303_TMDRn.tar.gz",
+        "../../data/sequenced_samples/hiv_unsw/2303_TMDRp.tar.gz",
+        "../../data/sequenced_samples/hiv_unsw/FP_EM.tar.gz"
+    ]
+}

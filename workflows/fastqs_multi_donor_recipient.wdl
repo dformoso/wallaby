@@ -15,7 +15,7 @@ workflow multi_donor_recipient {
         File donor_ref_genome_fai
         File donor_ref_genome_gff  # .gff must exist, but it can be an empty file
         File recipient_ref_genome
-        File srr_list
+        Array[File] fastqs
     }
 
     String donor_name = basename(donor_ref_genome, ".fa")
@@ -23,9 +23,6 @@ workflow multi_donor_recipient {
 
     # Compute resources
     Compute server = read_json("../inputs/sizes.json")
-    
-    # Download all FASTQ files from the given SRR numbers
-    Array[String] srrs = read_lines(srr_list)
 
     # Indexing Donor and Recipient Reference Genomes
     call align.index as donor_index { 
@@ -40,12 +37,15 @@ workflow multi_donor_recipient {
             resources = server.size["local_instance"]
     }
 
-    scatter (srr_name in srrs) {
+    # Process the FASTQ files
+    scatter (fastq in fastqs) {
+        String fastq_name = basename(fastq, ".tar.gz")
 
-        # Download SSRs
-        call download.srr as downloaded_srr {
+        # Untar SSRs
+        call tools.untar_fastqs as untarred_fastqs {
             input:
-                srr = srr_name,
+                fastq_name = fastq_name,
+                fastq_tar = fastq,
                 sample = "false",
                 sampling_factor = 1,
                 resources = server.size["local_instance"]
@@ -54,16 +54,16 @@ workflow multi_donor_recipient {
         # SRRs Quality Control metrics
         call quality.fast_qc as srr_fastqc_before_trim {
             input:
-                fastq_1 = downloaded_srr.out_1,
-                fastq_2 = downloaded_srr.out_2,
+                fastq_1 = untarred_fastqs.out_1,
+                fastq_2 = untarred_fastqs.out_2,
                 resources = server.size["local_instance"]
         }
 
         # Quality trim the SRR reads
         call trimmomatic.trim as srr_trim_adapters {
             input:
-                fastq_1 = downloaded_srr.out_1,
-                fastq_2 = downloaded_srr.out_2,
+                fastq_1 = untarred_fastqs.out_1,
+                fastq_2 = untarred_fastqs.out_2,
                 adapter = "all_adapters.fa",
                 seed_mismatches = 2,
                 paired_clip_threshold = 30,
@@ -93,7 +93,7 @@ workflow multi_donor_recipient {
                     srr_fastqc_before_trim.files,
                     srr_fastqc_after_trim.files
                     ]),
-                report_name = "${srr_name}_multiqc_report.html",
+                report_name = "${fastq_name}_multiqc_report.html",
                 include = "../inputs/*",            
                 resources = server.size["local_instance"]
         }
@@ -107,7 +107,7 @@ workflow multi_donor_recipient {
                 recipient_name = recipient_name,
                 recipient_index = recipient_index.index_object,
                 recipient_ref_genome = recipient_ref_genome,
-                srr_name = srr_name,
+                srr_name = fastq_name,
                 fastq_1 = srr_trim_adapters.fastq_1_paired,
                 fastq_2 = srr_trim_adapters.fastq_2_paired
         }

@@ -5,7 +5,7 @@ ENV DEBIAN_FRONTEND noninteractive
 WORKDIR /tmp
 
 # FASTQC
-ENV VERSION 0.11.8
+ENV VERSION 0.11.9
 ENV NAME fastqc
 ENV URL "http://www.bioinformatics.babraham.ac.uk/projects/fastqc/${NAME}_v${VERSION}.zip"
 
@@ -33,7 +33,9 @@ RUN apt-get clean && \
 RUN apt-get update && apt-get install -y \
     software-properties-common
 RUN add-apt-repository universe
-RUN apt-get update && apt-get install -y python3-pip
+RUN apt-get update && apt-get install -y python3-pip python-pip
+RUN python3 -m pip install --upgrade pip
+RUN python3 -m pip install --upgrade Pillow
 RUN pip3 install multiqc
 
 WORKDIR /tmp

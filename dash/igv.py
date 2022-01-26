@@ -11,13 +11,17 @@ import pandas as pd
 batches = [ 
     { 'value' : 'http://159.196.33.135:8080/hpv16_rnaseq/', 'label' : 'HPV16 RNAseq Dataset' },
     { 'value' : 'http://159.196.33.135:8080/hpv18_rnaseq/', 'label' : 'HPV18 RNAseq Dataset' },
-    { 'value' : 'http://159.196.33.135:8080/hiv1_rnaseq/', 'label' : 'HIV1 RNAseq Dataset' }
+    { 'value' : 'http://159.196.33.135:8080/hiv1_rnaseq/', 'label' : 'HIV1 RNAseq Dataset' },
+    { 'value' : 'http://159.196.33.135:8080/htlv1_rnaseq/', 'label' : 'HTLV1 WGS Dataset' },
+    { 'value' : 'http://159.196.33.135:8080/hiv1_wgs/', 'label' : 'HIV1 WGS Dataset' }
+    
 ]
 
 donors = []
 for batch in batches:
     donor = pd.read_csv(batch['value'] + 'donor_and_recipient.csv').columns[0].replace(" ", "")
     donors.append({ 'value' : donor, 'label' : donor })
+
 recipients = []
 for batch in batches:
     recipient = pd.read_csv(batch['value'] + 'donor_and_recipient.csv').columns[1].replace(" ", "")
@@ -44,7 +48,7 @@ tab_selected_style = {
 
 app = dash.Dash(__name__)
 
-VALID_USERNAME_PASSWORD_PAIRS = {'dash': 'r0tt3nf1sh'}
+VALID_USERNAME_PASSWORD_PAIRS = {'dash': 'dash'}
 auth = dash_auth.BasicAuth( app, VALID_USERNAME_PASSWORD_PAIRS)
 
 app.layout = html.Div([
@@ -59,7 +63,7 @@ app.layout = html.Div([
         id='tab-select', value='tab-0', style = tabs_styles,
         children=[
             dcc.Tab(
-                label = 'Data Selection', value = 'tab-0', style = tab_style, selected_style = tab_selected_style,
+                label = 'Dataset Selection', value = 'tab-0', style = tab_style, selected_style = tab_selected_style,
                 children = [
                     html.Br(),
                     html.Div([
@@ -109,7 +113,7 @@ app.layout = html.Div([
                     html.A('Dataset Descriptions', href='https://docs.google.com/document/d/1gGA3AkDHxAyWHd7-1k-Y6uIUpJTZ13qBDZJb62DJYgI/edit?usp=sharing'),
                 ]   
             ),
-            dcc.Tab(label = 'Metrics Reports', value = 'tab-1', 
+            dcc.Tab(label = 'Quality Control Reports', value = 'tab-1', 
             style = tab_style, selected_style = tab_selected_style),
             dcc.Tab(label = 'Reads at Locus - Mapped to Recipient', value = 'tab-2', 
             style = tab_style, selected_style = tab_selected_style),
@@ -134,7 +138,7 @@ app.layout = html.Div([
 )
 def update_options(batch):
     insertion_table = pd.read_csv(batch + 'putative_insertion_table.csv', 
-    dtype={'srr': str, 'id': str })
+                                  dtype = {'srr': str, 'id': str })
     # Extract ids for SRR and build dictionary from it
     srrs = insertion_table['srr'].drop_duplicates()
 
@@ -191,7 +195,8 @@ def render_content(tab, srr, id, donor, recipient, batch):
             dt.DataTable(
                 id = 'tbl', data = insertion_table_renamed.to_dict('records'),
                 columns = [{'name': i, 'id': i} for i in insertion_table_renamed.columns],
-                style_cell = {'textAlign': 'left'}
+                style_cell = {'textAlign': 'left'},
+                filter_action='native'
             )
         ])
 
