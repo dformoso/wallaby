@@ -104,7 +104,7 @@ task bam_reads {
     >>>
 
     output {
-        File bams = "~{basename(bam, ".bam")}_filtered.bam"
+        File? bams = "~{basename(bam, ".bam")}_filtered.bam"
     }
 
     runtime {

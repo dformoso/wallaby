@@ -1,4 +1,4 @@
 {
-    "final_workflow_outputs_dir": "../outputs/hiv1_wgs",
+    "final_workflow_outputs_dir": "../outputs/hiv1_wgs_split",
     "use_relative_output_paths": true
 }

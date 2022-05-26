@@ -103,8 +103,10 @@ workflow main {
         }
     }
 
+    Array[File] all_filtered_bams = select_all(filtered.bams)
+
     # Create indexes (BAI files) for all crossed_filtered BAM files
-    scatter (bam in filtered.bams) {
+    scatter (bam in all_filtered_bams) {
         call samtools.index as filtered_bam_to_bai {
             input:
                 file = bam,
@@ -113,7 +115,7 @@ workflow main {
     }
 
     # Create BED files for all crossed_filtered BAM files
-    scatter (bam in filtered.bams) {
+    scatter (bam in all_filtered_bams) {
         call samtools.bam_to_bed as filtered_bam_to_bed {
             input:
                 file = bam,
@@ -130,7 +132,7 @@ workflow main {
     
     call metrics.main as filtered_metrics {
         input:
-            bams = filtered.bams,
+            bams = all_filtered_bams,
             resources = server.size["local_instance"]
     }
 
@@ -142,7 +144,7 @@ workflow main {
                 crossing.bams,
                 crossing_metrics.stats,
                 crossing_metrics.flagstats,
-                filtered.bams,
+                all_filtered_bams,
                 filtered_metrics.stats,
                 filtered_metrics.flagstats
                 ]),
@@ -160,7 +162,7 @@ workflow main {
                 crossing.bams,
                 crossing_metrics.stats,
                 crossing_metrics.flagstats,
-                filtered.bams,
+                all_filtered_bams,
                 filtered_metrics.stats,
                 filtered_metrics.flagstats
                 ]),
@@ -173,7 +175,7 @@ workflow main {
     # Create putative insertion table and bam files for loci of interest
     call overlaps.putative_insertions as overlap_loci {
         input:
-            bams = filtered_bams,
+            bams = all_filtered_bams,
             bais = filtered_bam_to_bai.out,
             beds = filtered_bam_to_bed.out,
             srr_name = srr_name,
@@ -187,7 +189,7 @@ workflow main {
     }
 
     output {
-        Array[File] filtered_bams = filtered.bams
+        Array[File] filtered_bams = all_filtered_bams
         Array[File] filtered_bais = filtered_bam_to_bai.out
         Array[File] filtered_beds = filtered_bam_to_bed.out
         Array[File] overlap_loci_bams_and_bais = select_all(overlap_loci.bams_and_bais)

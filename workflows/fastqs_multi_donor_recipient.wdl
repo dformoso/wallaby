@@ -70,9 +70,9 @@ workflow multi_donor_recipient {
                 unpaired_clip_threshold = 10,
                 leading = 3,
                 trailing = 3,
-                sliding_window_quality = 20,
+                sliding_window_quality = 15,
                 sliding_window_length = 4,
-                min_length = 10,
+                min_length = 36,
                 is_phred33 = true,
                 resources = server.size["local_instance"]
         }

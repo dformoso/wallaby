@@ -13,7 +13,8 @@ batches = [
     { 'value' : 'http://159.196.33.135:8080/hpv18_rnaseq/', 'label' : 'HPV18 RNAseq Dataset' },
     { 'value' : 'http://159.196.33.135:8080/hiv1_rnaseq/', 'label' : 'HIV1 RNAseq Dataset' },
     { 'value' : 'http://159.196.33.135:8080/htlv1_rnaseq/', 'label' : 'HTLV1 WGS Dataset' },
-    { 'value' : 'http://159.196.33.135:8080/hiv1_wgs/', 'label' : 'HIV1 WGS Dataset' }
+    { 'value' : 'http://159.196.33.135:8080/hiv1_wgs/', 'label' : 'HIV1 WGS Dataset' },
+    { 'value' : 'http://159.196.33.135:8080/hiv1_wgs_split/', 'label' : 'HIV1 WGS Dataset Split' }
     
 ]
 
@@ -48,7 +49,7 @@ tab_selected_style = {
 
 app = dash.Dash(__name__)
 
-VALID_USERNAME_PASSWORD_PAIRS = {'dash': 'dash'}
+VALID_USERNAME_PASSWORD_PAIRS = {'%&FGr^%FED!': '%&FGr^%FED!'}
 auth = dash_auth.BasicAuth( app, VALID_USERNAME_PASSWORD_PAIRS)
 
 app.layout = html.Div([
