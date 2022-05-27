@@ -18,3 +18,11 @@ sudo docker run -itd \
     -p 8080:80 \
     -v "${root_dir}/wallaby/workflows/outputs:/usr/local/apache2/htdocs/" \
     dformoso/apache2:latest
+
+#sudo docker run -itd \
+#    --name fileserver \
+#    --hostname fileserver \
+#    --restart always \
+#    -p 8080:80 \
+#    -v "/research/projects/wallaby/workflows/outputs:/usr/local/apache2/htdocs/" \
+#    dformoso/apache2:latest

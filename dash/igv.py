@@ -9,13 +9,12 @@ import os, glob, csv, time
 import pandas as pd
 
 batches = [ 
-    { 'value' : 'http://159.196.33.135:8080/hpv16_rnaseq/', 'label' : 'HPV16 RNAseq Dataset' },
-    { 'value' : 'http://159.196.33.135:8080/hpv18_rnaseq/', 'label' : 'HPV18 RNAseq Dataset' },
-    { 'value' : 'http://159.196.33.135:8080/hiv1_rnaseq/', 'label' : 'HIV1 RNAseq Dataset' },
-    { 'value' : 'http://159.196.33.135:8080/htlv1_rnaseq/', 'label' : 'HTLV1 WGS Dataset' },
-    { 'value' : 'http://159.196.33.135:8080/hiv1_wgs/', 'label' : 'HIV1 WGS Dataset' },
-    { 'value' : 'http://159.196.33.135:8080/hiv1_wgs_split/', 'label' : 'HIV1 WGS Dataset Split' }
-    
+    { 'value' : 'http://127.0.0.1:8080/hpv16_rnaseq/', 'label' : 'HPV16 RNAseq Dataset' },
+    { 'value' : 'http://127.0.0.1:8080/hpv18_rnaseq/', 'label' : 'HPV18 RNAseq Dataset' },
+    { 'value' : 'http://127.0.0.1:8080/hiv1_rnaseq/', 'label' : 'HIV1 RNAseq Dataset' },
+    { 'value' : 'http://127.0.0.1:8080/htlv1_rnaseq/', 'label' : 'HTLV1 WGS Dataset' },
+    { 'value' : 'http://127.0.0.1:8080/hiv1_wgs/', 'label' : 'HIV1 WGS Dataset' },
+    { 'value' : 'http://127.0.0.1:8080/hiv1_wgs_split/', 'label' : 'HIV1 WGS Dataset Split' }
 ]
 
 donors = []
@@ -49,8 +48,8 @@ tab_selected_style = {
 
 app = dash.Dash(__name__)
 
-VALID_USERNAME_PASSWORD_PAIRS = {'%&FGr^%FED!': '%&FGr^%FED!'}
-auth = dash_auth.BasicAuth( app, VALID_USERNAME_PASSWORD_PAIRS)
+#VALID_USERNAME_PASSWORD_PAIRS = {'%&FGr^%FED!': '%&FGr^%FED!'}
+#auth = dash_auth.BasicAuth( app, VALID_USERNAME_PASSWORD_PAIRS)
 
 app.layout = html.Div([
     html.Div([
@@ -104,11 +103,11 @@ app.layout = html.Div([
                         ], style={'width': '20%', 'display': 'inline-block'}),
                         
                         html.Div([
-                            dcc.Dropdown(id = 'srr-select')
+                            dcc.Dropdown(id = 'srr-select', options = {})
                         ], style={'width': '20%', 'display': 'inline-block'}),
 
                         html.Div([
-                            dcc.Dropdown(id = 'id-select', value = '1')
+                            dcc.Dropdown(id = 'id-select', options = {}, value = '1')
                         ], style={'width': '20%', 'display': 'inline-block'})
                     ]),
                     html.A('Dataset Descriptions', href='https://docs.google.com/document/d/1gGA3AkDHxAyWHd7-1k-Y6uIUpJTZ13qBDZJb62DJYgI/edit?usp=sharing'),
@@ -407,5 +406,4 @@ def render_content(tab, srr, id, donor, recipient, batch):
         ])
 
 if __name__ == '__main__':
-    #app.run_server(debug=True)
-    app.run_server(debug=True, host='0.0.0.0')
+    app.run_server(debug=True)
